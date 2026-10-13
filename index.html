@@ -1,0 +1,863 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Workpacks">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2314191D'/%3E%3Cpath d='M16 34l10 10 22-24' fill='none' stroke='%23F2B33D' stroke-width='8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style>
+<title>Workpack Status</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&display=swap">
+<style>
+/* Layout: phone-first single column; widens to a card grid on a desk screen. Dark header bar, white cards, status colours carry meaning. */
+:root{
+  --bg:#EEF1F0; --surface:#FFFFFF; --ink:#14191D; --muted:#46505A; --line:#D2D8DC;
+  --head:#14191D; --head-ink:#FFFFFF; --head-muted:#C3CAD0;
+  --accent:#1F4E79; --accent-ink:#FFFFFF;
+  --late:#A12019; --late-ink-on:#FFFFFF; --late-bg:#FBEAE9; --late-line:#E6B0AC; --late-ink:#7A1A14;
+  --warn-bg:#FFF4DC; --warn-line:#E6C373; --warn-ink:#674500;
+  --prog:#F2B33D; --prog-ink:#14191D; --prog-line:#B07A10;
+  --done:#1E6B3A; --done-ink:#FFFFFF;
+  --not:#46505A; --not-ink:#FFFFFF;
+  --chip:#E7EBEE; --track:#DEE3E7; --off-line:#A3ACB4;
+  --display:'Barlow Condensed','Arial Narrow',sans-serif;
+  --body:'Barlow','Helvetica Neue',Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1214; --surface:#1A2024; --ink:#ECEFF1; --muted:#A8B1B9; --line:#2F383E;
+  --head:#080B0D; --head-ink:#FFFFFF; --head-muted:#A8B1B9;
+  --accent:#6FA6DA; --accent-ink:#08131D;
+  --late:#C2362E; --late-ink-on:#FFFFFF; --late-bg:#381614; --late-line:#6B2A26; --late-ink:#F4BDB8;
+  --warn-bg:#352909; --warn-line:#6B5313; --warn-ink:#F2D38A;
+  --prog:#F2B33D; --prog-ink:#14191D; --prog-line:#F2B33D;
+  --done:#2F8A52; --done-ink:#FFFFFF;
+  --not:#6B7680; --not-ink:#FFFFFF;
+  --chip:#262E33; --track:#2A3338; --off-line:#4F5A62; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1214; --surface:#1A2024; --ink:#ECEFF1; --muted:#A8B1B9; --line:#2F383E;
+  --head:#080B0D; --head-ink:#FFFFFF; --head-muted:#A8B1B9;
+  --accent:#6FA6DA; --accent-ink:#08131D;
+  --late:#C2362E; --late-ink-on:#FFFFFF; --late-bg:#381614; --late-line:#6B2A26; --late-ink:#F4BDB8;
+  --warn-bg:#352909; --warn-line:#6B5313; --warn-ink:#F2D38A;
+  --prog:#F2B33D; --prog-ink:#14191D; --prog-line:#F2B33D;
+  --done:#2F8A52; --done-ink:#FFFFFF;
+  --not:#6B7680; --not-ink:#FFFFFF;
+  --chip:#262E33; --track:#2A3338; --off-line:#4F5A62; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{background:var(--bg)}
+body{color:var(--ink);font-family:var(--body);font-size:18px;line-height:1.35;-webkit-text-size-adjust:100%}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:16px}
+.bar{background:var(--head);color:var(--head-ink)}
+.bar .wrap{padding-block:16px;display:flex;flex-direction:column;gap:4px}
+.brand{font-family:var(--display);font-weight:700;font-size:30px;letter-spacing:.5px;text-transform:uppercase;line-height:1.05}
+.sub{font-size:16px;color:var(--head-muted)}
+.sub button{background:none;border:0;padding:0;color:var(--head-ink);text-decoration:underline;font-size:16px;min-height:32px}
+.mode{display:inline-block;margin-top:4px;font-size:14px;font-weight:700;background:var(--prog);color:var(--prog-ink);border-radius:6px;padding:2px 8px;align-self:flex-start}
+.filters{background:var(--surface);border-bottom:1px solid var(--line)}
+.filters .wrap{padding-block:16px;display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
+@media (min-width:760px){.filters .wrap{grid-template-columns:minmax(0,1fr) minmax(0,1.4fr)}}
+.lbl{font-size:15px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+select.big{height:56px;font-size:22px;font-weight:600;padding:0 12px;border:2px solid var(--ink);border-radius:10px;background:var(--surface);width:100%}
+.dates{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.dates label{font-size:15px;color:var(--muted)}
+input.date{height:52px;width:100%;font-size:19px;font-weight:600;padding:0 10px;border:2px solid var(--off-line);border-radius:10px;background:var(--surface);min-width:0}
+.pills{display:flex;gap:8px;flex-wrap:wrap}
+.pill{height:44px;padding:0 16px;border-radius:22px;border:2px solid var(--off-line);background:var(--surface);font-size:16px;font-weight:700}
+.pill.on{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding-top:14px}
+.tile{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:2px}
+.tile b{font-family:var(--display);font-size:36px;line-height:1;font-variant-numeric:tabular-nums}
+.tile span{font-size:15px;color:var(--muted);line-height:1.2}
+.tile.late{background:var(--late-bg);border-color:var(--late-line)} .tile.late b,.tile.late span{color:var(--late-ink)}
+.tile.warn{background:var(--warn-bg);border-color:var(--warn-line)} .tile.warn b,.tile.warn span{color:var(--warn-ink)}
+h2{font-family:var(--display);font-size:24px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin:0;text-wrap:balance}
+.sec{padding-block:18px 0;display:flex;flex-direction:column;gap:10px}
+.grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(min(100%,330px),1fr))}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.row{display:flex;gap:10px;align-items:flex-start}
+.grow{flex:1 1 auto;min-width:0}
+.wpid{font-family:var(--display);font-size:22px;font-weight:700;line-height:1.1}
+.wpdesc{font-size:19px;font-weight:500;line-height:1.25;overflow-wrap:anywhere}
+.btn{height:52px;min-width:76px;padding:0 16px;border-radius:10px;border:0;background:var(--accent);color:var(--accent-ink);font-size:19px;font-weight:700;flex:0 0 auto}
+.btn.ghost{background:transparent;border:2px solid var(--done);color:var(--done)}
+.btn.wide{width:100%}
+.badges{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.badge{display:inline-flex;align-items:center;gap:4px;min-height:30px;padding:2px 10px;border-radius:6px;font-size:16px;font-weight:700;background:var(--chip);color:var(--ink)}
+.badge.late{background:var(--late);color:var(--late-ink-on)}
+.badge.who{font-weight:600;color:var(--muted)}
+.track{height:10px;border-radius:5px;background:var(--track);overflow:hidden}
+.fill{height:100%;background:var(--done)}
+.meta{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:16px;color:var(--muted)}
+.stale{color:var(--warn-ink);font-weight:700}
+.fold{display:flex;justify-content:space-between;align-items:center;width:100%;min-height:56px;padding:0 14px;border-radius:12px;border:2px dashed var(--off-line);background:transparent;color:var(--muted);font-size:19px;font-weight:700}
+.fold svg{transition:transform .15s}
+.fold[aria-expanded="true"] svg{transform:rotate(180deg)}
+.empty{padding:18px;border:1px dashed var(--off-line);border-radius:12px;color:var(--muted);font-size:17px}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav.tabs .in{max-width:1120px;margin:0 auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+nav.tabs button{height:64px;border:0;border-top:4px solid transparent;background:none;font-size:19px;font-weight:600;color:var(--muted)}
+nav.tabs button.on{color:var(--accent);border-top-color:var(--accent);font-weight:700}
+main{padding-bottom:100px}
+/* Screen 2 */
+.wphead{position:sticky;top:env(safe-area-inset-top,0px);z-index:10}
+.wphead .wrap{padding-block:10px 14px;gap:8px}
+.back{display:inline-flex;align-items:center;gap:6px;min-height:44px;background:none;border:0;color:var(--head-ink);font-size:18px;font-weight:600;padding:0;align-self:flex-start}
+.update{height:62px;border-radius:12px;border:0;background:var(--prog);color:var(--prog-ink);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:22px;font-weight:700;line-height:1.1;width:100%}
+.update small{font-size:15px;font-weight:600}
+.update:disabled{opacity:.6}
+.task{gap:10px}
+.tid{font-family:var(--display);font-size:20px;font-weight:700;color:var(--muted)}
+.grp{font-size:14px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;overflow-wrap:anywhere}
+.tname{font-size:20px;font-weight:600;line-height:1.25;overflow-wrap:anywhere}
+.changed{background:var(--accent);color:var(--accent-ink);border-radius:6px;font-size:13px;font-weight:700;padding:3px 8px;letter-spacing:.5px}
+.seg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.seg button{height:56px;border-radius:10px;border:2px solid var(--off-line);background:var(--surface);color:var(--ink);font-size:17px;font-weight:700;line-height:1.1;padding:0 4px;display:flex;align-items:center;justify-content:center;gap:4px}
+.seg button[aria-pressed="true"].s-N{background:var(--not);border-color:var(--not);color:var(--not-ink)}
+.seg button[aria-pressed="true"].s-P{background:var(--prog);border-color:var(--prog-line);color:var(--prog-ink)}
+.seg button[aria-pressed="true"].s-C{background:var(--done);border-color:var(--done);color:var(--done-ink)}
+.seg button svg{display:none}
+.seg button[aria-pressed="true"] svg{display:block}
+.note{font-size:16px;color:var(--muted);line-height:1.4}
+.confirm{border:2px solid var(--done);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:10px;background:var(--surface)}
+.confirm .row{flex-wrap:wrap}
+/* Stats */
+.kgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (min-width:760px){.kgrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.k{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.k b{font-family:var(--display);font-size:36px;line-height:1;font-variant-numeric:tabular-nums}
+.k b small{font-size:20px;color:var(--muted)}
+.k .t{font-size:17px;font-weight:700;color:var(--muted)}
+.k .d{font-size:15px;color:var(--muted)}
+.k.late{background:var(--late-bg);border-color:var(--late-line)} .k.late b,.k.late .t,.k.late .d{color:var(--late-ink)}
+.bars{display:flex;flex-direction:column;gap:10px}
+.barrow{display:grid;grid-template-columns:96px minmax(0,1fr) 48px;gap:8px;align-items:center;font-size:16px}
+.barrow .b{height:18px;border-radius:4px;background:var(--track);overflow:hidden}
+.barrow .b i{display:block;height:100%;background:var(--late)}
+.barrow .n{font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+.list{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.li{display:flex;gap:10px;align-items:center;padding:12px;border:0;border-top:1px solid var(--line);background:none;width:100%;text-align:left;min-height:56px}
+.li:first-child{border-top:0}
+.tbl{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.tbl th{font-size:14px;text-transform:uppercase;color:var(--muted);text-align:right;padding:10px 12px;background:var(--chip);letter-spacing:.4px}
+.tbl th:first-child,.tbl td:first-child{text-align:left}
+.tbl td{padding:12px;border-top:1px solid var(--line);text-align:right;font-size:18px}
+.tbl td.r{color:var(--late);font-weight:700} .tbl td.w{color:var(--warn-ink);font-weight:700}
+.scroll{overflow-x:auto}
+.fresh{background:var(--warn-bg);border:1px solid var(--warn-line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:6px;color:var(--warn-ink)}
+.fresh b{font-family:var(--display);font-size:36px;line-height:1}
+.link{background:none;border:0;color:var(--accent);text-decoration:underline;font-size:17px;padding:8px 0;min-height:44px;align-self:flex-start}
+/* overlays + toast */
+.overlay{position:fixed;inset:0;z-index:50;background:var(--bg);overflow:auto;padding-top:env(safe-area-inset-top,0px)}
+.overlay .wrap{padding-block:24px;display:flex;flex-direction:column;gap:12px;max-width:560px}
+.namebtn{height:60px;border-radius:12px;border:2px solid var(--line);background:var(--surface);font-size:21px;font-weight:700;text-align:left;padding:0 16px}
+input.text{height:56px;font-size:21px;padding:0 12px;border:2px solid var(--ink);border-radius:10px;background:var(--surface);width:100%}
+.err{color:var(--late);font-weight:700;font-size:17px}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:60;background:var(--ink);color:var(--surface);padding:12px 18px;border-radius:12px;font-size:18px;font-weight:700;max-width:calc(100% - 32px);text-align:center}
+.banner{background:var(--warn-bg);color:var(--warn-ink);border-bottom:1px solid var(--warn-line)}
+.banner .wrap{padding-block:10px;font-size:16px;font-weight:600}
+/* Reports: on screen and in print */
+.filters .btn.wide{align-self:end}
+.rep{display:flex;flex-direction:column;gap:18px;padding-block:18px 0}
+.rperson{display:flex;flex-direction:column;gap:12px}
+.rhead{border-bottom:3px solid var(--ink);padding-bottom:8px;display:flex;flex-direction:column;gap:2px}
+.reye{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
+.rhead h1{font-family:var(--display);font-size:28px;margin:0;text-transform:uppercase;letter-spacing:.4px;text-wrap:balance}
+.rmeta{font-size:15px;color:var(--muted)}
+.rkpi{display:flex;gap:18px;flex-wrap:wrap;font-size:16px}
+.rkpi b{font-family:var(--display);font-size:24px;font-variant-numeric:tabular-nums}
+.rlate{color:var(--late)}
+.rep h3{font-family:var(--display);font-size:20px;text-transform:uppercase;letter-spacing:.4px;margin:8px 0 0}
+.rwp{display:flex;flex-direction:column;gap:4px;break-inside:avoid-page}
+.rwph{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:10px}
+.rid{font-family:var(--display);font-weight:700;font-size:20px}
+.rdesc{font-weight:600;font-size:17px;min-width:0;overflow-wrap:anywhere}
+.rsum{font-size:15px;color:var(--muted)}
+.rt{width:100%;border-collapse:collapse;font-size:15px;font-variant-numeric:tabular-nums;background:var(--surface)}
+.rt th{text-align:left;font-size:13px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);background:var(--chip);padding:6px 8px;border-bottom:1px solid var(--line)}
+.rt td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.rt .num{text-align:right}
+.rt .nw{white-space:nowrap}
+.rt tr.lt td:last-child{color:var(--late);font-weight:700}
+.rt.kv th{width:55%;text-transform:none;font-size:15px;letter-spacing:0;color:var(--ink);background:transparent;font-weight:600}
+.rg{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase}
+@media print{
+  :root,:root[data-theme="dark"],:root:not([data-theme="light"]){--bg:#fff;--surface:#fff;--ink:#000;--muted:#333;--line:#bbb;--chip:#eee;--late:#A12019;color-scheme:light}
+  @page{size:A4;margin:12mm}
+  html,body{background:#fff!important;color:#000}
+  .bar,.banner,.noprint,nav.tabs,.toast{display:none!important}
+  main{padding:0}
+  .wrap{max-width:none;padding:0}
+  .rep{padding:0;gap:10px}
+  .scroll{overflow:visible}
+  .rt{font-size:9pt}
+  .rt th{font-size:8pt}
+  .rt td,.rt th{padding:3px 5px}
+  .rhead h1{font-size:18pt}
+  .rid{font-size:12pt} .rdesc{font-size:11pt} .rsum,.rmeta,.rkpi{font-size:9pt} .rkpi b{font-size:13pt}
+  .rep h3{font-size:12pt}
+  .rt tr{break-inside:avoid}
+  .pb{break-before:page}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+</head>
+<body>
+<div id="app"></div>
+<div id="toast" class="toast" hidden></div>
+
+<script>
+/* Schedule import: turns the Primavera Excel export (with Workpack / Responsible /
+   Status columns added) into the app's schedule data.
+   Works in the browser (window.WPParse) and in Node (module.exports). */
+(function (root) {
+  'use strict';
+
+  // Only these phases are shown in the app. Add 'MECHANICAL COMPLETION' etc. later if wanted.
+  var INCLUDE_PHASES = ['CONSTRUCTION'];
+  var ALL_PHASES = ['ENGINEERING', 'PROCUREMENT', 'CONSTRUCTION', 'MECHANICAL COMPLETION',
+    'PRE-COMM & COMMISIONING', 'PRE-COMM & COMMISSIONING'];
+  // In these workpacks each "TAG - DESCRIPTION" group (one vessel) becomes a single task.
+  var COLLAPSE_WORKPACKS = ['0000-0009'];
+
+  var MONTHS = { jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11 };
+  var WP_RE = /^(\d{4}-\d{4})\s*-\s*(.*)$/;
+
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function iso(y, m, d) { return y + '-' + pad(m + 1) + '-' + pad(d); }
+
+  // Excel serial number or "15-Jan-26 A" / "21-Sep-26*" -> "2026-01-15"
+  function toDate(v) {
+    if (v === null || v === undefined || v === '') return null;
+    if (typeof v === 'number') {
+      var ms = Math.round((v - 25569) * 86400000);
+      var dt = new Date(ms);
+      return iso(dt.getUTCFullYear(), dt.getUTCMonth(), dt.getUTCDate());
+    }
+    if (v instanceof Date) return iso(v.getFullYear(), v.getMonth(), v.getDate());
+    var m = String(v).match(/(\d{1,2})-([A-Za-z]{3})-(\d{2,4})/);
+    if (!m) return null;
+    var y = parseInt(m[3], 10); if (y < 100) y += 2000;
+    var mo = MONTHS[m[2].toLowerCase()];
+    if (mo === undefined) return null;
+    return iso(y, mo, parseInt(m[1], 10));
+  }
+  function isActual(v) { return typeof v === 'string' && /\sA\s*$/.test(v); }
+  function derive(start, finish) {
+    if (isActual(finish)) return 'C';
+    if (isActual(start)) return 'P';
+    return 'N';
+  }
+  function statusCode(v) {
+    var s = String(v || '').trim().toLowerCase();
+    if (s === 'complete' || s === 'completed') return 'C';
+    if (s === 'in progress') return 'P';
+    if (s === 'not started') return 'N';
+    return null;
+  }
+  function indent(s) { var m = String(s).match(/^ */); return m ? m[0].length : 0; }
+
+  // rows: array of arrays (raw cell values). Returns {workpacks, tasks, warnings}
+  function parseRows(rows, sourceName) {
+    var hi = -1, col = {};
+    for (var i = 0; i < Math.min(rows.length, 30) && hi < 0; i++) {
+      var r = rows[i] || [];
+      for (var j = 0; j < r.length; j++) {
+        if (String(r[j] || '').trim().toLowerCase() === 'activity id') { hi = i; break; }
+      }
+    }
+    if (hi < 0) throw new Error('Could not find the "Activity ID" header row.');
+    rows[hi].forEach(function (h, j) { if (h !== null && h !== undefined) col[String(h).trim().toLowerCase()] = j; });
+    ['activity id', 'activity name', 'start', 'finish', 'responsible'].forEach(function (k) {
+      if (col[k] === undefined) throw new Error('Missing column "' + k + '".');
+    });
+
+    var workpacks = [], tasks = [], warnings = [], seen = {};
+    var wp = null, phase = null, stack = [], collapse = null;
+
+    for (var k = hi + 1; k < rows.length; k++) {
+      var row = rows[k] || [];
+      var raw = row[col['activity id']];
+      if (raw === null || raw === undefined || String(raw).trim() === '') continue;
+      var text = String(raw), lvl = indent(text), s = text.trim();
+      var name = row[col['activity name']];
+      var isGroup = name === null || name === undefined || String(name).trim() === '';
+
+      if (wp && lvl <= wp.lvl) { wp = null; phase = null; collapse = null; stack = []; }
+
+      var m = isGroup ? s.match(WP_RE) : null;
+      if (m) {
+        var resp = String(row[col['responsible']] || '').trim();
+        wp = { id: m[1], desc: m[2].trim(), resp: resp, lvl: lvl, n: 0 };
+        workpacks.push(wp); phase = null; collapse = null; stack = [];
+        if (!resp) warnings.push(m[1] + ' has no Responsible person.');
+        continue;
+      }
+      if (!wp) continue;
+
+      if (isGroup && ALL_PHASES.indexOf(s.toUpperCase()) >= 0) {
+        phase = s.toUpperCase(); collapse = null; stack = [];
+        continue;
+      }
+      if (INCLUDE_PHASES.indexOf(phase) < 0) continue;
+
+      if (collapse) { if (lvl > collapse) continue; collapse = null; }
+      while (stack.length && stack[stack.length - 1].lvl >= lvl) stack.pop();
+      var grp = stack.length ? stack[stack.length - 1].name : '';
+
+      var st = row[col['start']], fi = row[col['finish']];
+      var t = null;
+      if (isGroup) {
+        // A vessel is a group nested inside a sub-group (e.g. FABRIC MAINTENANCE > 21-V-0002 - DUMP DRUM)
+        if (COLLAPSE_WORKPACKS.indexOf(wp.id) >= 0 && stack.length > 0) {
+          var dash = s.indexOf(' - ');
+          var tm = dash > 0 ? [s, s.slice(0, dash).trim(), s.slice(dash + 3).trim()]
+            : (s.match(/^(\S+)\s+(.*)$/) || [s, s, s]);
+          var vid = tm[1], nth = 2;
+          while (seen[vid]) vid = tm[1] + ' #' + (nth++); // same vessel listed under two scopes
+          t = { id: vid, name: tm[2] || tm[1], grp: grp, p6: derive(st, fi) };
+          collapse = lvl;
+        } else {
+          stack.push({ lvl: lvl, name: s });
+          continue;
+        }
+      } else {
+        var sc = col['status'] !== undefined ? statusCode(row[col['status']]) : null;
+        t = { id: s, name: String(name).trim(), grp: grp, p6: sc || derive(st, fi) };
+      }
+      t.wp = wp.id;
+      t.start = toDate(st) || toDate(fi);
+      t.finish = toDate(fi) || t.start;
+      if (seen[t.id]) { warnings.push('Duplicate task ID ' + t.id + ' (kept the first).'); continue; }
+      seen[t.id] = 1;
+      tasks.push(t); wp.n++;
+    }
+
+    var out = workpacks.filter(function (w) { return w.n > 0; }).map(function (w) {
+      return { id: w.id, desc: w.desc, resp: w.resp };
+    });
+    return {
+      v: 1,
+      source: sourceName || '',
+      imported: new Date().toISOString(),
+      phases: INCLUDE_PHASES,
+      workpacks: out,
+      tasks: tasks.map(function (t) {
+        return { id: t.id, wp: t.wp, name: t.name, grp: t.grp, start: t.start, finish: t.finish, p6: t.p6 };
+      }),
+      warnings: warnings
+    };
+  }
+
+  // XLSX = the SheetJS library; data = ArrayBuffer of the .xlsx file
+  function parseWorkbook(XLSX, data, sourceName) {
+    var wb = XLSX.read(data, { type: 'array', cellDates: false });
+    var ws = wb.Sheets[wb.SheetNames[0]];
+    var rows = XLSX.utils.sheet_to_json(ws, { header: 1, raw: true, defval: null, blankrows: true });
+    return parseRows(rows, sourceName);
+  }
+
+  var api = { parseRows: parseRows, parseWorkbook: parseWorkbook, toDate: toDate };
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+  else root.WPParse = api;
+})(this);
+
+</script>
+<script src="config.js"></script>
+<script>
+(function(){
+'use strict';
+var CFG = window.WP_CONFIG || {};
+var LIVE = !!CFG.apiUrl;
+var STALE_DAYS = 7;
+var S = { sched:null, status:{}, reviews:{}, synced:null, offline:false,
+  view:'list', wp:null, pending:{}, resp:null, from:null, to:null, span:14,
+  open:{}, statsResp:'All', confirmAll:false, adminParsed:null, adminMsg:'', adminErr:'', resetAsk:false, saving:false };
+var app = document.getElementById('app');
+
+/* ---------- small helpers ---------- */
+function ls(k,v){ try{ if(v===undefined){ var x=localStorage.getItem('wp_'+k); return x===null?null:JSON.parse(x);} localStorage.setItem('wp_'+k,JSON.stringify(v)); }catch(e){ return null; } }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+function pad(n){return (n<10?'0':'')+n;}
+function todayISO(){ var d=new Date(); return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+function addDays(iso,n){ var p=iso.split('-'); var d=new Date(Date.UTC(+p[0],+p[1]-1,+p[2]+n)); return d.getUTCFullYear()+'-'+pad(d.getUTCMonth()+1)+'-'+pad(d.getUTCDate()); }
+function diff(a,b){ var pa=a.split('-'),pb=b.split('-'); return Math.round((Date.UTC(+pb[0],+pb[1]-1,+pb[2])-Date.UTC(+pa[0],+pa[1]-1,+pa[2]))/86400000); }
+var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function fmt(iso){ if(!iso) return '–'; var p=iso.split('-'); return pad(+p[2])+' '+MON[+p[1]-1]; }
+function fmtY(iso){ if(!iso) return '–'; var p=iso.split('-'); return pad(+p[2])+' '+MON[+p[1]-1]+' '+p[0]; }
+function ago(ts){ if(!ts) return null; var d=diff(ts.slice(0,10),todayISO()); return d<=0?'today':d===1?'1 day ago':d+' days ago'; }
+function cmp(a,b){ return a.localeCompare(b,undefined,{numeric:true,sensitivity:'base'}); }
+var CHEV='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+var WARN='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 17h.01"/></svg>';
+var TICK='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>';
+var toastT;
+function toast(msg){ var t=document.getElementById('toast'); t.textContent=msg; t.hidden=false; clearTimeout(toastT); toastT=setTimeout(function(){t.hidden=true;},2600); }
+
+/* ---------- data access (demo = this phone only, live = Cloudflare) ---------- */
+function pin(){ return ls('pin')||''; }
+function api(path,opts){
+  opts=opts||{}; opts.headers=Object.assign({'X-Pin':opts.admin?(S.adminPin||''):pin()},opts.headers||{});
+  return fetch(CFG.apiUrl.replace(/\/$/,'')+path,opts).then(function(r){
+    if(r.status===401){ var e=new Error('PIN not accepted.'); e.code=401; throw e; }
+    if(!r.ok) return r.text().then(function(t){ var m=t; try{ m=JSON.parse(t).error||t; }catch(x){} throw new Error(m||('Server error '+r.status)); });
+    return r.json();
+  });
+}
+function load(){
+  if(!LIVE){
+    S.sched=window.WP_DEMO; S.status=ls('demo_status')||{}; S.reviews=ls('demo_reviews')||{}; S.synced=new Date().toISOString();
+    return Promise.resolve();
+  }
+  return api('/api/data').then(function(d){
+    S.sched=d.schedule; S.status=d.status||{}; S.reviews=d.reviews||{}; S.synced=new Date().toISOString(); S.offline=false;
+    ls('cache',{sched:d.schedule,status:S.status,reviews:S.reviews,at:S.synced});
+  }).catch(function(e){
+    if(e.code===401) throw e;
+    var c=ls('cache'); if(!c) throw e;
+    S.sched=c.sched; S.status=c.status; S.reviews=c.reviews; S.synced=c.at; S.offline=true;
+  });
+}
+function sendUpdate(wp,changes){
+  var by=ls('me')||'Unknown';
+  if(!LIVE){
+    var now=new Date().toISOString(), log=ls('demo_log')||[];
+    changes.forEach(function(c){ log.push({at:now,by:by,wp:wp,task:c.id,old:eff(c.id),new:c.s}); S.status[c.id]={s:c.s,by:by,at:now}; });
+    S.reviews[wp]={by:by,at:now};
+    ls('demo_status',S.status); ls('demo_reviews',S.reviews); ls('demo_log',log);
+    return Promise.resolve();
+  }
+  return api('/api/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({by:by,wp:wp,changes:changes})})
+    .then(function(){ return load(); });
+}
+
+/* ---------- derived values ---------- */
+var IDX=null;
+function index(){
+  var byWp={}, tasks={};
+  S.sched.tasks.forEach(function(t){ (byWp[t.wp]=byWp[t.wp]||[]).push(t); tasks[t.id]=t; });
+  Object.keys(byWp).forEach(function(k){ byWp[k].sort(function(a,b){return cmp(a.id,b.id);}); });
+  var wps={}; S.sched.workpacks.forEach(function(w){ wps[w.id]=w; });
+  var people={}; S.sched.workpacks.forEach(function(w){ if(w.resp) people[w.resp]=1; });
+  IDX={byWp:byWp,tasks:tasks,wps:wps,people:Object.keys(people).sort(cmp)};
+}
+function eff(id){ var s=S.status[id]; return s?s.s:IDX.tasks[id].p6; }
+function late(t,st,today){
+  if(st!=='C' && t.finish && t.finish<today) return {kind:'finish',days:diff(t.finish,today)};
+  if(st==='N' && t.start && t.start<today) return {kind:'start',days:diff(t.start,today)};
+  return null;
+}
+function wpInfo(id){
+  var today=todayISO(), ts=IDX.byWp[id]||[], done=0, prog=0, lates=[], worst=null, minStart=null, maxFin=null, minOpenStart=null;
+  ts.forEach(function(t){
+    var st=eff(t.id); if(st==='C') done++; else if(st==='P') prog++;
+    if(st!=='C' && (minOpenStart===null||t.start<minOpenStart)) minOpenStart=t.start;
+    if(!minStart||t.start<minStart) minStart=t.start; if(!maxFin||t.finish>maxFin) maxFin=t.finish;
+    var l=late(t,st,today); if(l){ lates.push(l); if(!worst||l.days>worst.days||(l.days===worst.days&&l.kind==='finish')) worst=l; }
+  });
+  var closed=ts.length>0&&done===ts.length;
+  var label=closed?'Complete':(done||prog)?'In progress':(minOpenStart&&minOpenStart>today?'Starts '+fmt(minOpenStart):'Not started');
+  var rv=S.reviews[id], rdays=rv?diff(rv.at.slice(0,10),today):null;
+  return {id:id,total:ts.length,done:done,prog:prog,closed:closed,lates:lates,worst:worst,label:label,minStart:minStart,maxFin:maxFin,
+    minOpenStart:minOpenStart,review:rv,stale:!rv||rdays>STALE_DAYS};
+}
+function lateText(l){ return l.kind==='finish'?(l.days+(l.days===1?' day late':' days late')):('Start '+l.days+(l.days===1?' day late':' days late')); }
+function wpsFor(resp){ return S.sched.workpacks.filter(function(w){ return resp==='All'||w.resp===resp; }).map(function(w){return w.id;}).sort(cmp); }
+
+/* ---------- screen 1: workpacks ---------- */
+function header(sub){
+  var me=ls('me');
+  return '<header class="bar"><div class="wrap"><div class="brand">Workpack Status</div>'+
+    '<div class="sub">'+sub+'</div>'+
+    (me?'<div class="sub">You are '+esc(me)+' · <button data-act="who">change</button></div>':'')+
+    (LIVE?'':'<span class="mode">Demo – updates are saved on this phone only</span>')+
+    '</div></header>'+
+    (S.offline?'<div class="banner"><div class="wrap">No connection. Showing data from '+esc(fmtY(S.synced.slice(0,10)))+'. Updates need a signal.</div></div>':'');
+}
+function syncText(){ var d=new Date(S.synced); return 'Synced '+fmtY(todayISO())+', '+pad(d.getHours())+':'+pad(d.getMinutes()); }
+function tabs(){ return '<nav class="tabs" aria-label="Screens"><div class="in">'+
+  '<button data-act="tab" data-v="list" class="'+(S.view==='list'?'on':'')+'">Workpacks</button>'+
+  '<button data-act="tab" data-v="stats" class="'+(S.view==='stats'||S.view==='admin'?'on':'')+'">Statistics</button>'+
+  '<button data-act="tab" data-v="reports" class="'+(S.view==='reports'?'on':'')+'">Reports</button></div></nav>'; }
+function fold(key,label,body){
+  var o=!!S.open[key];
+  return '<button class="fold" data-act="fold" data-k="'+esc(key)+'" aria-expanded="'+o+'"><span>'+label+'</span>'+CHEV+'</button>'+(o?body:'');
+}
+function wpCard(i){
+  var w=IDX.wps[i.id], pct=i.total?Math.round(i.done/i.total*100):0;
+  var rv=i.review?'Reviewed '+ago(i.review.at):'Never reviewed';
+  return '<article class="card"><div class="row"><div class="grow"><div class="wpid">'+esc(w.id)+'</div><div class="wpdesc">'+esc(w.desc)+'</div></div>'+
+    '<button class="btn" data-act="edit" data-wp="'+esc(w.id)+'" aria-label="Edit '+esc(w.id)+'">Edit</button></div>'+
+    '<div class="badges">'+(i.worst?'<span class="badge late">'+WARN+esc(lateText(i.worst))+'</span>':'')+
+    '<span class="badge">'+esc(i.label)+'</span>'+(S.resp==='All'?'<span class="badge who">'+esc(w.resp)+'</span>':'')+'</div>'+
+    '<div class="track" aria-hidden="true"><div class="fill" style="width:'+pct+'%"></div></div>'+
+    '<div class="meta"><span>'+i.done+' of '+i.total+' tasks complete</span><span class="'+(i.stale&&!i.closed?'stale':'')+'">'+rv+'</span></div></article>';
+}
+function viewList(){
+  var people=IDX.people, ids=wpsFor(S.resp), open=[], closed=[], lateN=0, staleN=0;
+  ids.forEach(function(id){ var i=wpInfo(id);
+    if(i.closed){ closed.push(i); return; }
+    if(i.minOpenStart && i.minOpenStart<=S.to){ open.push(i); if(i.worst) lateN++; if(i.stale) staleN++; }
+  });
+  var opts='<option'+(S.resp==='All'?' selected':'')+'>All</option>'+people.map(function(p){return '<option'+(p===S.resp?' selected':'')+'>'+esc(p)+'</option>';}).join('');
+  var html=header(syncText())+
+  '<section class="filters"><div class="wrap">'+
+    '<div class="field"><label class="lbl" for="resp">Responsible</label><select id="resp" class="big" data-act="resp">'+opts+'</select></div>'+
+    '<div class="field"><span class="lbl">Period</span><div class="dates">'+
+      '<div class="field"><label for="from">From</label><input id="from" class="date" type="date" data-act="from" value="'+S.from+'"></div>'+
+      '<div class="field"><label for="to">To</label><input id="to" class="date" type="date" data-act="to" value="'+S.to+'"></div></div>'+
+      '<div class="pills"><button class="pill'+(S.span===14?' on':'')+'" data-act="span" data-n="14">Next 2 weeks</button><button class="pill'+(S.span===28?' on':'')+'" data-act="span" data-n="28">Next 4 weeks</button></div></div>'+
+  '</div></section>'+
+  '<main><div class="wrap">'+
+    '<div class="tiles"><div class="tile"><b>'+open.length+'</b><span>Open</span></div>'+
+    '<div class="tile late"><b>'+lateN+'</b><span>Late</span></div>'+
+    '<div class="tile warn"><b>'+staleN+'</b><span>Not reviewed '+STALE_DAYS+'+ days</span></div></div>'+
+    '<section class="sec"><h2>Open workpacks ('+open.length+')</h2>'+
+    (open.length?'<div class="grid">'+open.map(wpCard).join('')+'</div>':'<div class="empty">No open workpacks in this period. Widen the period or pick another name.</div>')+
+    (closed.length?fold('closed','Closed workpacks ('+closed.length+')','<div class="grid">'+closed.map(wpCard).join('')+'</div>'):'')+
+    '</section></div></main>'+tabs();
+  return html;
+}
+
+/* ---------- screen 2: one workpack ---------- */
+function pendingCount(){ return Object.keys(S.pending).length; }
+function updText(){ var n=pendingCount(); return n===0?'No changes – confirms reviewed':(n+(n===1?' unsaved change':' unsaved changes')); }
+function taskCard(t){
+  var saved=eff(t.id), cur=S.pending[t.id]||saved, l=late(t,saved,todayISO());
+  var b=function(code,label){ return '<button class="s-'+code+'" data-act="set" data-t="'+esc(t.id)+'" data-s="'+code+'" aria-pressed="'+(cur===code)+'">'+TICK+'<span>'+label+'</span></button>'; };
+  return '<article class="card task" id="t-'+esc(t.id)+'">'+
+    '<div class="row"><span class="tid grow">'+esc(t.id)+'</span>'+(S.pending[t.id]?'<span class="changed">CHANGED</span>':'')+'</div>'+
+    (t.grp&&t.grp!==t.name?'<div class="grp">'+esc(t.grp)+'</div>':'')+
+    '<div class="tname">'+esc(t.name)+'</div>'+
+    '<div class="badges"><span class="note">'+fmt(t.start)+' – '+fmt(t.finish)+'</span>'+(l?'<span class="badge late">'+WARN+esc(lateText(l))+'</span>':'')+'</div>'+
+    '<div class="seg" role="group" aria-label="Status of '+esc(t.id)+'">'+b('N','Not Started')+b('P','In Progress')+b('C','Complete')+'</div></article>';
+}
+function viewWp(){
+  var w=IDX.wps[S.wp], i=wpInfo(S.wp), ts=IDX.byWp[S.wp]||[], now=[], later=[], done=[];
+  ts.forEach(function(t){ var st=eff(t.id); if(st==='C') done.push(t); else if(t.start<=S.to) now.push(t); else later.push(t); });
+  var openN=now.length+later.length;
+  var conf=S.confirmAll?'<div class="confirm"><div><b>Mark all '+openN+' open tasks Complete?</b></div><div class="note">Nothing is saved until you press Update.</div>'+
+    '<div class="row"><button class="btn" data-act="allyes">Yes, mark Complete</button><button class="btn ghost" data-act="allno">Cancel</button></div></div>'
+    :(openN?'<button class="btn ghost wide" data-act="all">Mark all tasks Complete</button>':'');
+  return '<header class="bar wphead"><div class="wrap">'+
+    '<button class="back" data-act="back"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>All workpacks</button>'+
+    '<div><div class="brand">'+esc(w.id)+'</div><div class="wpdesc" style="font-weight:600">'+esc(w.desc)+'</div>'+
+    '<div class="sub">Planned '+fmt(i.minStart)+' – '+fmtY(i.maxFin)+' · '+esc(w.resp)+'</div></div>'+
+    '<button class="update" data-act="save" '+(S.saving?'disabled':'')+'><span>'+(S.saving?'Saving…':'Update')+'</span><small id="updtext">'+updText()+'</small></button>'+
+  '</div></header>'+
+  '<main><div class="wrap">'+
+    '<section class="sec"><h2>In this period ('+now.length+')</h2>'+
+    (now.length?'<div class="grid">'+now.map(taskCard).join('')+'</div>':'<div class="empty">No open tasks due by '+fmt(S.to)+'.</div>')+
+    (later.length?fold('later:'+S.wp,'Later open tasks ('+later.length+')','<div class="grid">'+later.map(taskCard).join('')+'</div>'):'')+
+    (done.length?fold('done:'+S.wp,'Completed tasks ('+done.length+')','<div class="grid">'+done.map(taskCard).join('')+'</div>'):'')+
+    conf+
+    '<p class="note">Pressing Update with no changes still records this workpack as reviewed today.'+(i.review?' Last reviewed '+ago(i.review.at)+' by '+esc(i.review.by)+'.':'')+'</p>'+
+    '</section></div></main>'+tabs();
+}
+
+/* ---------- screen 3: statistics ---------- */
+function computeStats(resp){
+  var today=todayISO(), ids=wpsFor(resp);
+  var c={wpOpen:0,wpClosed:0,tDone:0,tProg:0,tAll:0,lStart:0,lFin:0,lateDays:[],wpLate:0,push:[],unrev:[],freshN:0,
+    buckets:[[1,7,'1–7 days',0],[8,14,'8–14 days',0],[15,30,'15–30 days',0],[31,1e9,'30+ days',0]]};
+  ids.forEach(function(id){
+    var i=wpInfo(id); c.tAll+=i.total; c.tDone+=i.done; c.tProg+=i.prog;
+    if(i.closed){ c.wpClosed++; return; } c.wpOpen++;
+    if(!i.stale) c.freshN++; else c.unrev.push(i);
+    if(i.worst){ c.wpLate++; c.push.push(i); }
+    i.lates.forEach(function(l){ if(l.kind==='start') c.lStart++; else c.lFin++; c.lateDays.push(l.days);
+      c.buckets.forEach(function(b){ if(l.days>=b[0]&&l.days<=b[1]) b[3]++; }); });
+  });
+  c.push.sort(function(a,b){ return b.worst.days-a.worst.days||cmp(a.id,b.id); });
+  c.unrev.sort(function(a,b){ var da=a.review?diff(a.review.at.slice(0,10),today):1e6, db=b.review?diff(b.review.at.slice(0,10),today):1e6; return db-da||cmp(a.id,b.id); });
+  c.avg=c.lateDays.length?(c.lateDays.reduce(function(s,x){return s+x;},0)/c.lateDays.length):0;
+  c.maxB=Math.max(1,Math.max.apply(null,c.buckets.map(function(b){return b[3];})));
+  c.wpPct=(c.wpOpen+c.wpClosed)?Math.round(c.wpClosed/(c.wpOpen+c.wpClosed)*100):0; c.tPct=c.tAll?Math.round(c.tDone/c.tAll*100):0;
+  c.freshPct=c.wpOpen?Math.round(c.freshN/c.wpOpen*100):100;
+  c.people=IDX.people.filter(function(p){ return resp==='All'||p===resp; }).map(function(p){
+    var o=0,lt=0,st=0,ol=0; wpsFor(p).forEach(function(id){ var i=wpInfo(id); if(i.closed) return; o++; lt+=i.lates.length; if(i.worst) ol++; if(i.stale) st++; });
+    return {name:p,open:o,late:lt,lateWps:ol,stale:st}; });
+  return c;
+}
+function revAge(i){ return i.review?diff(i.review.at.slice(0,10),todayISO())+' days':'never'; }
+function viewStats(){
+  var today=todayISO(), people=IDX.people, c=computeStats(S.statsResp);
+  var wpOpen=c.wpOpen, wpClosed=c.wpClosed, tDone=c.tDone, tProg=c.tProg, tAll=c.tAll, lStart=c.lStart, lFin=c.lFin, lateDays=c.lateDays,
+    wpLate=c.wpLate, push=c.push, unrev=c.unrev, buckets=c.buckets, avg=c.avg, maxB=c.maxB, wpPct=c.wpPct, tPct=c.tPct, freshPct=c.freshPct;
+  var rows=computeStats('All').people.map(function(p){
+    return '<tr><td>'+esc(p.name)+'</td><td>'+p.open+'</td><td class="'+(p.late?'r':'')+'">'+p.late+'</td><td class="'+(p.stale?'w':'')+'">'+p.stale+'</td></tr>'; }).join('');
+  var opts='<option'+(S.statsResp==='All'?' selected':'')+'>All</option>'+people.map(function(p){return '<option'+(p===S.statsResp?' selected':'')+'>'+esc(p)+'</option>';}).join('');
+  return header('As reported by the site team · '+fmtY(today))+
+  '<section class="filters"><div class="wrap"><div class="field"><label class="lbl" for="sresp">Responsible</label><select id="sresp" class="big" data-act="sresp">'+opts+'</select></div></div></section>'+
+  '<main><div class="wrap">'+
+  '<section class="sec"><h2>Progress</h2><div class="kgrid">'+
+    '<div class="k"><span class="t">Workpacks closed</span><b>'+wpClosed+'<small> / '+(wpOpen+wpClosed)+'</small></b><div class="track"><div class="fill" style="width:'+wpPct+'%"></div></div><span class="d">'+wpOpen+' open · '+wpPct+'% closed</span></div>'+
+    '<div class="k"><span class="t">Tasks complete</span><b>'+tDone.toLocaleString()+'<small> / '+tAll.toLocaleString()+'</small></b><div class="track"><div class="fill" style="width:'+tPct+'%"></div></div><span class="d">'+tPct+'% complete · '+tProg+' in progress</span></div>'+
+  '</div></section>'+
+  '<section class="sec"><h2>Schedule slippage</h2><div class="kgrid">'+
+    '<div class="k late"><b>'+lStart+'</b><span class="t">Late to start</span><span class="d">Start date passed, not started</span></div>'+
+    '<div class="k late"><b>'+lFin+'</b><span class="t">Late to finish</span><span class="d">Finish date passed, not complete</span></div>'+
+    '<div class="k"><b>'+(lateDays.length?avg.toFixed(1)+' d':'–')+'</b><span class="t">Average overdue</span></div>'+
+    '<div class="k"><b>'+wpLate+'</b><span class="t">Workpacks with a late task</span></div>'+
+  '</div>'+
+  '<div class="card"><b>How late are the late tasks?</b><div class="bars">'+buckets.map(function(b){
+    return '<div class="barrow"><span>'+b[2]+'</span><div class="b"><i style="width:'+Math.round(b[3]/maxB*100)+'%"></i></div><span class="n">'+b[3]+'</span></div>'; }).join('')+'</div></div></section>'+
+  '<section class="sec"><h2>Push list – worst slipping</h2>'+
+  (push.length?'<div class="list">'+push.slice(0,10).map(function(i){ var w=IDX.wps[i.id];
+    return '<button class="li" data-act="edit" data-wp="'+esc(i.id)+'"><span class="grow"><span class="wpid" style="font-size:19px;display:block">'+esc(i.id)+' · '+esc(w.resp)+'</span><span style="font-size:17px">'+esc(w.desc)+'</span></span><span class="badge late">'+i.worst.days+' d</span></button>'; }).join('')+'</div>'
+    :'<div class="empty">Nothing is late.</div>')+'</section>'+
+  '<section class="sec"><h2>By person</h2><div class="list scroll"><table class="tbl"><thead><tr><th>Person</th><th>Open WPs</th><th>Late tasks</th><th>Not rev. '+STALE_DAYS+'d+</th></tr></thead><tbody>'+rows+'</tbody></table></div></section>'+
+  '<section class="sec"><h2>Reporting freshness</h2><div class="fresh"><b>'+freshPct+'%</b><span style="font-weight:700">of open workpacks reviewed in the last '+STALE_DAYS+' days</span>'+
+  (unrev.length?'<span>Oldest unreviewed: '+unrev.slice(0,5).map(function(i){ return esc(i.id)+' ('+(i.review?diff(i.review.at.slice(0,10),today)+' days':'never')+')'; }).join(', ')+'</span>':'')+'</div>'+
+  '<button class="link" data-act="admin">Admin: schedule upload and Excel export</button></section>'+
+  '</div></main>'+tabs();
+}
+
+/* ---------- screen 4: printable reports ---------- */
+var ST_TXT={N:'Not started',P:'In progress',C:'Complete'};
+function lateShort(l){ return l?(l.kind==='finish'?l.days+' d late':'Start '+l.days+' d late'):''; }
+function sel(id,act,opts,cur){ return '<select id="'+id+'" class="big" data-act="'+act+'">'+opts.map(function(o){ return '<option value="'+esc(o[0])+'"'+(o[0]===cur?' selected':'')+'>'+esc(o[1])+'</option>'; }).join('')+'</select>'; }
+function repHead(title,lines){
+  return '<header class="rhead"><div class="reye">'+esc(S.sched.source||'Project schedule')+'</div><h1>'+esc(title)+'</h1>'+
+    '<div class="rmeta">'+lines.map(esc).join(' · ')+'</div></header>';
+}
+function stamp(){ var d=new Date(); return 'Printed '+fmtY(todayISO())+' '+pad(d.getHours())+':'+pad(d.getMinutes()); }
+function repWorkpacks(){
+  var R=S.rep, today=todayISO(), people=R.resp==='All'?IDX.people:[R.resp], out='', first=true, any=false;
+  var scopeTxt=R.scope==='all'?'All outstanding tasks':'Tasks due to start by '+fmtY(S.to);
+  people.forEach(function(p){
+    var blocks='', nWp=0, nT=0, nL=0;
+    wpsFor(p).forEach(function(id){
+      var i=wpInfo(id); if(i.closed) return;
+      var rows=(IDX.byWp[id]||[]).filter(function(t){ return eff(t.id)!=='C' && (R.scope==='all'||t.start<=S.to); })
+        .map(function(t){ var st=eff(t.id); return {t:t,st:st,l:late(t,st,today)}; })
+        .filter(function(r){ return R.only!=='late'||r.l; });
+      if(!rows.length) return;
+      nWp++; nT+=rows.length; rows.forEach(function(r){ if(r.l) nL++; });
+      var w=IDX.wps[id];
+      blocks+='<section class="rwp"><div class="rwph"><span class="rid">'+esc(id)+'</span><span class="rdesc">'+esc(w.desc)+'</span></div>'+
+        '<div class="rsum">'+(i.worst?'<b class="rlate">'+esc(lateText(i.worst))+'</b> · ':'')+i.done+' of '+i.total+' tasks complete · '+(i.review?'Reviewed '+esc(ago(i.review.at)):'Never reviewed')+'</div>'+
+        '<div class="scroll"><table class="rt"><thead><tr><th>Task</th><th>Description</th><th>Start</th><th>Finish</th><th>Status</th><th>Late</th></tr></thead><tbody>'+
+        rows.map(function(r){ return '<tr'+(r.l?' class="lt"':'')+'><td class="nw">'+esc(r.t.id)+'</td><td>'+(r.t.grp&&r.t.grp!==r.t.name?'<span class="rg">'+esc(r.t.grp)+'</span> ':'')+esc(r.t.name)+'</td>'+
+          '<td class="nw">'+fmt(r.t.start)+'</td><td class="nw">'+fmt(r.t.finish)+'</td><td class="nw">'+ST_TXT[r.st]+'</td><td class="nw">'+lateShort(r.l)+'</td></tr>'; }).join('')+
+        '</tbody></table></div></section>';
+    });
+    if(!nWp && R.resp==='All') return;
+    any=true;
+    out+='<section class="rperson'+(first?'':' pb')+'">'+
+      repHead('Workpack status – '+p,[scopeTxt,(R.only==='late'?'Late tasks only':'Outstanding and late tasks'),stamp()])+
+      '<div class="rkpi"><span><b>'+nWp+'</b> workpacks</span><span><b>'+nT+'</b> tasks listed</span><span><b class="rlate">'+nL+'</b> late</span></div>'+
+      (blocks||'<p class="note">No outstanding tasks for this selection.</p>')+'</section>';
+    first=false;
+  });
+  return any?out:'<p class="note">No outstanding tasks for this selection.</p>';
+}
+function repStats(){
+  var R=S.rep, c=computeStats(R.resp), all=computeStats('All');
+  var kv=[['Workpacks closed',c.wpClosed+' of '+(c.wpOpen+c.wpClosed)+' ('+c.wpPct+'%)'],['Tasks complete',c.tDone+' of '+c.tAll+' ('+c.tPct+'%)'],['Tasks in progress',c.tProg],
+    ['Late to start',c.lStart+' tasks'],['Late to finish',c.lFin+' tasks'],['Average days overdue',c.lateDays.length?c.avg.toFixed(1):'–'],
+    ['Workpacks with a late task',c.wpLate+' of '+c.wpOpen+' open'],['Open workpacks reviewed in last '+STALE_DAYS+' days',c.freshPct+'%']];
+  var people=(R.resp==='All'?all:c).people;
+  return '<section class="rperson">'+repHead('Schedule statistics – '+(R.resp==='All'?'All':R.resp),['As reported by the site team',stamp()])+
+    '<h3>Summary</h3><table class="rt kv"><tbody>'+kv.map(function(r){ return '<tr><th>'+esc(r[0])+'</th><td>'+esc(r[1])+'</td></tr>'; }).join('')+'</tbody></table>'+
+    '<h3>How late are the late tasks?</h3><table class="rt"><thead><tr><th>Days overdue</th><th class="num">Tasks</th></tr></thead><tbody>'+
+      c.buckets.map(function(b){ return '<tr><td>'+b[2]+'</td><td class="num">'+b[3]+'</td></tr>'; }).join('')+'</tbody></table>'+
+    '<h3>By person</h3><div class="scroll"><table class="rt"><thead><tr><th>Person</th><th class="num">Open WPs</th><th class="num">WPs with late task</th><th class="num">Late tasks</th><th class="num">Not reviewed '+STALE_DAYS+'d+</th></tr></thead><tbody>'+
+      people.map(function(p){ return '<tr><td>'+esc(p.name)+'</td><td class="num">'+p.open+'</td><td class="num">'+p.lateWps+'</td><td class="num">'+p.late+'</td><td class="num">'+p.stale+'</td></tr>'; }).join('')+'</tbody></table></div>'+
+    '<h3>Push list – worst slipping workpacks</h3>'+(c.push.length?'<div class="scroll"><table class="rt"><thead><tr><th>Workpack</th><th>Description</th><th>Responsible</th><th class="num">Late tasks</th><th>Worst</th></tr></thead><tbody>'+
+      c.push.slice(0,25).map(function(i){ var w=IDX.wps[i.id]; return '<tr class="lt"><td class="nw">'+esc(i.id)+'</td><td>'+esc(w.desc)+'</td><td class="nw">'+esc(w.resp)+'</td><td class="num">'+i.lates.length+'</td><td class="nw">'+esc(lateText(i.worst))+'</td></tr>'; }).join('')+'</tbody></table></div>':'<p class="note">Nothing is late.</p>')+
+    '<h3>Not reviewed in the last '+STALE_DAYS+' days</h3>'+(c.unrev.length?'<div class="scroll"><table class="rt"><thead><tr><th>Workpack</th><th>Description</th><th>Responsible</th><th>Last review</th></tr></thead><tbody>'+
+      c.unrev.slice(0,40).map(function(i){ var w=IDX.wps[i.id]; return '<tr><td class="nw">'+esc(i.id)+'</td><td>'+esc(w.desc)+'</td><td class="nw">'+esc(w.resp)+'</td><td class="nw">'+(i.review?esc(revAge(i))+' ago':'Never')+'</td></tr>'; }).join('')+'</tbody></table></div>'+(c.unrev.length>40?'<p class="note">'+(c.unrev.length-40)+' more not shown.</p>':''):'<p class="note">All open workpacks are up to date.</p>')+
+  '</section>';
+}
+function viewReports(){
+  var R=S.rep, ppl=[['All','All']].concat(IDX.people.map(function(p){return [p,p];}));
+  var ctl='<section class="filters noprint"><div class="wrap">'+
+    '<div class="field"><label class="lbl" for="rtype">Report</label>'+sel('rtype','rtype',[['wp','Workpacks – outstanding and late tasks'],['stats','Statistics summary']],R.type)+'</div>'+
+    '<div class="field"><label class="lbl" for="rresp">Responsible</label>'+sel('rresp','rresp',ppl,R.resp)+'</div>'+
+    (R.type==='wp'?'<div class="field"><label class="lbl" for="rscope">Tasks</label>'+sel('rscope','rscope',[['period','Due to start by '+fmt(S.to)+' (current period)'],['all','All outstanding, any date']],R.scope)+'</div>'+
+      '<div class="field"><label class="lbl" for="ronly">Show</label>'+sel('ronly','ronly',[['out','Outstanding and late'],['late','Late tasks only']],R.only)+'</div>':'')+
+    '<button class="btn wide" data-act="print">Print or save as PDF</button>'+
+    (LIVE?'':'<p class="note">Printing is blocked in this preview page. It works in the live app. The report below is what will print.</p>')+
+    '</div></section>';
+  return header('Reports')+ctl+'<main><div class="wrap rep">'+(R.type==='stats'?repStats():repWorkpacks())+'</div></main>'+tabs();
+}
+
+/* ---------- admin ---------- */
+function viewAdmin(){
+  var src=S.sched.source||'', imp=S.sched.imported?fmtY(S.sched.imported.slice(0,10)):'–';
+  var p=S.adminParsed, body='';
+  body+='<div class="card"><b>Current schedule</b><span class="note">'+esc(src)+' · imported '+imp+' · '+S.sched.workpacks.length+' workpacks · '+S.sched.tasks.length+' construction tasks</span></div>';
+  if(LIVE){
+    body+='<div class="card"><label class="lbl" for="apin">Admin PIN</label><input id="apin" class="text" type="password" autocomplete="off" value="'+esc(S.adminPin||'')+'"></div>';
+  }
+  body+='<div class="card"><b>Upload a re-issued schedule</b><span class="note">Use the Primavera Excel export with the Workpack, Responsible and Status columns. Team updates carry over by task ID.</span>'+
+    '<input id="xfile" type="file" accept=".xlsx,.xls" data-act="file" style="font-size:17px">'+
+    (p?'<div class="note"><b>'+p.workpacks.length+' workpacks, '+p.tasks.length+' construction tasks</b> read from '+esc(p.source)+'.'+
+      (p.warnings.length?'<br>'+p.warnings.slice(0,6).map(esc).join('<br>'):'')+'</div>'+
+      (LIVE?'<button class="btn wide" data-act="publish">Publish to the app</button>':'<div class="note">In demo mode the upload is read and checked but not published.</div>'):'')+
+    '</div>';
+  body+='<div class="card"><b>Excel export</b><span class="note">Current status of every task, plus the full change log and review dates.</span><button class="btn wide" data-act="export">Download Excel</button>'+
+    (LIVE?'':'<span class="note">Downloads are blocked in this preview page. They work in the live app.</span>')+'</div>';
+  if(!LIVE) body+=S.resetAsk?'<div class="confirm"><b>Clear all demo updates on this phone?</b><div class="row"><button class="btn" data-act="resetyes">Yes, clear</button><button class="btn ghost" data-act="resetno">Cancel</button></div></div>'
+    :'<button class="btn ghost wide" data-act="reset">Clear demo updates</button>';
+  if(S.adminErr) body+='<div class="err">'+esc(S.adminErr)+'</div>';
+  if(S.adminMsg) body+='<div class="note"><b>'+esc(S.adminMsg)+'</b></div>';
+  return header('Admin')+'<main><div class="wrap"><section class="sec"><button class="link" data-act="tab" data-v="stats">← Back to statistics</button>'+body+'</section></div></main>'+tabs();
+}
+// The Excel library is only loaded on the admin page, so phones never download it.
+var XLSX_SRC=['https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js','https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'];
+function needXLSX(){ return new Promise(function(res,rej){
+  if(window.XLSX) return res(window.XLSX);
+  (function next(i){
+    if(i>=XLSX_SRC.length) return rej(new Error('Could not load the Excel reader. Check the connection and try again.'));
+    var s=document.createElement('script'); s.src=XLSX_SRC[i];
+    s.onload=function(){ window.XLSX?res(window.XLSX):next(i+1); }; s.onerror=function(){ next(i+1); };
+    document.head.appendChild(s);
+  })(0); }); }
+function doExport(){
+  var getData = LIVE ? api('/api/export',{admin:true}) : Promise.resolve({log:ls('demo_log')||[]});
+  Promise.all([needXLSX(),getData]).then(function(r){
+    var X=r[0], d=r[1], today=todayISO();
+    var rows=S.sched.tasks.slice().sort(function(a,b){return cmp(a.wp,b.wp)||cmp(a.id,b.id);}).map(function(t){
+      var w=IDX.wps[t.wp], s=S.status[t.id], st=eff(t.id), l=late(t,st,today);
+      return {'Workpack':t.wp,'Workpack description':w.desc,'Responsible':w.resp,'Task ID':t.id,'Group':t.grp,'Task':t.name,
+        'Planned start':t.start,'Planned finish':t.finish,'Status':{N:'Not Started',P:'In Progress',C:'Complete'}[st],
+        'Status source':s?'Site team':'Planner (P6)','Updated by':s?s.by:'','Updated at':s?s.at:'',
+        'Late':l?(l.kind==='finish'?'Late to finish':'Late to start'):'','Days late':l?l.days:''};
+    });
+    var log=(d.log||[]).map(function(e){ return {'Time (UTC)':e.at,'By':e.by,'Workpack':e.wp,'Task ID':e.task,'From':e.old||'','To':e.new}; });
+    var rv=S.sched.workpacks.map(function(w){ var r=S.reviews[w.id]; return {'Workpack':w.id,'Description':w.desc,'Responsible':w.resp,'Last reviewed (UTC)':r?r.at:'','Reviewed by':r?r.by:''}; });
+    var wb=X.utils.book_new();
+    X.utils.book_append_sheet(wb,X.utils.json_to_sheet(rows),'Task status');
+    X.utils.book_append_sheet(wb,X.utils.json_to_sheet(log.length?log:[{'Time (UTC)':'','By':'','Workpack':'','Task ID':'','From':'','To':''}]),'Change log');
+    X.utils.book_append_sheet(wb,X.utils.json_to_sheet(rv),'Workpack reviews');
+    X.writeFile(wb,'Workpack status '+today+'.xlsx');
+    S.adminErr=''; S.adminMsg='Export created.'; render();
+  }).catch(function(e){ S.adminErr=e.message; S.adminMsg=''; render(); });
+}
+
+/* ---------- overlays: PIN and name ---------- */
+function viewPin(err){
+  app.innerHTML='<div class="overlay"><div class="wrap"><div class="brand">Workpack Status</div><p>Enter the team PIN to open the schedule.</p>'+
+    '<label class="lbl" for="pin">Team PIN</label><input id="pin" class="text" type="password" autocomplete="current-password">'+
+    (err?'<div class="err">'+esc(err)+'</div>':'')+'<button class="btn wide" data-act="pin">Open</button></div></div>';
+}
+function viewWho(){
+  var me=ls('me');
+  return '<div class="overlay"><div class="wrap"><div class="brand">Who are you?</div><p class="note">Your updates are recorded under this name. The phone remembers it.</p>'+
+    IDX.people.map(function(p){ return '<button class="namebtn" data-act="me" data-n="'+esc(p)+'">'+esc(p)+'</button>'; }).join('')+
+    '<button class="namebtn" data-act="me" data-n="Management">Management (view all)</button>'+
+    (me?'<button class="link" data-act="whoclose">Cancel</button>':'')+'</div></div>';
+}
+
+/* ---------- render + events ---------- */
+function render(){
+  var y=window.scrollY, v=S.view;
+  if(S.who){ app.innerHTML=viewWho(); return; }
+  app.innerHTML = v==='wp'?viewWp():v==='stats'?viewStats():v==='admin'?viewAdmin():v==='reports'?viewReports():viewList();
+  window.scrollTo(0,S.keepScroll?y:0); S.keepScroll=false;
+}
+function rerender(){ S.keepScroll=true; render(); }
+function setPeriod(span){ S.span=span; S.from=todayISO(); S.to=addDays(S.from,span); ls('span',span); }
+function leaveWp(){ S.pending={}; S.confirmAll=false; S.view='list'; render(); }
+
+app.addEventListener('click',function(ev){
+  var el=ev.target.closest('[data-act]'); if(!el) return;
+  var a=el.getAttribute('data-act');
+  if(a==='pin'){ var v=document.getElementById('pin').value.trim(); if(!v) return; ls('pin',v); start(); return; }
+  if(a==='who'){ S.who=true; render(); return; }
+  if(a==='whoclose'){ S.who=false; render(); return; }
+  if(a==='me'){ var n=el.getAttribute('data-n'); ls('me',n); S.who=false; S.resp=(n==='Management')?'All':n; ls('resp',S.resp); S.rep.resp=S.resp; render(); return; }
+  if(a==='tab'){ if(S.view==='wp'&&pendingCount()){ toast('Press Update first, or go back to discard.'); return; } S.view=el.getAttribute('data-v'); S.pending={}; render(); return; }
+  if(a==='fold'){ var k=el.getAttribute('data-k'); S.open[k]=!S.open[k]; rerender(); return; }
+  if(a==='span'){ setPeriod(+el.getAttribute('data-n')); rerender(); return; }
+  if(a==='edit'){ S.wp=el.getAttribute('data-wp'); S.pending={}; S.confirmAll=false; S.view='wp'; render(); return; }
+  if(a==='back'){ if(pendingCount()&&!S.discardAsk){ S.discardAsk=true; toast('Unsaved changes. Tap back again to discard them.'); setTimeout(function(){S.discardAsk=false;},4000); return; } S.discardAsk=false; leaveWp(); return; }
+  if(a==='set'){
+    var id=el.getAttribute('data-t'), s=el.getAttribute('data-s');
+    if(s===eff(id)) delete S.pending[id]; else S.pending[id]=s;
+    var card=document.getElementById('t-'+id); if(card) card.outerHTML=taskCard(IDX.tasks[id]);
+    var u=document.getElementById('updtext'); if(u) u.textContent=updText();
+    return;
+  }
+  if(a==='all'){ S.confirmAll=true; rerender(); return; }
+  if(a==='allno'){ S.confirmAll=false; rerender(); return; }
+  if(a==='allyes'){ (IDX.byWp[S.wp]||[]).forEach(function(t){ if(eff(t.id)!=='C') S.pending[t.id]='C'; }); S.confirmAll=false; rerender(); return; }
+  if(a==='save'){
+    if(S.saving) return;
+    var ch=Object.keys(S.pending).map(function(id){ return {id:id,s:S.pending[id],old:eff(id)}; }), wp=S.wp;
+    S.saving=true; rerender();
+    sendUpdate(wp,ch).then(function(){
+      S.saving=false; index(); var n=ch.length;
+      toast(wp+(n?' saved: '+n+(n===1?' change':' changes'):' marked reviewed'));
+      leaveWp();
+    }).catch(function(e){ S.saving=false; rerender(); toast(e.code===401?'PIN not accepted. Reopen the app.':'Not saved. Check your signal and press Update again.'); });
+    return;
+  }
+  if(a==='print'){ try{ window.print(); }catch(e){} return; }
+  if(a==='admin'){ S.view='admin'; S.adminMsg=''; S.adminErr=''; render(); return; }
+  if(a==='export'){ readAdminPin(); doExport(); return; }
+  if(a==='reset'){ S.resetAsk=true; rerender(); return; }
+  if(a==='resetno'){ S.resetAsk=false; rerender(); return; }
+  if(a==='resetyes'){ ls('demo_status',{}); ls('demo_reviews',{}); ls('demo_log',[]); S.status={}; S.reviews={}; S.resetAsk=false; S.adminMsg='Demo updates cleared.'; rerender(); return; }
+  if(a==='publish'){
+    readAdminPin(); var p=S.adminParsed; if(!p) return;
+    S.adminMsg='Publishing…'; S.adminErr=''; rerender();
+    var body=JSON.stringify({v:p.v,source:p.source,imported:p.imported,phases:p.phases,workpacks:p.workpacks,tasks:p.tasks});
+    api('/api/schedule',{method:'POST',admin:true,headers:{'Content-Type':'application/json'},body:body})
+      .then(function(){ return load(); }).then(function(){ index(); S.adminParsed=null; S.adminMsg='Published. Everyone sees the new schedule next time they open the app.'; rerender(); })
+      .catch(function(e){ S.adminMsg=''; S.adminErr=e.code===401?'Admin PIN not accepted.':e.message; rerender(); });
+    return;
+  }
+});
+function readAdminPin(){ var el=document.getElementById('apin'); if(el) S.adminPin=el.value.trim(); }
+app.addEventListener('change',function(ev){
+  var el=ev.target, a=el.getAttribute('data-act');
+  if(a==='resp'){ S.resp=el.value; ls('resp',S.resp); rerender(); }
+  if(a==='sresp'){ S.statsResp=el.value; rerender(); }
+  if(a==='rtype'){ S.rep.type=el.value; rerender(); }
+  if(a==='rresp'){ S.rep.resp=el.value; rerender(); }
+  if(a==='rscope'){ S.rep.scope=el.value; rerender(); }
+  if(a==='ronly'){ S.rep.only=el.value; rerender(); }
+  if(a==='from'&&el.value){ S.from=el.value; S.span=0; if(S.to<S.from) S.to=S.from; rerender(); }
+  if(a==='to'&&el.value){ S.to=el.value; S.span=0; rerender(); }
+  if(a==='file'&&el.files&&el.files[0]){
+    readAdminPin(); var f=el.files[0]; S.adminMsg='Reading '+f.name+'…'; S.adminErr=''; S.adminParsed=null; rerender();
+    Promise.all([needXLSX(),f.arrayBuffer()]).then(function(r){
+      var p=WPParse.parseWorkbook(r[0],r[1],f.name); if(!p.tasks.length) throw new Error('No construction tasks found in that file.');
+      S.adminParsed=p; S.adminMsg=''; rerender();
+    }).catch(function(e){ S.adminMsg=''; S.adminErr='Could not read the file: '+e.message; rerender(); });
+  }
+});
+
+function start(){
+  if(!LIVE && !window.WP_DEMO){ app.innerHTML='<div class="overlay"><div class="wrap"><div class="brand">Workpack Status</div><p class="err">This app is not connected yet.</p><p class="note">Add the Cloudflare Worker address to config.js, then reload.</p></div></div>'; return; }
+  if(LIVE && !pin()){ viewPin(); return; }
+  app.innerHTML='<div class="overlay"><div class="wrap"><div class="brand">Workpack Status</div><p class="note">Loading the schedule…</p></div></div>';
+  load().then(function(){
+    index();
+    var me=ls('me'); S.resp=ls('resp')||(me&&me!=='Management'?me:'All');
+    if(S.resp!=='All'&&IDX.people.indexOf(S.resp)<0) S.resp='All';
+    setPeriod(ls('span')||14);
+    S.rep={type:'wp',resp:S.resp,scope:'period',only:'out'};
+    S.who=!me; render();
+  }).catch(function(e){
+    if(e.code===401){ try{localStorage.removeItem('wp_pin');}catch(x){} viewPin('That PIN was not accepted. Try again.'); return; }
+    app.innerHTML='<div class="overlay"><div class="wrap"><div class="brand">Workpack Status</div><p class="err">Could not reach the server.</p><p class="note">'+esc(e.message)+'</p><button class="btn wide" onclick="location.reload()">Try again</button></div></div>';
+  });
+}
+document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible'&&LIVE&&S.sched&&S.view!=='wp'){ load().then(function(){ index(); rerender(); }).catch(function(){}); } });
+start();
+})();
+</script>
+
+</body>
+</html>
