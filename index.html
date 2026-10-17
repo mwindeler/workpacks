@@ -210,6 +210,8 @@ input.text{height:56px;font-size:21px;padding:0 12px;border:2px solid var(--ink)
   .pb{break-before:page}
 }
 
+.rvbar{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;margin-top:14px;padding:12px 14px;border-radius:12px;border:2px solid var(--warn-line);background:var(--warn-bg);color:var(--warn-ink);font-size:18px;text-align:left;min-height:64px}
+.rvbar b{font-size:19px}
 /* Tanks */
 .disc{display:grid;gap:4px}
 .dc{border-radius:8px;padding:6px 2px;text-align:center;font-size:14px;font-weight:700;line-height:1.15;border:2px solid transparent;min-width:0;overflow:hidden}
@@ -705,7 +707,8 @@ function viewList(){
       '<div class="pills"><button class="pill'+(S.span===14?' on':'')+'" data-act="span" data-n="14">Next 2 weeks</button><button class="pill'+(S.span===28?' on':'')+'" data-act="span" data-n="28">Next 4 weeks</button></div></div>'+
     (IDX.hasSite?'<div class="field"><span class="lbl">Show</span><div class="pills">'+srcPill('all','All')+srcPill('sched','Schedule')+srcPill('site','Site items')+'</div></div>':'')+
   '</div></section>'+
-  '<main><div class="wrap">'+
+  '<main><div class="wrap">'+(function(){ var me=ls('me'); if(!me||me==='Management') return ''; var n=toReview(me).length;
+      return n?'<button class="rvbar" data-act="review"><span><b>'+n+(n===1?' item':' items')+' to review</b><br>Not reviewed in the last '+STALE_DAYS+' days</span>'+CHEV.replace('M6 9l6 6 6-6','M9 6l6 6-6 6')+'</button>':''; })()+
     '<div class="tiles"><div class="tile"><b>'+open.length+'</b><span>Open</span></div>'+
     '<div class="tile late"><b>'+lateN+'</b><span>Late</span></div>'+
     '<div class="tile warn"><b>'+staleN+'</b><span>Not reviewed '+STALE_DAYS+'+ days</span></div></div>'+
@@ -815,7 +818,7 @@ function viewStats(){
   var opts='<option'+(S.statsResp==='All'?' selected':'')+'>All</option>'+people.map(function(p){return '<option'+(p===S.statsResp?' selected':'')+'>'+esc(p)+'</option>';}).join('');
   return header('As reported by the site team · '+fmtY(today))+
   '<section class="filters"><div class="wrap"><div class="field"><label class="lbl" for="sresp">Responsible</label><select id="sresp" class="big" data-act="sresp">'+opts+'</select></div></div></section>'+
-  '<main><div class="wrap">'+
+  '<main><div class="wrap">'+remindBlock()+
   '<section class="sec"><h2>Progress</h2><div class="kgrid">'+
     '<div class="k"><span class="t">Workpacks closed</span><b>'+wpClosed+'<small> / '+(wpOpen+wpClosed)+'</small></b><div class="track"><div class="fill" style="width:'+wpPct+'%"></div></div><span class="d">'+wpOpen+' open · '+wpPct+'% closed</span></div>'+
     '<div class="k"><span class="t">Tasks complete</span><b>'+tDone.toLocaleString()+'<small> / '+tAll.toLocaleString()+'</small></b><div class="track"><div class="fill" style="width:'+tPct+'%"></div></div><span class="d">'+tPct+'% complete · '+tProg+' in progress</span></div>'+
@@ -1092,6 +1095,40 @@ function repTanks(){
     '</tr></thead><tbody>'+body+'</tbody><tfoot><tr><td>Complete / required</td>'+foot+'<td></td></tr></tfoot></table></div></section>';
 }
 
+/* ---------- review reminders ---------- */
+// Everything a person should look at: their active workpacks / site groups and tanks not reviewed in STALE_DAYS
+function toReview(person){
+  var out=[], today=todayISO();
+  wpsFor(person,'all').forEach(function(id){ var i=wpInfo(id); if(isActive(i)&&i.stale) out.push({kind:'wp',id:id,i:i}); });
+  if(IDX.tk.has) IDX.tk.tanks.forEach(function(t){ var i=tkInfo(t.id,person,'All'); if(i.total&&i.active&&i.stale) out.push({kind:'tank',id:t.id,t:t,i:i}); });
+  out.sort(function(a,b){ var da=a.i.review?diff(a.i.review.at.slice(0,10),today):1e6, db=b.i.review?diff(b.i.review.at.slice(0,10),today):1e6; return db-da||cmp(a.id,b.id); });
+  return out;
+}
+function appLink(){ return location.origin+location.pathname+'#review'; }
+function remindText(p,n){ return p.split(' ')[0]+', you have '+n+(n===1?' item':' items')+' in the Workpack Status app not reviewed in the last '+STALE_DAYS+' days. Please review: '+appLink(); }
+function remindBlock(){
+  if(!S.isAdmin) return '';
+  var rows=IDX.allPeople.filter(function(p){ return p!=='Unassigned'; }).map(function(p){ return [p,toReview(p).length]; }).filter(function(x){ return x[1]>0; });
+  var share=S.share?'<div class="confirm"><b>Send this to '+esc(S.share.p)+'</b><textarea id="rmtext" class="text" rows="4" style="height:auto;padding:10px;font-size:17px">'+esc(S.share.text)+'</textarea>'+
+    '<div class="row" style="flex-wrap:wrap"><a class="btn" style="display:inline-flex;align-items:center;text-decoration:none" href="https://wa.me/?text='+encodeURIComponent(S.share.text)+'" target="_blank" rel="noopener">WhatsApp</a>'+
+    '<a class="btn" style="display:inline-flex;align-items:center;text-decoration:none" href="mailto:?subject='+encodeURIComponent('Workpack Status – items to review')+'&body='+encodeURIComponent(S.share.text)+'">Email</a>'+
+    '<button class="btn ghost" data-act="rmcopy">Copy</button><button class="btn ghost" data-act="rmclose">Close</button></div></div>':'';
+  return '<section class="sec"><h2>Review reminders</h2><p class="note" style="margin:0">Only you see this. Active items not reviewed in the last '+STALE_DAYS+' days, by person.</p>'+share+
+    (rows.length?'<div class="list">'+rows.map(function(x){ return '<div class="li"><span class="grow" style="font-size:18px"><b>'+esc(x[0])+'</b><br><span class="note">'+x[1]+(x[1]===1?' item':' items')+' to review</span></span><button class="btn" data-act="remind" data-p="'+esc(x[0])+'">Remind</button></div>'; }).join('')+'</div>'
+     :'<div class="empty">Everyone is up to date.</div>')+'</section>';
+}
+function viewReview(){
+  var me=ls('me'), who=S.rvWho||(me&&me!=='Management'?me:''), list=who?toReview(who):[];
+  var opts=[['','Choose a name']].concat(IDX.allPeople.filter(function(p){return p!=='Unassigned';}).map(function(p){return [p,p];}));
+  var cards=list.map(function(x){ return x.kind==='tank'?tankCard(x.t,x.i):wpCard(x.i); }).join('');
+  return header('To review')+
+  '<section class="filters"><div class="wrap"><div class="field"><label class="lbl" for="rvwho">Showing items for</label>'+sel('rvwho','rvwho',opts,who)+'</div></div></section>'+
+  '<main><div class="wrap"><section class="sec">'+
+    (who?'<h2>'+list.length+(list.length===1?' item':' items')+' to review</h2><p class="note" style="margin:0">Active items not reviewed in the last '+STALE_DAYS+' days, oldest first. Open each one, check the statuses and press Update.</p>'+
+      (list.length?'<div class="grid">'+cards+'</div>':'<div class="empty">Nothing to review. All your active items are up to date.</div>'):'<div class="empty">Choose a name to see the items to review.</div>')+
+  '</section></div></main>'+tabs();
+}
+
 /* ---------- admin ---------- */
 function viewAdmin(){
   var src=S.sched.source||'', imp=S.sched.imported?fmtY(S.sched.imported.slice(0,10)):'–';
@@ -1100,6 +1137,8 @@ function viewAdmin(){
   if(LIVE){
     body+='<div class="card"><label class="lbl" for="apin">Admin PIN</label><input id="apin" class="text" type="password" autocomplete="off" value="'+esc(S.adminPin||'')+'"></div>';
   }
+  body+='<div class="card"><b>Review reminders</b><span class="note">'+(S.isAdmin?'Unlocked on this device. The Remind buttons are at the top of Statistics.':'Shows Remind buttons at the top of Statistics on this device only. The team never sees them.')+'</span>'+
+    (S.isAdmin?'<button class="btn ghost wide" data-act="lock">Hide reminders on this device</button>':'<button class="btn wide" data-act="unlock">Unlock reminders</button>')+'</div>';
   body+='<div class="card"><b>Upload a re-issued schedule</b><span class="note">Use the Primavera Excel export with the Workpack, Responsible and Status columns. Team updates carry over by task ID.</span>'+
     '<input id="xfile" type="file" accept=".xlsx,.xls" data-act="file" style="font-size:17px">'+
     (p?'<div class="note"><b>'+p.workpacks.length+' workpacks, '+p.tasks.length+' construction tasks</b> read from '+esc(p.source)+'.'+
@@ -1189,14 +1228,14 @@ function viewWho(){
 function render(){
   var y=window.scrollY, v=S.view;
   if(S.who){ app.innerHTML=viewWho(); return; }
-  app.innerHTML = v==='wp'?viewWp():v==='stats'?viewStats():v==='admin'?viewAdmin():v==='reports'?viewReports():v==='tanks'?viewTanks():v==='tank'?viewTank():viewList();
+  app.innerHTML = v==='wp'?viewWp():v==='stats'?viewStats():v==='admin'?viewAdmin():v==='reports'?viewReports():v==='tanks'?viewTanks():v==='tank'?viewTank():v==='review'?viewReview():viewList();
   var pg=document.getElementById('pgsz'); if(pg) pg.textContent=(v==='reports'&&S.rep.type==='tanks')?'@page{size:17in 11in;margin:.35in .4in .45in}':'@page{size:A4;margin:12mm}';
   if(S.focusTq){ var q=document.getElementById('tq'); if(q){ q.focus(); var n=q.value.length; try{ q.setSelectionRange(n,n); }catch(e){} } S.focusTq=false; }
   window.scrollTo(0,S.keepScroll?y:0); S.keepScroll=false;
 }
 function rerender(){ S.keepScroll=true; render(); }
 function setPeriod(span){ S.span=span; S.from=todayISO(); S.to=addDays(S.from,span); ls('span',span); }
-function leaveWp(){ S.pending={}; S.confirmAll=false; S.view=S.view==='tank'?'tanks':'list'; render(); }
+function leaveWp(){ S.pending={}; S.confirmAll=false; S.view=S.ret||(S.view==='tank'?'tanks':'list'); S.ret=null; render(); }
 
 app.addEventListener('click',function(ev){
   var el=ev.target.closest('[data-act]'); if(!el) return;
@@ -1205,13 +1244,24 @@ app.addEventListener('click',function(ev){
   if(a==='who'){ S.who=true; render(); return; }
   if(a==='whoclose'){ S.who=false; render(); return; }
   if(a==='me'){ var n=el.getAttribute('data-n'); ls('me',n); S.who=false; S.resp=(n==='Management')?'All':n; ls('resp',S.resp); S.rep.resp=S.resp; S.tresp=IDX.tkPeople.indexOf(n)>=0?n:'All'; render(); return; }
-  if(a==='tank'){ S.tank=el.getAttribute('data-id'); S.pending={}; S.view='tank'; render(); return; }
+  if(a==='tank'){ S.ret=S.view==='review'?'review':null; S.tank=el.getAttribute('data-id'); S.pending={}; S.view='tank'; render(); return; }
+  if(a==='review'){ S.view='review'; S.rvWho=null; render(); return; }
+  if(a==='remind'){ var rp=el.getAttribute('data-p'), rn=toReview(rp).length; S.share={p:rp,text:remindText(rp,rn)};
+    if(navigator.share){ navigator.share({title:'Workpack Status',text:S.share.text}).then(function(){ S.share=null; toast('Reminder shared'); rerender(); }).catch(function(){ rerender(); }); }
+    else rerender(); return; }
+  if(a==='rmclose'){ S.share=null; rerender(); return; }
+  if(a==='rmcopy'){ var tx=document.getElementById('rmtext'); var v2=tx?tx.value:S.share.text;
+    (navigator.clipboard?navigator.clipboard.writeText(v2):Promise.reject()).then(function(){ toast('Copied'); }).catch(function(){ if(tx){ tx.focus(); tx.select(); } toast('Select the text and copy it'); }); return; }
+  if(a==='unlock'){ readAdminPin(); if(!S.adminPin){ S.adminErr='Enter the admin PIN first.'; rerender(); return; }
+    (LIVE?api('/api/export',{admin:true}):Promise.resolve()).then(function(){ S.isAdmin=true; ls('isadmin',true); S.adminErr=''; S.adminMsg='Reminders unlocked on this device. They appear at the top of Statistics.'; rerender(); })
+      .catch(function(e){ S.adminErr=e.code===401?'Admin PIN not accepted.':e.message; rerender(); }); return; }
+  if(a==='lock'){ S.isAdmin=false; ls('isadmin',false); S.adminMsg='Reminders hidden on this device.'; rerender(); return; }
   if(a==='tdisc'){ S.tdisc=el.getAttribute('data-v'); ls('tdisc',S.tdisc); rerender(); return; }
   if(a==='tab'){ if((S.view==='wp'||S.view==='tank')&&pendingCount()){ toast('Press Update first, or go back to discard.'); return; } S.view=el.getAttribute('data-v'); S.pending={}; render(); return; }
   if(a==='fold'){ var k=el.getAttribute('data-k'); S.open[k]=!S.open[k]; rerender(); return; }
   if(a==='span'){ setPeriod(+el.getAttribute('data-n')); rerender(); return; }
   if(a==='src'){ S.src=el.getAttribute('data-v'); ls('src',S.src); rerender(); return; }
-  if(a==='edit'){ S.wp=el.getAttribute('data-wp'); S.pending={}; S.confirmAll=false; S.view='wp'; render(); return; }
+  if(a==='edit'){ S.ret=S.view==='review'?'review':null; S.wp=el.getAttribute('data-wp'); S.pending={}; S.confirmAll=false; S.view='wp'; render(); return; }
   if(a==='back'){ if(pendingCount()&&!S.discardAsk){ S.discardAsk=true; toast('Unsaved changes. Tap back again to discard them.'); setTimeout(function(){S.discardAsk=false;},4000); return; } S.discardAsk=false; leaveWp(); return; }
   if(a==='set'){
     var id=el.getAttribute('data-t'), s=el.getAttribute('data-s');
@@ -1279,6 +1329,7 @@ app.addEventListener('change',function(ev){
   if(a==='rscope'){ S.rep.scope=el.value; rerender(); }
   if(a==='ronly'){ S.rep.only=el.value; rerender(); }
   if(a==='rsrc'){ S.rep.src=el.value; rerender(); }
+  if(a==='rvwho'){ S.rvWho=el.value||null; rerender(); }
   if(a==='tresp'){ S.tresp=el.value; ls('tresp',S.tresp); rerender(); }
   if(a==='tankfile'&&el.files&&el.files[0]){
     readAdminPin(); var tf=el.files[0]; S.adminMsg='Reading '+tf.name+'…'; S.adminErr=''; S.tankParsed=null; rerender();
@@ -1322,12 +1373,17 @@ function start(){
     S.src=ls('src')||'all'; if(['all','sched','site'].indexOf(S.src)<0) S.src='all';
     S.rep={type:'wp',resp:S.resp,scope:'period',only:'out',src:'all',done:!!ls('repdone')};
     var tr=ls('tresp'); S.tresp=(tr&&(tr==='All'||IDX.tkPeople.indexOf(tr)>=0))?tr:(IDX.tkPeople.indexOf(me)>=0?me:'All'); S.tdisc=ls('tdisc')||'All'; S.tq='';
+    S.isAdmin=!!ls('isadmin');
+    if(location.hash==='#review'){ S.view='review'; try{ history.replaceState(null,'',location.pathname+location.search); }catch(e){} }
     S.who=!me; render();
   }).catch(function(e){
     if(e.code===401){ try{localStorage.removeItem('wp_pin');}catch(x){} viewPin('That PIN was not accepted. Try again.'); return; }
     app.innerHTML='<div class="overlay"><div class="wrap"><div class="brand">Workpack Status</div><p class="err">Could not reach the server.</p><p class="note">'+esc(e.message)+'</p><button class="btn wide" onclick="location.reload()">Try again</button></div></div>';
   });
 }
+window.addEventListener('hashchange',function(){
+  if(location.hash==='#review'&&IDX&&!pendingCount()){ S.view='review'; S.rvWho=null; try{ history.replaceState(null,'',location.pathname+location.search); }catch(e){} render(); }
+});
 document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible'&&LIVE&&S.sched&&S.view!=='wp'&&S.view!=='tank'){ load().then(function(){ index(); rerender(); }).catch(function(){}); } });
 start();
 })();
