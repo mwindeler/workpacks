@@ -93,6 +93,9 @@ h2{font-family:var(--display);font-size:24px;font-weight:700;text-transform:uppe
 .badge{display:inline-flex;align-items:center;gap:4px;min-height:30px;padding:2px 10px;border-radius:6px;font-size:16px;font-weight:700;background:var(--chip);color:var(--ink)}
 .badge.late{background:var(--late);color:var(--late-ink-on)}
 .badge.who{font-weight:600;color:var(--muted)}
+.badge.site{background:transparent;border:2px solid var(--accent);color:var(--accent)}
+.check{display:flex;align-items:center;gap:12px;min-height:52px;font-size:19px;font-weight:600;cursor:pointer}
+.check input{width:28px;height:28px;accent-color:var(--accent);flex:0 0 auto}
 .track{height:10px;border-radius:5px;background:var(--track);overflow:hidden}
 .fill{height:100%;background:var(--done)}
 .meta{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:16px;color:var(--muted)}
@@ -186,11 +189,11 @@ input.text{height:56px;font-size:21px;padding:0 12px;border:2px solid var(--ink)
 .rt .num{text-align:right}
 .rt .nw{white-space:nowrap}
 .rt tr.lt td:last-child{color:var(--late);font-weight:700}
+.rt tr.dn td{color:var(--muted)}
 .rt.kv th{width:55%;text-transform:none;font-size:15px;letter-spacing:0;color:var(--ink);background:transparent;font-weight:600}
 .rg{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase}
 @media print{
   :root,:root[data-theme="dark"],:root:not([data-theme="light"]){--bg:#fff;--surface:#fff;--ink:#000;--muted:#333;--line:#bbb;--chip:#eee;--late:#A12019;color-scheme:light}
-  @page{size:A4;margin:12mm}
   html,body{background:#fff!important;color:#000}
   .bar,.banner,.noprint,nav.tabs,.toast{display:none!important}
   main{padding:0}
@@ -206,9 +209,63 @@ input.text{height:56px;font-size:21px;padding:0 12px;border:2px solid var(--ink)
   .rt tr{break-inside:avoid}
   .pb{break-before:page}
 }
+
+/* Tanks */
+.disc{display:grid;gap:4px}
+.dc{border-radius:8px;padding:6px 2px;text-align:center;font-size:14px;font-weight:700;line-height:1.15;border:2px solid transparent;min-width:0;overflow:hidden}
+.dc small{display:block;font-size:12px;font-weight:600}
+.dc.C{background:var(--done);color:var(--done-ink)} .dc.P{background:var(--prog);color:var(--prog-ink)}
+.dc.N{background:var(--surface);border-color:var(--off-line);color:var(--ink)} .dc.X{background:var(--chip);color:var(--muted);font-weight:600}
+.dc.B{background:transparent;border:2px dashed var(--line);color:var(--muted);font-weight:600}
+.dc.L{box-shadow:0 0 0 3px var(--late)}
+.dhead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;border-top:3px solid var(--ink);padding-top:8px;margin-top:8px}
+.dhead h3{font-family:var(--display);font-size:22px;margin:0;text-transform:uppercase;letter-spacing:.4px}
+.mine{font-size:13px;font-weight:700;background:var(--accent);color:var(--accent-ink);padding:2px 8px;border-radius:6px}
+.tbars{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:10px 20px}
+.tbar .dh{display:flex;justify-content:space-between;gap:8px;font-size:15px;flex-wrap:wrap} .tbar .dh span{color:var(--muted)}
+.stk{display:flex;gap:2px;height:12px;background:var(--track);border-radius:4px;overflow:hidden;margin:4px 0} .stk i{display:block;height:100%}
+.stk i.C{background:var(--done)} .stk i.P{background:var(--prog)}
+.dn{font-size:14px;color:var(--muted)}
+.wrap.rep.wide{max-width:none}
+.trep{display:flex;flex-direction:column;gap:10px}
+.ttop{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px 24px;border-bottom:3px solid var(--ink);padding-bottom:8px}
+.ttop h1{font-family:var(--display);font-size:28px;margin:0;text-transform:uppercase;letter-spacing:.4px;line-height:1.05}
+.tkp{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-top:6px} .tkp b{font-family:var(--display);font-size:22px;color:var(--ink);display:block;line-height:1}
+.tkp .lt b{color:var(--late)}
+.tlg{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;font-size:13px;align-content:start} .tlg div{display:flex;align-items:center;gap:6px}
+.tmx{border-collapse:collapse;width:100%;min-width:980px;font-size:13px;background:var(--surface)}
+.tmx th{font-size:11px;text-transform:uppercase;letter-spacing:.3px;padding:4px;border-bottom:1px solid var(--line);color:var(--muted)}
+.tmx th.grp{font-size:13px;color:var(--ink);border-bottom:3px solid var(--ink);text-align:center} .tmx th.grp span{display:block;font-size:11px;font-weight:600;color:var(--muted);text-transform:none;letter-spacing:0}
+.tmx th.it{text-align:center;line-height:1.1} .tmx th.ttid{text-align:left;vertical-align:bottom} .tmx th.tpct{text-align:right;vertical-align:bottom}
+.tmx .g0{background:#E3EAF5} .tmx .g1{background:#E6F1E1} .tmx .g2{background:#FBEBDD} .tmx .g3{background:#EFEAF7}
+.tmx th.g0,.tmx th.g1,.tmx th.g2,.tmx th.g3{color:#14191D} .tmx th.it.g0,.tmx th.it.g1,.tmx th.it.g2,.tmx th.it.g3,.tmx th.grp span{color:#46505A}
+.tmx td{border-bottom:1px solid var(--line);padding:2px 4px;white-space:nowrap}
+.tmx td.ttid b{display:inline-block;min-width:11.5em;padding-right:8px}
+.tmx tfoot{display:table-row-group} .tmx td.ttid span{color:var(--muted)}
+.tmx .gs{border-left:2px solid #8A949C}
+.tm{display:inline-flex;width:18px;height:18px;border-radius:4px;align-items:center;justify-content:center;font-weight:700;font-size:11px;vertical-align:middle;box-sizing:border-box}
+.tm.C{background:var(--done);color:#fff} .tm.P{background:var(--prog);color:#14191D;font-size:8px} .tm.N{border:2px solid #8A949C}
+.tm.L{outline:2px solid var(--late);outline-offset:1px}
+.tdt{font-size:11px;color:var(--muted);margin-left:5px;vertical-align:middle} .tdt.lt{color:var(--late);font-weight:700}
+.tmx td.nr span,.nrd{color:#B8BEC4;padding-left:4px}
+.tmx td.tpct{text-align:right;font-weight:700} .tmx td.tpct.lt{color:var(--late)}
+.tmx tfoot td{border-top:2px solid var(--ink);font-weight:700;font-size:11px;color:var(--muted)}
+.tmx tr.tsep td{border-bottom:1.5px solid var(--ink);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding-top:8px;color:var(--muted)}
+@media print{
+  .wrap.rep.wide .trep{gap:6px}
+  .ttop h1{font-size:22pt} .tkp b{font-size:16pt} .tkp,.tlg,.dn{font-size:8pt} .tbar .dh{font-size:9pt} .stk{height:8px}
+  .tmx{min-width:0;width:100%;font-size:8.5pt;table-layout:auto} .tmx th.ttid{width:3in} .tmx th.it{width:1.12in} .tmx th.tpct{width:.45in} .tmx td.ttid b{min-width:1.5in} .tmx thead{display:table-header-group}
+  .tmx th{font-size:7.5pt;padding:3px} .tmx th.grp{font-size:9pt} .tmx th.grp span{font-size:7pt}
+  .tmx td{padding:1px 3px;height:.2in;font-size:8pt} .tmx tr{break-inside:avoid}
+  .tm{width:14px;height:14px;font-size:9pt} .tm.P{font-size:6.5pt} .tdt{font-size:7pt}
+  .tmx tbody tr:nth-child(even) td{background:#F5F6F7}
+  .tmx .g0{background:#E3EAF5!important} .tmx .g1{background:#E6F1E1!important} .tmx .g2{background:#FBEBDD!important} .tmx .g3{background:#EFEAF7!important}
+  body{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 
+<style id="pgsz">@page{size:A4;margin:12mm}</style>
 </head>
 <body>
 <div id="app"></div>
@@ -365,7 +422,117 @@ input.text{height:56px;font-size:21px;padding:0 12px;border:2px solid var(--ink)
     return parseRows(rows, sourceName);
   }
 
-  var api = { parseRows: parseRows, parseWorkbook: parseWorkbook, toDate: toDate };
+  // ---------- Site items list: flat table, one row per item ----------
+  // Columns (header names, any order): Group No, Group Description, Responsible, Item ID,
+  // Item Description, Start, Finish, Status. Dates and Status are optional.
+  function parseSiteRows(rows, sourceName) {
+    var hi = -1, col = {};
+    for (var i = 0; i < Math.min(rows.length, 30) && hi < 0; i++) {
+      var r = rows[i] || [];
+      for (var j = 0; j < r.length; j++) {
+        if (String(r[j] || '').trim().toLowerCase() === 'item id') { hi = i; break; }
+      }
+    }
+    if (hi < 0) throw new Error('Could not find the "Item ID" header row. Use the Site Items template.');
+    rows[hi].forEach(function (h, j) { if (h !== null && h !== undefined) col[String(h).trim().toLowerCase()] = j; });
+    ['group no', 'item id', 'item description'].forEach(function (k) {
+      if (col[k] === undefined) throw new Error('Missing column "' + k + '".');
+    });
+    var get = function (row, k) { var v = col[k] === undefined ? null : row[col[k]]; return (v === undefined || v === '') ? null : v; };
+    var groups = {}, order = [], tasks = [], warnings = [], seen = {};
+    for (var k = hi + 1; k < rows.length; k++) {
+      var row = rows[k] || [];
+      var id = get(row, 'item id'), g = get(row, 'group no');
+      if (id === null && g === null) continue;
+      if (id === null) { warnings.push('Row ' + (k + 1) + ' has a Group No but no Item ID (skipped).'); continue; }
+      if (g === null) { warnings.push('Item ' + id + ' has no Group No (skipped).'); continue; }
+      id = String(id).trim(); g = String(g).trim();
+      if (seen[id]) { warnings.push('Duplicate Item ID ' + id + ' (kept the first).'); continue; }
+      seen[id] = 1;
+      var resp = String(get(row, 'responsible') || '').trim();
+      if (!groups[g]) { groups[g] = { id: g, desc: String(get(row, 'group description') || g).trim(), resp: resp, site: true }; order.push(g); }
+      else if (resp && !groups[g].resp) groups[g].resp = resp;
+      else if (resp && resp !== groups[g].resp) warnings.push(id + ': Responsible "' + resp + '" differs from its group (' + groups[g].resp + '); the group’s name is used.');
+      var st = toDate(get(row, 'start')), fi = toDate(get(row, 'finish'));
+      tasks.push({ id: id, wp: g, name: String(get(row, 'item description') || '').trim(), grp: '',
+        start: st, finish: fi, p6: statusCode(get(row, 'status')) || 'N' });
+    }
+    var wps = order.map(function (g) { var w = groups[g]; if (!w.resp) { w.resp = 'Unassigned'; warnings.push('Group ' + g + ' has no Responsible (shown as Unassigned).'); } return w; });
+    return { v: 1, kind: 'site', source: sourceName || '', imported: new Date().toISOString(), workpacks: wps, tasks: tasks, warnings: warnings };
+  }
+  function parseSiteWorkbook(XLSX, data, sourceName) {
+    var wb = XLSX.read(data, { type: 'array', cellDates: false });
+    var name = wb.SheetNames.filter(function (n) { return n.trim().toLowerCase() === 'site items'; })[0] || wb.SheetNames[0];
+    var rows = XLSX.utils.sheet_to_json(wb.Sheets[name], { header: 1, raw: true, defval: null, blankrows: true });
+    return parseSiteRows(rows, sourceName);
+  }
+
+  // ---------- Tanks and seachests tracker: one row per tank, items across ----------
+  // Three header rows: discipline (merged across its columns), item name (merged over Req/Start/Finish)
+  // or "Responsible", then Req / Start / Finish. Disciplines and items are read from the headers,
+  // so adding an item column in the template needs no code change.
+  function parseTankRows(rows, sourceName) {
+    var h1 = -1;
+    for (var i = 0; i < Math.min(rows.length, 30) && h1 < 0; i++) {
+      if (String((rows[i] || [])[0] || '').trim().toLowerCase() === 'tank id') h1 = i;
+    }
+    if (h1 < 0) throw new Error('Could not find the "Tank ID" header. Use the Tanks and Seachests template.');
+    var r1 = rows[h1] || [], r2 = rows[h1 + 1] || [], r3 = rows[h1 + 2] || [];
+    var width = Math.max(r1.length, r2.length, r3.length);
+    var disc = '', item = '', discs = [], cols = [], respCol = {};
+    var cap = function (s) { s = String(s).trim().toLowerCase(); return s.charAt(0).toUpperCase() + s.slice(1); };
+    for (var c = 2; c < width; c++) {
+      if (r1[c] !== null && r1[c] !== undefined && String(r1[c]).trim()) { disc = cap(r1[c]); if (discs.indexOf(disc) < 0) discs.push(disc); }
+      var v2 = r2[c] !== null && r2[c] !== undefined ? String(r2[c]).trim() : '';
+      var v3 = r3[c] !== null && r3[c] !== undefined ? String(r3[c]).trim().toLowerCase() : '';
+      if (!disc) continue;
+      if (v2.toLowerCase() === 'responsible') { respCol[disc] = c; item = ''; continue; }
+      if (v2) item = v2;
+      if (!item) continue;
+      var e = cols.filter(function (x) { return x.disc === disc && x.item === item; })[0];
+      if (!e) { e = { disc: disc, item: item }; cols.push(e); }
+      if (v3 === 'req' || v3 === 'required') e.req = c;
+      else if (v3 === 'start') e.start = c;
+      else if (v3 === 'finish') e.finish = c;
+    }
+    cols = cols.filter(function (x) { return x.req !== undefined; });
+    if (!cols.length) throw new Error('No item columns found (each item needs a "Req" column).');
+    var tanks = [], items = [], warnings = [], seen = {};
+    for (var k = h1 + 3; k < rows.length; k++) {
+      var row = rows[k] || [];
+      var id = row[0] === null || row[0] === undefined ? '' : String(row[0]).trim();
+      var nm = row[1] === null || row[1] === undefined ? '' : String(row[1]).trim();
+      if (!id && !nm) continue;
+      if (!id) { warnings.push('Row ' + (k + 1) + ' (' + nm + ') has no Tank ID (skipped).'); continue; }
+      if (seen[id]) { warnings.push('Duplicate Tank ID ' + id + ' (kept the first).'); continue; }
+      seen[id] = 1;
+      tanks.push({ id: id, name: nm || id, seachest: /^sc/i.test(id) });
+      cols.forEach(function (e) {
+        var rq = String(row[e.req] || '').trim().toUpperCase();
+        if (rq !== 'Y' && rq !== 'N') return;          // blank = not yet decided: not shown, not counted
+        var resp = respCol[e.disc] !== undefined ? String(row[respCol[e.disc]] || '').trim() : '';
+        items.push({ id: 'TK|' + id + '|' + e.item, tank: id, disc: e.disc, item: e.item, req: rq,
+          resp: resp || 'Unassigned', start: e.start !== undefined ? toDate(row[e.start]) : null,
+          finish: e.finish !== undefined ? toDate(row[e.finish]) : null, p6: 'N' });
+      });
+    }
+    return { v: 1, kind: 'tanks', source: sourceName || '', imported: new Date().toISOString(),
+      disciplines: discs.map(function (d) { return { name: d, items: cols.filter(function (x) { return x.disc === d; }).map(function (x) { return x.item; }) }; }),
+      tanks: tanks, items: items, warnings: warnings };
+  }
+  function parseTankWorkbook(XLSX, data, sourceName) {
+    var wb = XLSX.read(data, { type: 'array', cellDates: false });
+    var name = wb.SheetNames.filter(function (n) { return n.trim().toLowerCase() === 'tanks and seachests'; })[0];
+    if (!name) name = wb.SheetNames.filter(function (n) {
+      var r = XLSX.utils.sheet_to_json(wb.Sheets[n], { header: 1, raw: true, defval: null }).slice(0, 30);
+      return r.some(function (x) { return String((x || [])[0] || '').trim().toLowerCase() === 'tank id'; });
+    })[0] || wb.SheetNames[0];
+    var rows = XLSX.utils.sheet_to_json(wb.Sheets[name], { header: 1, raw: true, defval: null, blankrows: true });
+    return parseTankRows(rows, sourceName);
+  }
+
+  var api = { parseRows: parseRows, parseWorkbook: parseWorkbook, parseSiteRows: parseSiteRows, parseSiteWorkbook: parseSiteWorkbook,
+    parseTankRows: parseTankRows, parseTankWorkbook: parseTankWorkbook, toDate: toDate };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.WPParse = api;
 })(this);
@@ -413,16 +580,16 @@ function api(path,opts){
 }
 function load(){
   if(!LIVE){
-    S.sched=window.WP_DEMO; S.status=ls('demo_status')||{}; S.reviews=ls('demo_reviews')||{}; S.synced=new Date().toISOString();
+    S.sched=window.WP_DEMO; S.site=window.WP_DEMO_SITE||{workpacks:[],tasks:[]}; S.tanks=window.WP_DEMO_TANKS||{disciplines:[],tanks:[],items:[]}; S.status=ls('demo_status')||{}; S.reviews=ls('demo_reviews')||{}; S.synced=new Date().toISOString();
     return Promise.resolve();
   }
   return api('/api/data').then(function(d){
-    S.sched=d.schedule; S.status=d.status||{}; S.reviews=d.reviews||{}; S.synced=new Date().toISOString(); S.offline=false;
-    ls('cache',{sched:d.schedule,status:S.status,reviews:S.reviews,at:S.synced});
+    S.sched=d.schedule; S.site=d.site||{workpacks:[],tasks:[]}; S.tanks=d.tanks||{disciplines:[],tanks:[],items:[]}; S.status=d.status||{}; S.reviews=d.reviews||{}; S.synced=new Date().toISOString(); S.offline=false;
+    ls('cache',{sched:d.schedule,site:S.site,tanks:S.tanks,status:S.status,reviews:S.reviews,at:S.synced});
   }).catch(function(e){
     if(e.code===401) throw e;
     var c=ls('cache'); if(!c) throw e;
-    S.sched=c.sched; S.status=c.status; S.reviews=c.reviews; S.synced=c.at; S.offline=true;
+    S.sched=c.sched; S.site=c.site||{workpacks:[],tasks:[]}; S.tanks=c.tanks||{disciplines:[],tanks:[],items:[]}; S.status=c.status; S.reviews=c.reviews; S.synced=c.at; S.offline=true;
   });
 }
 function sendUpdate(wp,changes){
@@ -440,15 +607,33 @@ function sendUpdate(wp,changes){
 
 /* ---------- derived values ---------- */
 var IDX=null;
+// Schedule workpacks and site item groups share one index; site groups carry site:true.
 function index(){
-  var byWp={}, tasks={};
-  S.sched.tasks.forEach(function(t){ (byWp[t.wp]=byWp[t.wp]||[]).push(t); tasks[t.id]=t; });
+  var byWp={}, tasks={}, wps={}, people={}, allW=[], allT=[];
+  var site=S.site||{workpacks:[],tasks:[]};
+  S.sched.workpacks.forEach(function(w){ allW.push(w); });
+  site.workpacks.forEach(function(w){ if(!S.sched.workpacks.some(function(x){return x.id===w.id;})) allW.push(Object.assign({},w,{site:true})); });
+  allW.forEach(function(w){ wps[w.id]=w; if(w.resp) people[w.resp]=1; });
+  S.sched.tasks.forEach(function(t){ allT.push(t); });
+  site.tasks.forEach(function(t){ if(!tasks[t.id]) allT.push(Object.assign({},t,{site:true})); });
+  allT.forEach(function(t){ if(tasks[t.id]||!wps[t.wp]) return; (byWp[t.wp]=byWp[t.wp]||[]).push(t); tasks[t.id]=t; });
   Object.keys(byWp).forEach(function(k){ byWp[k].sort(function(a,b){return cmp(a.id,b.id);}); });
-  var wps={}; S.sched.workpacks.forEach(function(w){ wps[w.id]=w; });
-  var people={}; S.sched.workpacks.forEach(function(w){ if(w.resp) people[w.resp]=1; });
-  IDX={byWp:byWp,tasks:tasks,wps:wps,people:Object.keys(people).sort(cmp)};
+  // Tanks and seachests: required (Y) items are tracked; N = not required; blank cells are not imported
+  var tk=S.tanks||{disciplines:[],tanks:[],items:[]}, byTank={}, tkById={}, tkPeople={};
+  tk.tanks.forEach(function(t){ byTank[t.id]=[]; tkById[t.id]=t; });
+  tk.items.forEach(function(it){ if(!byTank[it.tank]) return; var x=Object.assign({},it,{tank:true,tankId:it.tank}); byTank[it.tank].push(x);
+    if(it.req==='Y'){ tasks[it.id]=x; if(it.resp) tkPeople[it.resp]=1; } });
+  var all=Object.assign({},people,tkPeople);
+  IDX={byWp:byWp,tasks:tasks,wps:wps,allW:allW,allT:allT.filter(function(t){return tasks[t.id]===t;}),people:Object.keys(people).sort(cmp),
+    allPeople:Object.keys(all).sort(cmp),tkPeople:Object.keys(tkPeople).sort(cmp),
+    hasSite:site.tasks.length>0, tk:{discs:tk.disciplines||[],tanks:tk.tanks,byTank:byTank,byId:tkById,has:tk.tanks.length>0,source:tk.source,imported:tk.imported,count:tk.items.length}};
 }
-function eff(id){ var s=S.status[id]; return s?s.s:IDX.tasks[id].p6; }
+function due(t){ return !t.start || t.start<=S.to; }
+function spanTxt(a,b,yr){ var f=yr?fmtY:fmt; return a&&b?fmt(a)+' – '+f(b):b?'Due '+f(b):a?'From '+f(a):'No planned dates'; }
+function eff(id){ var s=S.status[id], t=IDX.tasks[id]; return s?s.s:(t?t.p6:'N'); }
+var ACTIVE_DAYS=14;
+// A workpack counts for reporting freshness only when work has started or is due within ACTIVE_DAYS
+function isActive(i){ return !i.closed && (i.prog>0 || i.done>0 || (i.minOpenStart!==null && i.minOpenStart<=addDays(todayISO(),ACTIVE_DAYS))); }
 function late(t,st,today){
   if(st!=='C' && t.finish && t.finish<today) return {kind:'finish',days:diff(t.finish,today)};
   if(st==='N' && t.start && t.start<today) return {kind:'start',days:diff(t.start,today)};
@@ -458,8 +643,9 @@ function wpInfo(id){
   var today=todayISO(), ts=IDX.byWp[id]||[], done=0, prog=0, lates=[], worst=null, minStart=null, maxFin=null, minOpenStart=null;
   ts.forEach(function(t){
     var st=eff(t.id); if(st==='C') done++; else if(st==='P') prog++;
-    if(st!=='C' && (minOpenStart===null||t.start<minOpenStart)) minOpenStart=t.start;
-    if(!minStart||t.start<minStart) minStart=t.start; if(!maxFin||t.finish>maxFin) maxFin=t.finish;
+    var ks=t.start||''; // no start date = due now
+    if(st!=='C' && (minOpenStart===null||ks<minOpenStart)) minOpenStart=ks;
+    if(t.start&&(!minStart||t.start<minStart)) minStart=t.start; if(t.finish&&(!maxFin||t.finish>maxFin)) maxFin=t.finish;
     var l=late(t,st,today); if(l){ lates.push(l); if(!worst||l.days>worst.days||(l.days===worst.days&&l.kind==='finish')) worst=l; }
   });
   var closed=ts.length>0&&done===ts.length;
@@ -469,7 +655,8 @@ function wpInfo(id){
     minOpenStart:minOpenStart,review:rv,stale:!rv||rdays>STALE_DAYS};
 }
 function lateText(l){ return l.kind==='finish'?(l.days+(l.days===1?' day late':' days late')):('Start '+l.days+(l.days===1?' day late':' days late')); }
-function wpsFor(resp){ return S.sched.workpacks.filter(function(w){ return resp==='All'||w.resp===resp; }).map(function(w){return w.id;}).sort(cmp); }
+// src: 'sched' = project schedule only, 'site' = site items only, anything else = both
+function wpsFor(resp,src){ return IDX.allW.filter(function(w){ return (resp==='All'||w.resp===resp) && (src==='sched'?!w.site:src==='site'?!!w.site:true); }).map(function(w){return w.id;}).sort(cmp); }
 
 /* ---------- screen 1: workpacks ---------- */
 function header(sub){
@@ -482,8 +669,9 @@ function header(sub){
     (S.offline?'<div class="banner"><div class="wrap">No connection. Showing data from '+esc(fmtY(S.synced.slice(0,10)))+'. Updates need a signal.</div></div>':'');
 }
 function syncText(){ var d=new Date(S.synced); return 'Synced '+fmtY(todayISO())+', '+pad(d.getHours())+':'+pad(d.getMinutes()); }
-function tabs(){ return '<nav class="tabs" aria-label="Screens"><div class="in">'+
+function tabs(){ var tk=IDX.tk.has; return '<nav class="tabs" aria-label="Screens"><div class="in" style="grid-template-columns:repeat('+(tk?4:3)+',minmax(0,1fr))">'+
   '<button data-act="tab" data-v="list" class="'+(S.view==='list'?'on':'')+'">Workpacks</button>'+
+  (tk?'<button data-act="tab" data-v="tanks" class="'+(S.view==='tanks'||S.view==='tank'?'on':'')+'">Tanks</button>':'')+
   '<button data-act="tab" data-v="stats" class="'+(S.view==='stats'||S.view==='admin'?'on':'')+'">Statistics</button>'+
   '<button data-act="tab" data-v="reports" class="'+(S.view==='reports'?'on':'')+'">Reports</button></div></nav>'; }
 function fold(key,label,body){
@@ -496,16 +684,17 @@ function wpCard(i){
   return '<article class="card"><div class="row"><div class="grow"><div class="wpid">'+esc(w.id)+'</div><div class="wpdesc">'+esc(w.desc)+'</div></div>'+
     '<button class="btn" data-act="edit" data-wp="'+esc(w.id)+'" aria-label="Edit '+esc(w.id)+'">Edit</button></div>'+
     '<div class="badges">'+(i.worst?'<span class="badge late">'+WARN+esc(lateText(i.worst))+'</span>':'')+
-    '<span class="badge">'+esc(i.label)+'</span>'+(S.resp==='All'?'<span class="badge who">'+esc(w.resp)+'</span>':'')+'</div>'+
+    (w.site?'<span class="badge site">Site item</span>':'')+'<span class="badge">'+esc(i.label)+'</span>'+(S.resp==='All'?'<span class="badge who">'+esc(w.resp)+'</span>':'')+'</div>'+
     '<div class="track" aria-hidden="true"><div class="fill" style="width:'+pct+'%"></div></div>'+
-    '<div class="meta"><span>'+i.done+' of '+i.total+' tasks complete</span><span class="'+(i.stale&&!i.closed?'stale':'')+'">'+rv+'</span></div></article>';
+    '<div class="meta"><span>'+i.done+' of '+i.total+(w.site?' items':' tasks')+' complete</span><span class="'+(i.stale&&!i.closed?'stale':'')+'">'+rv+'</span></div></article>';
 }
 function viewList(){
-  var people=IDX.people, ids=wpsFor(S.resp), open=[], closed=[], lateN=0, staleN=0;
+  var people=IDX.people, ids=wpsFor(S.resp,S.src), open=[], closed=[], lateN=0, staleN=0;
   ids.forEach(function(id){ var i=wpInfo(id);
     if(i.closed){ closed.push(i); return; }
-    if(i.minOpenStart && i.minOpenStart<=S.to){ open.push(i); if(i.worst) lateN++; if(i.stale) staleN++; }
+    if(i.minOpenStart!==null && i.minOpenStart<=S.to){ open.push(i); if(i.worst) lateN++; if(i.stale) staleN++; }
   });
+  var srcPill=function(v,l){ return '<button class="pill'+(S.src===v?' on':'')+'" data-act="src" data-v="'+v+'">'+l+'</button>'; };
   var opts='<option'+(S.resp==='All'?' selected':'')+'>All</option>'+people.map(function(p){return '<option'+(p===S.resp?' selected':'')+'>'+esc(p)+'</option>';}).join('');
   var html=header(syncText())+
   '<section class="filters"><div class="wrap">'+
@@ -514,12 +703,13 @@ function viewList(){
       '<div class="field"><label for="from">From</label><input id="from" class="date" type="date" data-act="from" value="'+S.from+'"></div>'+
       '<div class="field"><label for="to">To</label><input id="to" class="date" type="date" data-act="to" value="'+S.to+'"></div></div>'+
       '<div class="pills"><button class="pill'+(S.span===14?' on':'')+'" data-act="span" data-n="14">Next 2 weeks</button><button class="pill'+(S.span===28?' on':'')+'" data-act="span" data-n="28">Next 4 weeks</button></div></div>'+
+    (IDX.hasSite?'<div class="field"><span class="lbl">Show</span><div class="pills">'+srcPill('all','All')+srcPill('sched','Schedule')+srcPill('site','Site items')+'</div></div>':'')+
   '</div></section>'+
   '<main><div class="wrap">'+
     '<div class="tiles"><div class="tile"><b>'+open.length+'</b><span>Open</span></div>'+
     '<div class="tile late"><b>'+lateN+'</b><span>Late</span></div>'+
     '<div class="tile warn"><b>'+staleN+'</b><span>Not reviewed '+STALE_DAYS+'+ days</span></div></div>'+
-    '<section class="sec"><h2>Open workpacks ('+open.length+')</h2>'+
+    '<section class="sec"><h2>'+(S.src==='site'?'Open site item groups':'Open workpacks')+' ('+open.length+')</h2>'+
     (open.length?'<div class="grid">'+open.map(wpCard).join('')+'</div>':'<div class="empty">No open workpacks in this period. Widen the period or pick another name.</div>')+
     (closed.length?fold('closed','Closed workpacks ('+closed.length+')','<div class="grid">'+closed.map(wpCard).join('')+'</div>'):'')+
     '</section></div></main>'+tabs();
@@ -530,18 +720,19 @@ function viewList(){
 function pendingCount(){ return Object.keys(S.pending).length; }
 function updText(){ var n=pendingCount(); return n===0?'No changes – confirms reviewed':(n+(n===1?' unsaved change':' unsaved changes')); }
 function taskCard(t){
+  if(t.tank) return tankItemCard(t);
   var saved=eff(t.id), cur=S.pending[t.id]||saved, l=late(t,saved,todayISO());
   var b=function(code,label){ return '<button class="s-'+code+'" data-act="set" data-t="'+esc(t.id)+'" data-s="'+code+'" aria-pressed="'+(cur===code)+'">'+TICK+'<span>'+label+'</span></button>'; };
   return '<article class="card task" id="t-'+esc(t.id)+'">'+
     '<div class="row"><span class="tid grow">'+esc(t.id)+'</span>'+(S.pending[t.id]?'<span class="changed">CHANGED</span>':'')+'</div>'+
     (t.grp&&t.grp!==t.name?'<div class="grp">'+esc(t.grp)+'</div>':'')+
     '<div class="tname">'+esc(t.name)+'</div>'+
-    '<div class="badges"><span class="note">'+fmt(t.start)+' – '+fmt(t.finish)+'</span>'+(l?'<span class="badge late">'+WARN+esc(lateText(l))+'</span>':'')+'</div>'+
+    '<div class="badges"><span class="note">'+spanTxt(t.start,t.finish)+'</span>'+(l?'<span class="badge late">'+WARN+esc(lateText(l))+'</span>':'')+'</div>'+
     '<div class="seg" role="group" aria-label="Status of '+esc(t.id)+'">'+b('N','Not Started')+b('P','In Progress')+b('C','Complete')+'</div></article>';
 }
 function viewWp(){
   var w=IDX.wps[S.wp], i=wpInfo(S.wp), ts=IDX.byWp[S.wp]||[], now=[], later=[], done=[];
-  ts.forEach(function(t){ var st=eff(t.id); if(st==='C') done.push(t); else if(t.start<=S.to) now.push(t); else later.push(t); });
+  ts.forEach(function(t){ var st=eff(t.id); if(st==='C') done.push(t); else if(due(t)) now.push(t); else later.push(t); });
   var openN=now.length+later.length;
   var conf=S.confirmAll?'<div class="confirm"><div><b>Mark all '+openN+' open tasks Complete?</b></div><div class="note">Nothing is saved until you press Update.</div>'+
     '<div class="row"><button class="btn" data-act="allyes">Yes, mark Complete</button><button class="btn ghost" data-act="allno">Cancel</button></div></div>'
@@ -549,7 +740,7 @@ function viewWp(){
   return '<header class="bar wphead"><div class="wrap">'+
     '<button class="back" data-act="back"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>All workpacks</button>'+
     '<div><div class="brand">'+esc(w.id)+'</div><div class="wpdesc" style="font-weight:600">'+esc(w.desc)+'</div>'+
-    '<div class="sub">Planned '+fmt(i.minStart)+' – '+fmtY(i.maxFin)+' · '+esc(w.resp)+'</div></div>'+
+    '<div class="sub">'+(w.site?'Site item · ':'')+(i.minStart&&i.maxFin?'Planned '+spanTxt(i.minStart,i.maxFin,true):spanTxt(i.minStart,i.maxFin,true))+' · '+esc(w.resp)+'</div></div>'+
     '<button class="update" data-act="save" '+(S.saving?'disabled':'')+'><span>'+(S.saving?'Saving…':'Update')+'</span><small id="updtext">'+updText()+'</small></button>'+
   '</div></header>'+
   '<main><div class="wrap">'+
@@ -564,13 +755,13 @@ function viewWp(){
 
 /* ---------- screen 3: statistics ---------- */
 function computeStats(resp){
-  var today=todayISO(), ids=wpsFor(resp);
-  var c={wpOpen:0,wpClosed:0,tDone:0,tProg:0,tAll:0,lStart:0,lFin:0,lateDays:[],wpLate:0,push:[],unrev:[],freshN:0,
+  var today=todayISO(), ids=wpsFor(resp,'sched');
+  var c={active:0,wpOpen:0,wpClosed:0,tDone:0,tProg:0,tAll:0,lStart:0,lFin:0,lateDays:[],wpLate:0,push:[],unrev:[],freshN:0,
     buckets:[[1,7,'1–7 days',0],[8,14,'8–14 days',0],[15,30,'15–30 days',0],[31,1e9,'30+ days',0]]};
   ids.forEach(function(id){
     var i=wpInfo(id); c.tAll+=i.total; c.tDone+=i.done; c.tProg+=i.prog;
     if(i.closed){ c.wpClosed++; return; } c.wpOpen++;
-    if(!i.stale) c.freshN++; else c.unrev.push(i);
+    if(isActive(i)){ c.active++; if(!i.stale) c.freshN++; else c.unrev.push(i); }
     if(i.worst){ c.wpLate++; c.push.push(i); }
     i.lates.forEach(function(l){ if(l.kind==='start') c.lStart++; else c.lFin++; c.lateDays.push(l.days);
       c.buckets.forEach(function(b){ if(l.days>=b[0]&&l.days<=b[1]) b[3]++; }); });
@@ -580,15 +771,43 @@ function computeStats(resp){
   c.avg=c.lateDays.length?(c.lateDays.reduce(function(s,x){return s+x;},0)/c.lateDays.length):0;
   c.maxB=Math.max(1,Math.max.apply(null,c.buckets.map(function(b){return b[3];})));
   c.wpPct=(c.wpOpen+c.wpClosed)?Math.round(c.wpClosed/(c.wpOpen+c.wpClosed)*100):0; c.tPct=c.tAll?Math.round(c.tDone/c.tAll*100):0;
-  c.freshPct=c.wpOpen?Math.round(c.freshN/c.wpOpen*100):100;
-  c.people=IDX.people.filter(function(p){ return resp==='All'||p===resp; }).map(function(p){
-    var o=0,lt=0,st=0,ol=0; wpsFor(p).forEach(function(id){ var i=wpInfo(id); if(i.closed) return; o++; lt+=i.lates.length; if(i.worst) ol++; if(i.stale) st++; });
+  c.freshPct=c.active?Math.round(c.freshN/c.active*100):100;
+  c.people=IDX.people.filter(function(p){ return (resp==='All'||p===resp) && wpsFor(p,'sched').length; }).map(function(p){
+    var o=0,lt=0,st=0,ol=0; wpsFor(p,'sched').forEach(function(id){ var i=wpInfo(id); if(i.closed) return; o++; lt+=i.lates.length; if(i.worst) ol++; if(i.stale&&isActive(i)) st++; });
     return {name:p,open:o,late:lt,lateWps:ol,stale:st}; });
   return c;
 }
+// Site items: their own figures, never mixed into the schedule statistics
+function computeSite(resp){
+  var c={gOpen:0,gClosed:0,iDone:0,iProg:0,iAll:0,lStart:0,lFin:0,late:[],stale:0,noDates:0};
+  wpsFor(resp,'site').forEach(function(id){
+    var i=wpInfo(id); c.iAll+=i.total; c.iDone+=i.done; c.iProg+=i.prog;
+    (IDX.byWp[id]||[]).forEach(function(t){ if(!t.start&&!t.finish&&eff(t.id)!=='C') c.noDates++; });
+    if(i.closed){ c.gClosed++; return; } c.gOpen++;
+    if(i.stale&&isActive(i)) c.stale++;
+    if(i.worst) c.late.push(i);
+    i.lates.forEach(function(l){ if(l.kind==='start') c.lStart++; else c.lFin++; });
+  });
+  c.late.sort(function(a,b){ return b.worst.days-a.worst.days||cmp(a.id,b.id); });
+  c.iPct=c.iAll?Math.round(c.iDone/c.iAll*100):0;
+  return c;
+}
+function siteBlock(resp){
+  if(!IDX.hasSite) return '';
+  var c=computeSite(resp);
+  return '<section class="sec"><h2>Site items</h2><p class="note" style="margin:0">Tracked outside the project schedule. Not included in the figures above.</p>'+
+   (c.iAll?'<div class="kgrid">'+
+    '<div class="k"><span class="t">Items complete</span><b>'+c.iDone+'<small> / '+c.iAll+'</small></b><div class="track"><div class="fill" style="width:'+c.iPct+'%"></div></div><span class="d">'+c.iPct+'% · '+c.iProg+' in progress</span></div>'+
+    '<div class="k"><span class="t">Groups closed</span><b>'+c.gClosed+'<small> / '+(c.gOpen+c.gClosed)+'</small></b><span class="d">'+c.gOpen+' open</span></div>'+
+    '<div class="k late"><b>'+(c.lStart+c.lFin)+'</b><span class="t">Late items</span><span class="d">'+c.lStart+' late to start · '+c.lFin+' late to finish</span></div>'+
+    '<div class="k"><b>'+c.stale+'</b><span class="t">Active groups not reviewed '+STALE_DAYS+'d+</span><span class="d">'+c.noDates+' open items have no dates</span></div></div>'+
+    (c.late.length?'<div class="list">'+c.late.slice(0,10).map(function(i){ var w=IDX.wps[i.id];
+      return '<button class="li" data-act="edit" data-wp="'+esc(i.id)+'"><span class="grow"><span class="wpid" style="font-size:19px;display:block">'+esc(i.id)+' · '+esc(w.resp)+'</span><span style="font-size:17px">'+esc(w.desc)+' · '+i.lates.length+' late</span></span><span class="badge late">'+i.worst.days+' d</span></button>'; }).join('')+'</div>':'')
+   :'<div class="empty">No site items for this person.</div>')+'</section>';
+}
 function revAge(i){ return i.review?diff(i.review.at.slice(0,10),todayISO())+' days':'never'; }
 function viewStats(){
-  var today=todayISO(), people=IDX.people, c=computeStats(S.statsResp);
+  var today=todayISO(), people=IDX.allPeople, c=computeStats(S.statsResp);
   var wpOpen=c.wpOpen, wpClosed=c.wpClosed, tDone=c.tDone, tProg=c.tProg, tAll=c.tAll, lStart=c.lStart, lFin=c.lFin, lateDays=c.lateDays,
     wpLate=c.wpLate, push=c.push, unrev=c.unrev, buckets=c.buckets, avg=c.avg, maxB=c.maxB, wpPct=c.wpPct, tPct=c.tPct, freshPct=c.freshPct;
   var rows=computeStats('All').people.map(function(p){
@@ -613,10 +832,11 @@ function viewStats(){
   (push.length?'<div class="list">'+push.slice(0,10).map(function(i){ var w=IDX.wps[i.id];
     return '<button class="li" data-act="edit" data-wp="'+esc(i.id)+'"><span class="grow"><span class="wpid" style="font-size:19px;display:block">'+esc(i.id)+' · '+esc(w.resp)+'</span><span style="font-size:17px">'+esc(w.desc)+'</span></span><span class="badge late">'+i.worst.days+' d</span></button>'; }).join('')+'</div>'
     :'<div class="empty">Nothing is late.</div>')+'</section>'+
-  '<section class="sec"><h2>By person</h2><div class="list scroll"><table class="tbl"><thead><tr><th>Person</th><th>Open WPs</th><th>Late tasks</th><th>Not rev. '+STALE_DAYS+'d+</th></tr></thead><tbody>'+rows+'</tbody></table></div></section>'+
-  '<section class="sec"><h2>Reporting freshness</h2><div class="fresh"><b>'+freshPct+'%</b><span style="font-weight:700">of open workpacks reviewed in the last '+STALE_DAYS+' days</span>'+
+  '<section class="sec"><h2>By person</h2><div class="list scroll"><table class="tbl"><thead><tr><th>Person</th><th>Open WPs</th><th>Late tasks</th><th>Active, not rev. '+STALE_DAYS+'d+</th></tr></thead><tbody>'+rows+'</tbody></table></div></section>'+
+  '<section class="sec"><h2>Reporting freshness</h2><div class="fresh"><b>'+freshPct+'%</b><span style="font-weight:700">of active workpacks reviewed in the last '+STALE_DAYS+' days</span><span>'+c.active+' active: started, or due to start within '+ACTIVE_DAYS+' days.</span>'+
   (unrev.length?'<span>Oldest unreviewed: '+unrev.slice(0,5).map(function(i){ return esc(i.id)+' ('+(i.review?diff(i.review.at.slice(0,10),today)+' days':'never')+')'; }).join(', ')+'</span>':'')+'</div>'+
-  '<button class="link" data-act="admin">Admin: schedule upload and Excel export</button></section>'+
+  '</section>'+siteBlock(S.statsResp)+tankBlock(S.statsResp)+
+  '<section class="sec"><button class="link" data-act="admin">Admin: schedule, site items and Excel export</button></section>'+
   '</div></main>'+tabs();
 }
 
@@ -631,63 +851,245 @@ function repHead(title,lines){
 function stamp(){ var d=new Date(); return 'Printed '+fmtY(todayISO())+' '+pad(d.getHours())+':'+pad(d.getMinutes()); }
 function repWorkpacks(){
   var R=S.rep, today=todayISO(), people=R.resp==='All'?IDX.people:[R.resp], out='', first=true, any=false;
-  var scopeTxt=R.scope==='all'?'All outstanding tasks':'Tasks due to start by '+fmtY(S.to);
+  var withDone=R.done&&R.only!=='late';
+  var scopeTxt=R.scope==='all'?'All tasks, any date':'Tasks due to start by '+fmtY(S.to);
+  var srcTxt=R.src==='sched'?'Schedule only':R.src==='site'?'Site items only':(IDX.hasSite?'Schedule and site items':'');
+  var showTxt=R.only==='late'?'Late tasks only':withDone?'Outstanding, late and completed tasks':'Outstanding and late tasks';
   people.forEach(function(p){
     var blocks='', nWp=0, nT=0, nL=0;
-    wpsFor(p).forEach(function(id){
-      var i=wpInfo(id); if(i.closed) return;
-      var rows=(IDX.byWp[id]||[]).filter(function(t){ return eff(t.id)!=='C' && (R.scope==='all'||t.start<=S.to); })
+    wpsFor(p,R.src).forEach(function(id){
+      var i=wpInfo(id); if(i.closed&&!withDone) return;
+      var rows=(IDX.byWp[id]||[]).filter(function(t){ return (withDone||eff(t.id)!=='C') && (R.scope==='all'||due(t)); })
         .map(function(t){ var st=eff(t.id); return {t:t,st:st,l:late(t,st,today)}; })
         .filter(function(r){ return R.only!=='late'||r.l; });
       if(!rows.length) return;
       nWp++; nT+=rows.length; rows.forEach(function(r){ if(r.l) nL++; });
       var w=IDX.wps[id];
-      blocks+='<section class="rwp"><div class="rwph"><span class="rid">'+esc(id)+'</span><span class="rdesc">'+esc(w.desc)+'</span></div>'+
+      blocks+='<section class="rwp"><div class="rwph"><span class="rid">'+esc(id)+'</span><span class="rdesc">'+esc(w.desc)+'</span>'+(w.site?'<span class="rg">Site item</span>':'')+'</div>'+
         '<div class="rsum">'+(i.worst?'<b class="rlate">'+esc(lateText(i.worst))+'</b> · ':'')+i.done+' of '+i.total+' tasks complete · '+(i.review?'Reviewed '+esc(ago(i.review.at)):'Never reviewed')+'</div>'+
         '<div class="scroll"><table class="rt"><thead><tr><th>Task</th><th>Description</th><th>Start</th><th>Finish</th><th>Status</th><th>Late</th></tr></thead><tbody>'+
-        rows.map(function(r){ return '<tr'+(r.l?' class="lt"':'')+'><td class="nw">'+esc(r.t.id)+'</td><td>'+(r.t.grp&&r.t.grp!==r.t.name?'<span class="rg">'+esc(r.t.grp)+'</span> ':'')+esc(r.t.name)+'</td>'+
-          '<td class="nw">'+fmt(r.t.start)+'</td><td class="nw">'+fmt(r.t.finish)+'</td><td class="nw">'+ST_TXT[r.st]+'</td><td class="nw">'+lateShort(r.l)+'</td></tr>'; }).join('')+
+        rows.map(function(r){ return '<tr'+(r.l?' class="lt"':r.st==='C'?' class="dn"':'')+'><td class="nw">'+esc(r.t.id)+'</td><td>'+(r.t.grp&&r.t.grp!==r.t.name?'<span class="rg">'+esc(r.t.grp)+'</span> ':'')+esc(r.t.name)+'</td>'+
+          '<td class="nw">'+(r.t.start?fmt(r.t.start):'–')+'</td><td class="nw">'+(r.t.finish?fmt(r.t.finish):'–')+'</td><td class="nw">'+ST_TXT[r.st]+'</td><td class="nw">'+lateShort(r.l)+'</td></tr>'; }).join('')+
         '</tbody></table></div></section>';
     });
     if(!nWp && R.resp==='All') return;
     any=true;
     out+='<section class="rperson'+(first?'':' pb')+'">'+
-      repHead('Workpack status – '+p,[scopeTxt,(R.only==='late'?'Late tasks only':'Outstanding and late tasks'),stamp()])+
+      repHead('Workpack status – '+p,[srcTxt,scopeTxt,showTxt,stamp()].filter(Boolean))+
       '<div class="rkpi"><span><b>'+nWp+'</b> workpacks</span><span><b>'+nT+'</b> tasks listed</span><span><b class="rlate">'+nL+'</b> late</span></div>'+
-      (blocks||'<p class="note">No outstanding tasks for this selection.</p>')+'</section>';
+      (blocks||'<p class="note">No tasks for this selection.</p>')+'</section>';
     first=false;
   });
-  return any?out:'<p class="note">No outstanding tasks for this selection.</p>';
+  return any?out:'<p class="note">No tasks for this selection.</p>';
 }
 function repStats(){
   var R=S.rep, c=computeStats(R.resp), all=computeStats('All');
   var kv=[['Workpacks closed',c.wpClosed+' of '+(c.wpOpen+c.wpClosed)+' ('+c.wpPct+'%)'],['Tasks complete',c.tDone+' of '+c.tAll+' ('+c.tPct+'%)'],['Tasks in progress',c.tProg],
     ['Late to start',c.lStart+' tasks'],['Late to finish',c.lFin+' tasks'],['Average days overdue',c.lateDays.length?c.avg.toFixed(1):'–'],
-    ['Workpacks with a late task',c.wpLate+' of '+c.wpOpen+' open'],['Open workpacks reviewed in last '+STALE_DAYS+' days',c.freshPct+'%']];
+    ['Workpacks with a late task',c.wpLate+' of '+c.wpOpen+' open'],['Active workpacks reviewed in last '+STALE_DAYS+' days',c.freshPct+'% of '+c.active]];
   var people=(R.resp==='All'?all:c).people;
   return '<section class="rperson">'+repHead('Schedule statistics – '+(R.resp==='All'?'All':R.resp),['As reported by the site team',stamp()])+
     '<h3>Summary</h3><table class="rt kv"><tbody>'+kv.map(function(r){ return '<tr><th>'+esc(r[0])+'</th><td>'+esc(r[1])+'</td></tr>'; }).join('')+'</tbody></table>'+
     '<h3>How late are the late tasks?</h3><table class="rt"><thead><tr><th>Days overdue</th><th class="num">Tasks</th></tr></thead><tbody>'+
       c.buckets.map(function(b){ return '<tr><td>'+b[2]+'</td><td class="num">'+b[3]+'</td></tr>'; }).join('')+'</tbody></table>'+
-    '<h3>By person</h3><div class="scroll"><table class="rt"><thead><tr><th>Person</th><th class="num">Open WPs</th><th class="num">WPs with late task</th><th class="num">Late tasks</th><th class="num">Not reviewed '+STALE_DAYS+'d+</th></tr></thead><tbody>'+
+    '<h3>By person</h3><div class="scroll"><table class="rt"><thead><tr><th>Person</th><th class="num">Open WPs</th><th class="num">WPs with late task</th><th class="num">Late tasks</th><th class="num">Active, not reviewed '+STALE_DAYS+'d+</th></tr></thead><tbody>'+
       people.map(function(p){ return '<tr><td>'+esc(p.name)+'</td><td class="num">'+p.open+'</td><td class="num">'+p.lateWps+'</td><td class="num">'+p.late+'</td><td class="num">'+p.stale+'</td></tr>'; }).join('')+'</tbody></table></div>'+
     '<h3>Push list – worst slipping workpacks</h3>'+(c.push.length?'<div class="scroll"><table class="rt"><thead><tr><th>Workpack</th><th>Description</th><th>Responsible</th><th class="num">Late tasks</th><th>Worst</th></tr></thead><tbody>'+
       c.push.slice(0,25).map(function(i){ var w=IDX.wps[i.id]; return '<tr class="lt"><td class="nw">'+esc(i.id)+'</td><td>'+esc(w.desc)+'</td><td class="nw">'+esc(w.resp)+'</td><td class="num">'+i.lates.length+'</td><td class="nw">'+esc(lateText(i.worst))+'</td></tr>'; }).join('')+'</tbody></table></div>':'<p class="note">Nothing is late.</p>')+
-    '<h3>Not reviewed in the last '+STALE_DAYS+' days</h3>'+(c.unrev.length?'<div class="scroll"><table class="rt"><thead><tr><th>Workpack</th><th>Description</th><th>Responsible</th><th>Last review</th></tr></thead><tbody>'+
-      c.unrev.slice(0,40).map(function(i){ var w=IDX.wps[i.id]; return '<tr><td class="nw">'+esc(i.id)+'</td><td>'+esc(w.desc)+'</td><td class="nw">'+esc(w.resp)+'</td><td class="nw">'+(i.review?esc(revAge(i))+' ago':'Never')+'</td></tr>'; }).join('')+'</tbody></table></div>'+(c.unrev.length>40?'<p class="note">'+(c.unrev.length-40)+' more not shown.</p>':''):'<p class="note">All open workpacks are up to date.</p>')+
+    '<h3>Active workpacks not reviewed in the last '+STALE_DAYS+' days</h3>'+(c.unrev.length?'<div class="scroll"><table class="rt"><thead><tr><th>Workpack</th><th>Description</th><th>Responsible</th><th>Last review</th></tr></thead><tbody>'+
+      c.unrev.slice(0,40).map(function(i){ var w=IDX.wps[i.id]; return '<tr><td class="nw">'+esc(i.id)+'</td><td>'+esc(w.desc)+'</td><td class="nw">'+esc(w.resp)+'</td><td class="nw">'+(i.review?esc(revAge(i))+' ago':'Never')+'</td></tr>'; }).join('')+'</tbody></table></div>'+(c.unrev.length>40?'<p class="note">'+(c.unrev.length-40)+' more not shown.</p>':''):'<p class="note">All active workpacks are up to date.</p>')+
+    repSite(R.resp)+
   '</section>';
 }
+function repSite(resp){
+  if(!IDX.hasSite) return '';
+  var c=computeSite(resp);
+  if(!c.iAll) return '<h3>Site items</h3><p class="note">No site items for this selection.</p>';
+  return '<h3>Site items (tracked outside the schedule)</h3><table class="rt kv"><tbody>'+
+    [['Items complete',c.iDone+' of '+c.iAll+' ('+c.iPct+'%)'],['Items in progress',c.iProg],['Groups closed',c.gClosed+' of '+(c.gOpen+c.gClosed)],
+     ['Late to start',c.lStart+' items'],['Late to finish',c.lFin+' items'],['Open items with no planned dates',c.noDates],['Active groups not reviewed in last '+STALE_DAYS+' days',c.stale]]
+    .map(function(r){ return '<tr><th>'+esc(r[0])+'</th><td>'+esc(r[1])+'</td></tr>'; }).join('')+'</tbody></table>'+
+    (c.late.length?'<div class="scroll"><table class="rt"><thead><tr><th>Group</th><th>Description</th><th>Responsible</th><th class="num">Late items</th><th>Worst</th></tr></thead><tbody>'+
+      c.late.slice(0,25).map(function(i){ var w=IDX.wps[i.id]; return '<tr class="lt"><td class="nw">'+esc(i.id)+'</td><td>'+esc(w.desc)+'</td><td class="nw">'+esc(w.resp)+'</td><td class="num">'+i.lates.length+'</td><td class="nw">'+esc(lateText(i.worst))+'</td></tr>'; }).join('')+'</tbody></table></div>':'');
+}
 function viewReports(){
-  var R=S.rep, ppl=[['All','All']].concat(IDX.people.map(function(p){return [p,p];}));
+  var R=S.rep, ppl=[['All','All']].concat((R.type==='tanks'?IDX.tkPeople:IDX.people).map(function(p){return [p,p];}));
+  if(R.resp!=='All'&&ppl.every(function(x){return x[0]!==R.resp;})) R.resp='All';
+  var types=[['wp','Workpacks – task list'],['stats','Statistics summary']].concat(IDX.tk.has?[['tanks','Tanks and seachests (11×17 landscape)']]:[]);
   var ctl='<section class="filters noprint"><div class="wrap">'+
-    '<div class="field"><label class="lbl" for="rtype">Report</label>'+sel('rtype','rtype',[['wp','Workpacks – outstanding and late tasks'],['stats','Statistics summary']],R.type)+'</div>'+
+    '<div class="field"><label class="lbl" for="rtype">Report</label>'+sel('rtype','rtype',types,R.type)+'</div>'+
     '<div class="field"><label class="lbl" for="rresp">Responsible</label>'+sel('rresp','rresp',ppl,R.resp)+'</div>'+
-    (R.type==='wp'?'<div class="field"><label class="lbl" for="rscope">Tasks</label>'+sel('rscope','rscope',[['period','Due to start by '+fmt(S.to)+' (current period)'],['all','All outstanding, any date']],R.scope)+'</div>'+
-      '<div class="field"><label class="lbl" for="ronly">Show</label>'+sel('ronly','ronly',[['out','Outstanding and late'],['late','Late tasks only']],R.only)+'</div>':'')+
+    (R.type==='wp'?(IDX.hasSite?'<div class="field"><label class="lbl" for="rsrc">Include</label>'+sel('rsrc','rsrc',[['all','Schedule and site items'],['sched','Schedule only'],['site','Site items only']],R.src)+'</div>':'')+
+      '<div class="field"><label class="lbl" for="rscope">Tasks</label>'+sel('rscope','rscope',[['period','Due to start by '+fmt(S.to)+' (current period)'],['all','All tasks, any date']],R.scope)+'</div>'+
+      '<div class="field"><label class="lbl" for="ronly">Show</label>'+sel('ronly','ronly',[['out','Outstanding and late'],['late','Late tasks only']],R.only)+'</div>'+
+      (R.only!=='late'?'<label class="check" for="rdone"><input id="rdone" type="checkbox" data-act="rdone"'+(R.done?' checked':'')+'><span>Include completed tasks</span></label>':''):'')+
     '<button class="btn wide" data-act="print">Print or save as PDF</button>'+
     (LIVE?'':'<p class="note">Printing is blocked in this preview page. It works in the live app. The report below is what will print.</p>')+
     '</div></section>';
-  return header('Reports')+ctl+'<main><div class="wrap rep">'+(R.type==='stats'?repStats():repWorkpacks())+'</div></main>'+tabs();
+  return header('Reports')+ctl+'<main><div class="wrap rep'+(R.type==='tanks'?' wide':'')+'">'+(R.type==='stats'?repStats():R.type==='tanks'?repTanks():repWorkpacks())+'</div></main>'+tabs();
+}
+
+/* ---------- tanks and seachests ---------- */
+function tkReq(id){ return (IDX.tk.byTank[id]||[]).filter(function(x){ return x.req==='Y'; }); }
+function tkMatch(x,resp,disc){ return (resp==='All'||x.resp===resp) && (!disc||disc==='All'||x.disc===disc); }
+function tkInfo(id,resp,disc){
+  var today=todayISO(), soon=addDays(today,ACTIVE_DAYS), its=tkReq(id).filter(function(x){ return tkMatch(x,resp,disc); });
+  var done=0, prog=0, lates=[], active=false, worst=null;
+  its.forEach(function(x){ var st=eff(x.id); if(st==='C') done++; else { if(st==='P'){ prog++; active=true; } if(x.start&&x.start<=soon) active=true; }
+    var l=late(x,st,today); if(l){ lates.push(l); if(!worst||l.days>worst.days) worst=l; } });
+  var rv=S.reviews['TK|'+id], rdays=rv?diff(rv.at.slice(0,10),today):null;
+  var closed=its.length>0&&done===its.length;
+  return {id:id,items:its,total:its.length,done:done,prog:prog,lates:lates,worst:worst,closed:closed,
+    active:active&&!closed, review:rv, stale:!rv||rdays>STALE_DAYS};
+}
+function discShort(d){ return {Structural:'Struct.',Electrical:'Elec.',Coatings:'Coating'}[d]||d; }
+function tkStrip(id){
+  var all=IDX.tk.byTank[id]||[];
+  return '<div class="disc" style="grid-template-columns:repeat('+IDX.tk.discs.length+',minmax(0,1fr))">'+IDX.tk.discs.map(function(d){
+    var ys=all.filter(function(x){ return x.disc===d.name&&x.req==='Y'; }), ns=all.filter(function(x){ return x.disc===d.name&&x.req==='N'; });
+    if(!ys.length) return '<div class="dc '+(ns.length?'X':'B')+'">'+esc(discShort(d.name))+'<small>'+(ns.length?'Not req.':'&nbsp;')+'</small></div>';
+    var c=0,p=0,lt=false,today=todayISO(); ys.forEach(function(x){ var st=eff(x.id); if(st==='C') c++; else if(st==='P') p++; if(late(x,st,today)) lt=true; });
+    var k=c===ys.length?'C':(c||p)?'P':'N';
+    return '<div class="dc '+k+(lt?' L':'')+'">'+esc(discShort(d.name))+'<small>'+c+'/'+ys.length+'</small></div>';
+  }).join('')+'</div>';
+}
+function tankCard(t,i){
+  var rv=i.review?'Reviewed '+ago(i.review.at):'Never reviewed';
+  return '<article class="card"><div class="row"><div class="grow"><div class="wpid">'+esc(t.id)+'</div><div class="wpdesc">'+esc(t.name)+'</div></div>'+
+    '<button class="btn" data-act="tank" data-id="'+esc(t.id)+'" aria-label="Edit '+esc(t.id)+'">Edit</button></div>'+
+    (i.worst?'<div class="badges"><span class="badge late">'+WARN+esc(lateText(i.worst))+'</span></div>':'')+
+    tkStrip(t.id)+
+    '<div class="meta"><span>'+i.done+' of '+i.total+' required items complete</span><span class="'+(i.stale&&i.active?'stale':'')+'">'+rv+'</span></div></article>';
+}
+function viewTanks(){
+  var R=S.tresp, D=S.tdisc, q=(S.tq||'').trim().toLowerCase(), work=[], none=[], nDone=0, nProg=0, nLate=0;
+  IDX.tk.tanks.forEach(function(t){
+    if(q && (t.id+' '+t.name).toLowerCase().indexOf(q)<0) return;
+    var i=tkInfo(t.id,R,D);
+    if(!i.total){ if(R==='All'&&(!D||D==='All')) none.push(t); return; }
+    work.push([t,i]); if(i.closed) nDone++; else if(i.done||i.prog) nProg++; if(i.worst) nLate++;
+  });
+  var opts=[['All','All']].concat(IDX.tkPeople.map(function(p){return [p,p];}));
+  var pills=[['All','All']].concat(IDX.tk.discs.map(function(d){return [d.name,d.name];})).map(function(d){
+    return '<button class="pill'+((D||'All')===d[0]?' on':'')+'" data-act="tdisc" data-v="'+esc(d[0])+'">'+esc(d[1])+'</button>'; }).join('');
+  var list=function(arr){ return arr.length?'<div class="grid">'+arr.map(function(x){ return tankCard(x[0],x[1]); }).join('')+'</div>':''; };
+  var tanks=work.filter(function(x){ return !x[0].seachest; }), chests=work.filter(function(x){ return x[0].seachest; });
+  return header('Tanks and seachests')+
+  '<section class="filters"><div class="wrap">'+
+    '<div class="field"><label class="lbl" for="tresp">Responsible</label>'+sel('tresp','tresp',opts,R)+'</div>'+
+    '<div class="field"><span class="lbl">Discipline</span><div class="pills">'+pills+'</div></div>'+
+    '<div class="field"><label class="lbl" for="tq">Find a tank</label><input id="tq" class="text" type="search" data-act="tq" value="'+esc(S.tq||'')+'" placeholder="e.g. 7S or MGO" autocomplete="off"></div>'+
+  '</div></section>'+
+  '<main><div class="wrap">'+
+    '<div class="tiles"><div class="tile"><b>'+work.length+'</b><span>With work</span></div>'+
+    '<div class="tile late"><b>'+nLate+'</b><span>With a late item</span></div>'+
+    '<div class="tile"><b>'+nDone+'</b><span>Complete</span></div></div>'+
+    '<section class="sec"><h2>Tanks ('+tanks.length+')</h2>'+(list(tanks)||'<div class="empty">No tanks with required work for this selection.</div>')+
+    (chests.length?'<h2>Seachests ('+chests.length+')</h2>'+list(chests):'')+
+    (none.length?fold('tknone','No required items yet ('+none.length+')','<div class="empty">'+none.map(function(t){return esc(t.id);}).join(', ')+'</div>'):'')+
+    '</section></div></main>'+tabs();
+}
+function tankItemCard(t){
+  var saved=eff(t.id), cur=S.pending[t.id]||saved, l=late(t,saved,todayISO());
+  var b=function(code,label){ return '<button class="s-'+code+'" data-act="set" data-t="'+esc(t.id)+'" data-s="'+code+'" aria-pressed="'+(cur===code)+'">'+TICK+'<span>'+label+'</span></button>'; };
+  return '<article class="card task" id="t-'+esc(t.id)+'">'+
+    '<div class="row"><span class="tname grow">'+esc(t.item)+'</span>'+(S.pending[t.id]?'<span class="changed">CHANGED</span>':'')+'</div>'+
+    '<div class="badges"><span class="note">'+spanTxt(t.start,t.finish)+'</span>'+(l?'<span class="badge late">'+WARN+esc(lateText(l))+'</span>':'')+'</div>'+
+    '<div class="seg" role="group" aria-label="Status of '+esc(t.item)+'">'+b('N','Not Started')+b('P','In Progress')+b('C','Complete')+'</div></article>';
+}
+function viewTank(){
+  var t=IDX.tk.byId[S.tank], all=IDX.tk.byTank[S.tank]||[], me=ls('me'), i=tkInfo(S.tank,'All','All'), secs='';
+  IDX.tk.discs.forEach(function(d){
+    var ys=all.filter(function(x){ return x.disc===d.name&&x.req==='Y'; }), ns=all.filter(function(x){ return x.disc===d.name&&x.req==='N'; });
+    if(!ys.length&&!ns.length) return;
+    var leads=[]; ys.forEach(function(x){ if(leads.indexOf(x.resp)<0) leads.push(x.resp); });
+    secs+='<div class="dhead"><h3>'+esc(d.name)+'</h3>'+(leads.indexOf(me)>=0?'<span class="mine">YOURS</span>':'<span class="note">'+esc(leads.join(', '))+'</span>')+'</div>'+
+      (ys.length?'<div class="grid">'+ys.map(tankItemCard).join('')+'</div>':'<div class="note">Nothing required.</div>')+
+      (ys.length&&ns.length?'<div class="note">Not required: '+ns.map(function(x){return esc(x.item);}).join(', ')+'</div>':'');
+  });
+  return '<header class="bar wphead"><div class="wrap">'+
+    '<button class="back" data-act="back"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>All tanks</button>'+
+    '<div><div class="brand">'+esc(t.id)+'</div><div class="wpdesc" style="font-weight:600">'+esc(t.name)+'</div>'+
+    '<div class="sub">'+(i.review?'Reviewed '+ago(i.review.at)+' by '+esc(i.review.by):'Not reviewed yet')+'</div></div>'+
+    '<button class="update" data-act="save" '+(S.saving?'disabled':'')+'><span>'+(S.saving?'Saving…':'Update')+'</span><small id="updtext">'+updText()+'</small></button>'+
+  '</div></header>'+
+  '<main><div class="wrap"><section class="sec">'+(secs||'<div class="empty">No required items for this tank yet.</div>')+
+  '<p class="note">Pressing Update with no changes still records this tank as reviewed today.</p></section></div></main>'+tabs();
+}
+function computeTanks(resp){
+  var c={discs:[],work:0,done:0,iDone:0,iAll:0,iLate:0,stale:0,active:0,late:[]}, today=todayISO();
+  IDX.tk.discs.forEach(function(d){ c.discs.push({name:d.name,leads:{},c:0,p:0,l:0,n:0}); });
+  IDX.tk.tanks.forEach(function(t){
+    var i=tkInfo(t.id,resp,'All'); if(!i.total) return;
+    c.work++; if(i.closed) c.done++; if(i.active){ c.active++; if(i.stale) c.stale++; }
+    if(i.worst) c.late.push([t,i]);
+    i.items.forEach(function(x){ var st=eff(x.id), dd=c.discs.filter(function(z){return z.name===x.disc;})[0]; if(!dd) return;
+      dd.n++; dd.leads[x.resp]=1; if(st==='C') dd.c++; else if(st==='P') dd.p++; if(late(x,st,today)){ dd.l++; c.iLate++; }
+      c.iAll++; if(st==='C') c.iDone++; });
+  });
+  c.late.sort(function(a,b){ return b[1].worst.days-a[1].worst.days||cmp(a[0].id,b[0].id); });
+  return c;
+}
+function tankBars(c){
+  return '<div class="tbars">'+c.discs.filter(function(d){return d.n;}).map(function(d){
+    return '<div class="tbar"><div class="dh"><b>'+esc(d.name)+'</b><span>'+esc(Object.keys(d.leads).join(', '))+'</span></div>'+
+      '<div class="stk"><i class="C" style="width:'+(d.c/d.n*100).toFixed(1)+'%"></i><i class="P" style="width:'+(d.p/d.n*100).toFixed(1)+'%"></i></div>'+
+      '<div class="dn">'+d.c+' of '+d.n+' complete · '+d.p+' in progress'+(d.l?' · <b class="rlate">'+d.l+' late</b>':'')+'</div></div>';
+  }).join('')+'</div>';
+}
+function tankBlock(resp){
+  if(!IDX.tk.has) return '';
+  var c=computeTanks(resp);
+  return '<section class="sec"><h2>Tanks and seachests</h2>'+
+    (c.work?'<div class="kgrid">'+
+      '<div class="k"><span class="t">Tanks complete</span><b>'+c.done+'<small> / '+c.work+'</small></b><span class="d">with required work</span></div>'+
+      '<div class="k"><span class="t">Items complete</span><b>'+c.iDone+'<small> / '+c.iAll+'</small></b><div class="track"><div class="fill" style="width:'+(c.iAll?c.iDone/c.iAll*100:0).toFixed(1)+'%"></div></div></div>'+
+      '<div class="k late"><b>'+c.iLate+'</b><span class="t">Late items</span><span class="d">in '+c.late.length+' tanks</span></div>'+
+      '<div class="k"><b>'+c.stale+'</b><span class="t">Active tanks not reviewed '+STALE_DAYS+'d+</span><span class="d">'+c.active+' active</span></div></div>'+
+      '<div class="card">'+tankBars(c)+'</div>'+
+      (c.late.length?'<div class="list">'+c.late.slice(0,10).map(function(x){ var t=x[0],i=x[1];
+        return '<button class="li" data-act="tank" data-id="'+esc(t.id)+'"><span class="grow"><span class="wpid" style="font-size:19px;display:block">'+esc(t.id)+'</span><span style="font-size:17px">'+esc(t.name)+' · '+i.lates.length+' late</span></span><span class="badge late">'+i.worst.days+' d</span></button>'; }).join('')+'</div>':'')
+     :'<div class="empty">No required tank items for this person.</div>')+
+    '</section>';
+}
+// 11x17 landscape matrix: one row per tank, one column per item
+function repTanks(){
+  var R=S.rep, today=todayISO(), c=computeTanks(R.resp), discs=IDX.tk.discs.filter(function(d){return d.items.length;});
+  var rows=IDX.tk.tanks.filter(function(t){ return R.resp==='All'||tkInfo(t.id,R.resp,'All').total; });
+  var cell=function(t,d,item,first){
+    var x=(IDX.tk.byTank[t.id]||[]).filter(function(z){ return z.disc===d&&z.item===item; })[0], g=first?' gs':'';
+    if(!x) return '<td class="c'+g+'"></td>';
+    if(x.req==='N') return '<td class="c nr'+g+'"><span>·</span></td>';
+    var st=eff(x.id), l=late(x,st,today), mark={C:'✓',P:'IP',N:''}[st];
+    var dt=st==='C'?'':(x.finish?(l?'!':'')+fmt(x.finish):(l?'!':'')+'–');
+    return '<td class="c'+g+'"><span class="tm '+st+(l?' L':'')+'">'+mark+'</span><span class="tdt'+(l?' lt':'')+'">'+dt+'</span></td>';
+  };
+  var body='', sepDone=false;
+  rows.forEach(function(t){
+    if(t.seachest&&!sepDone){ body+='<tr class="tsep"><td colspan="99">Seachests</td></tr>'; sepDone=true; }
+    var i=tkInfo(t.id,'All','All');
+    body+='<tr><td class="ttid"><b>'+esc(t.id)+'</b><span>'+esc(t.name)+'</span></td>'+
+      discs.map(function(d){ return d.items.map(function(it,k){ return cell(t,d.name,it,k===0); }).join(''); }).join('')+
+      '<td class="tpct'+(i.worst?' lt':'')+'">'+(i.total?Math.round(i.done/i.total*100)+'%':'–')+'</td></tr>';
+  });
+  var foot=discs.map(function(d){ return d.items.map(function(it,k){
+    var ys=[]; rows.forEach(function(t){ (IDX.tk.byTank[t.id]||[]).forEach(function(z){ if(z.disc===d.name&&z.item===it&&z.req==='Y') ys.push(z); }); });
+    return '<td class="c'+(k===0?' gs':'')+'">'+ys.filter(function(z){return eff(z.id)==='C';}).length+'/'+ys.length+'</td>'; }).join(''); }).join('');
+  var leadOf=function(d){ var L={}; rows.forEach(function(t){ (IDX.tk.byTank[t.id]||[]).forEach(function(z){ if(z.disc===d&&z.req==='Y') L[z.resp]=1; }); }); return Object.keys(L).join(', '); };
+  var title=R.resp==='All'?'All tanks and seachests':'Tanks and seachests – '+R.resp;
+  return '<section class="trep">'+
+    '<div class="ttop"><div><div class="reye">'+esc(IDX.tk.source||'Tank tracker')+'</div><h1>'+esc(title)+'</h1>'+
+      '<div class="rmeta">Status as reported by the site team · '+esc(stamp())+'</div>'+
+      '<div class="tkp"><div><b>'+rows.length+'</b>tanks &amp; seachests</div><div><b>'+c.done+'</b>fully complete</div><div><b>'+c.iDone+'/'+c.iAll+'</b>items complete</div><div class="lt"><b>'+c.late.length+'</b>with a late item</div></div></div>'+
+      tankBars(c)+
+      '<div class="tlg"><div><span class="tm C">✓</span>Complete</div><div><span class="tm P">IP</span>In progress + planned finish</div>'+
+      '<div><span class="tm N"></span>Not started + planned finish</div><div><span class="tm N L"></span><span class="tdt lt">!24 Oct</span>Late</div>'+
+      '<div><span class="nrd">·</span>Not required</div><div><span class="tdt">–</span>No planned date</div></div></div>'+
+    '<div class="scroll"><table class="tmx"><thead><tr><th rowspan="2" class="ttid">Tank / seachest</th>'+
+      discs.map(function(d,j){ return '<th colspan="'+d.items.length+'" class="grp g'+(j%4)+'">'+esc(d.name)+'<span>'+esc(leadOf(d.name))+'</span></th>'; }).join('')+
+      '<th rowspan="2" class="tpct">Done</th></tr><tr>'+
+      discs.map(function(d,j){ return d.items.map(function(it,k){ return '<th class="it g'+(j%4)+(k===0?' gs':'')+'">'+esc(it)+'</th>'; }).join(''); }).join('')+
+    '</tr></thead><tbody>'+body+'</tbody><tfoot><tr><td>Complete / required</td>'+foot+'<td></td></tr></tfoot></table></div></section>';
 }
 
 /* ---------- admin ---------- */
@@ -704,7 +1106,23 @@ function viewAdmin(){
       (p.warnings.length?'<br>'+p.warnings.slice(0,6).map(esc).join('<br>'):'')+'</div>'+
       (LIVE?'<button class="btn wide" data-act="publish">Publish to the app</button>':'<div class="note">In demo mode the upload is read and checked but not published.</div>'):'')+
     '</div>';
-  body+='<div class="card"><b>Excel export</b><span class="note">Current status of every task, plus the full change log and review dates.</span><button class="btn wide" data-act="export">Download Excel</button>'+
+  var sp=S.siteParsed, site=S.site||{workpacks:[],tasks:[]};
+  body+='<div class="card"><b>Site items list</b><span class="note">'+(site.tasks.length?esc(site.source||'')+' · imported '+(site.imported?fmtY(site.imported.slice(0,10)):'–')+' · '+site.workpacks.length+' groups · '+site.tasks.length+' items':'No site items list uploaded yet.')+'</span>'+
+    '<span class="note">Upload the Site Items Excel file. It is kept separate from the schedule; updates carry over by Item ID.</span>'+
+    '<input id="sfile" type="file" accept=".xlsx,.xls" data-act="sitefile" style="font-size:17px">'+
+    (sp?'<div class="note"><b>'+sp.workpacks.length+' groups, '+sp.tasks.length+' items</b> read from '+esc(sp.source)+'.'+
+      (sp.warnings.length?'<br>'+sp.warnings.slice(0,8).map(esc).join('<br>'):'')+'</div>'+
+      (LIVE?'<button class="btn wide" data-act="sitepublish">Publish site items</button>':'<div class="note">In demo mode the upload is read and checked but not published.</div>'):'')+
+    '</div>';
+  var tp=S.tankParsed;
+  body+='<div class="card"><b>Tanks and seachests</b><span class="note">'+(IDX.tk.has?esc(IDX.tk.source||'')+' · imported '+(IDX.tk.imported?fmtY(IDX.tk.imported.slice(0,10)):'–')+' · '+IDX.tk.tanks.length+' tanks and seachests':'No tank list uploaded yet.')+'</span>'+
+    '<span class="note">Upload the Tanks and Seachests tracker. Updates carry over by Tank ID and item name.</span>'+
+    '<input id="tfile" type="file" accept=".xlsx,.xls" data-act="tankfile" style="font-size:17px">'+
+    (tp?'<div class="note"><b>'+tp.tanks.length+' tanks and seachests, '+tp.items.filter(function(x){return x.req==='Y';}).length+' required items</b> read from '+esc(tp.source)+'.'+
+      (tp.warnings.length?'<br>'+tp.warnings.slice(0,8).map(esc).join('<br>'):'')+'</div>'+
+      (LIVE?'<button class="btn wide" data-act="tankpublish">Publish tank list</button>':'<div class="note">In demo mode the upload is read and checked but not published.</div>'):'')+
+    '</div>';
+  body+='<div class="card"><b>Excel export</b><span class="note">Your backup: current status of every schedule task, site item and tank item, plus the full change log and review dates.</span><button class="btn wide" data-act="export">Download Excel</button>'+
     (LIVE?'':'<span class="note">Downloads are blocked in this preview page. They work in the live app.</span>')+'</div>';
   if(!LIVE) body+=S.resetAsk?'<div class="confirm"><b>Clear all demo updates on this phone?</b><div class="row"><button class="btn" data-act="resetyes">Yes, clear</button><button class="btn ghost" data-act="resetno">Cancel</button></div></div>'
     :'<button class="btn ghost wide" data-act="reset">Clear demo updates</button>';
@@ -726,19 +1144,28 @@ function doExport(){
   var getData = LIVE ? api('/api/export',{admin:true}) : Promise.resolve({log:ls('demo_log')||[]});
   Promise.all([needXLSX(),getData]).then(function(r){
     var X=r[0], d=r[1], today=todayISO();
-    var rows=S.sched.tasks.slice().sort(function(a,b){return cmp(a.wp,b.wp)||cmp(a.id,b.id);}).map(function(t){
+    var rows=IDX.allT.slice().sort(function(a,b){return (a.site?1:0)-(b.site?1:0)||cmp(a.wp,b.wp)||cmp(a.id,b.id);}).map(function(t){
       var w=IDX.wps[t.wp], s=S.status[t.id], st=eff(t.id), l=late(t,st,today);
-      return {'Workpack':t.wp,'Workpack description':w.desc,'Responsible':w.resp,'Task ID':t.id,'Group':t.grp,'Task':t.name,
+      return {'Source':t.site?'Site items':'Schedule','Workpack':t.wp,'Workpack description':w.desc,'Responsible':w.resp,'Task ID':t.id,'Group':t.grp,'Task':t.name,
         'Planned start':t.start,'Planned finish':t.finish,'Status':{N:'Not Started',P:'In Progress',C:'Complete'}[st],
-        'Status source':s?'Site team':'Planner (P6)','Updated by':s?s.by:'','Updated at':s?s.at:'',
+        'Status source':s?'Site team':(t.site?'Site items file':'Planner (P6)'),'Updated by':s?s.by:'','Updated at':s?s.at:'',
         'Late':l?(l.kind==='finish'?'Late to finish':'Late to start'):'','Days late':l?l.days:''};
     });
     var log=(d.log||[]).map(function(e){ return {'Time (UTC)':e.at,'By':e.by,'Workpack':e.wp,'Task ID':e.task,'From':e.old||'','To':e.new}; });
-    var rv=S.sched.workpacks.map(function(w){ var r=S.reviews[w.id]; return {'Workpack':w.id,'Description':w.desc,'Responsible':w.resp,'Last reviewed (UTC)':r?r.at:'','Reviewed by':r?r.by:''}; });
+    var rv=IDX.allW.map(function(w){ var r=S.reviews[w.id]; return {'Source':w.site?'Site items':'Schedule','Workpack':w.id,'Description':w.desc,'Responsible':w.resp,'Last reviewed (UTC)':r?r.at:'','Reviewed by':r?r.by:''}; });
     var wb=X.utils.book_new();
     X.utils.book_append_sheet(wb,X.utils.json_to_sheet(rows),'Task status');
     X.utils.book_append_sheet(wb,X.utils.json_to_sheet(log.length?log:[{'Time (UTC)':'','By':'','Workpack':'','Task ID':'','From':'','To':''}]),'Change log');
     X.utils.book_append_sheet(wb,X.utils.json_to_sheet(rv),'Workpack reviews');
+    if(IDX.tk.has){
+      var trows=[]; IDX.tk.tanks.forEach(function(t){ var r=S.reviews['TK|'+t.id];
+        (IDX.tk.byTank[t.id]||[]).forEach(function(x){ var s2=S.status[x.id], st=x.req==='Y'?eff(x.id):null, l=st?late(x,st,today):null;
+          trows.push({'Tank ID':t.id,'Tank / seachest':t.name,'Discipline':x.disc,'Item':x.item,'Required':x.req,'Responsible':x.resp,
+            'Planned start':x.start||'','Planned finish':x.finish||'','Status':st?{N:'Not Started',P:'In Progress',C:'Complete'}[st]:'',
+            'Updated by':s2?s2.by:'','Updated at':s2?s2.at:'','Late':l?(l.kind==='finish'?'Late to finish':'Late to start'):'','Days late':l?l.days:'',
+            'Tank last reviewed (UTC)':r?r.at:'','Reviewed by':r?r.by:''}); }); });
+      X.utils.book_append_sheet(wb,X.utils.json_to_sheet(trows),'Tanks');
+    }
     X.writeFile(wb,'Workpack status '+today+'.xlsx');
     S.adminErr=''; S.adminMsg='Export created.'; render();
   }).catch(function(e){ S.adminErr=e.message; S.adminMsg=''; render(); });
@@ -753,7 +1180,7 @@ function viewPin(err){
 function viewWho(){
   var me=ls('me');
   return '<div class="overlay"><div class="wrap"><div class="brand">Who are you?</div><p class="note">Your updates are recorded under this name. The phone remembers it.</p>'+
-    IDX.people.map(function(p){ return '<button class="namebtn" data-act="me" data-n="'+esc(p)+'">'+esc(p)+'</button>'; }).join('')+
+    IDX.allPeople.filter(function(p){ return p!=='Unassigned'; }).map(function(p){ return '<button class="namebtn" data-act="me" data-n="'+esc(p)+'">'+esc(p)+'</button>'; }).join('')+
     '<button class="namebtn" data-act="me" data-n="Management">Management (view all)</button>'+
     (me?'<button class="link" data-act="whoclose">Cancel</button>':'')+'</div></div>';
 }
@@ -762,12 +1189,14 @@ function viewWho(){
 function render(){
   var y=window.scrollY, v=S.view;
   if(S.who){ app.innerHTML=viewWho(); return; }
-  app.innerHTML = v==='wp'?viewWp():v==='stats'?viewStats():v==='admin'?viewAdmin():v==='reports'?viewReports():viewList();
+  app.innerHTML = v==='wp'?viewWp():v==='stats'?viewStats():v==='admin'?viewAdmin():v==='reports'?viewReports():v==='tanks'?viewTanks():v==='tank'?viewTank():viewList();
+  var pg=document.getElementById('pgsz'); if(pg) pg.textContent=(v==='reports'&&S.rep.type==='tanks')?'@page{size:17in 11in;margin:.35in .4in .45in}':'@page{size:A4;margin:12mm}';
+  if(S.focusTq){ var q=document.getElementById('tq'); if(q){ q.focus(); var n=q.value.length; try{ q.setSelectionRange(n,n); }catch(e){} } S.focusTq=false; }
   window.scrollTo(0,S.keepScroll?y:0); S.keepScroll=false;
 }
 function rerender(){ S.keepScroll=true; render(); }
 function setPeriod(span){ S.span=span; S.from=todayISO(); S.to=addDays(S.from,span); ls('span',span); }
-function leaveWp(){ S.pending={}; S.confirmAll=false; S.view='list'; render(); }
+function leaveWp(){ S.pending={}; S.confirmAll=false; S.view=S.view==='tank'?'tanks':'list'; render(); }
 
 app.addEventListener('click',function(ev){
   var el=ev.target.closest('[data-act]'); if(!el) return;
@@ -775,10 +1204,13 @@ app.addEventListener('click',function(ev){
   if(a==='pin'){ var v=document.getElementById('pin').value.trim(); if(!v) return; ls('pin',v); start(); return; }
   if(a==='who'){ S.who=true; render(); return; }
   if(a==='whoclose'){ S.who=false; render(); return; }
-  if(a==='me'){ var n=el.getAttribute('data-n'); ls('me',n); S.who=false; S.resp=(n==='Management')?'All':n; ls('resp',S.resp); S.rep.resp=S.resp; render(); return; }
-  if(a==='tab'){ if(S.view==='wp'&&pendingCount()){ toast('Press Update first, or go back to discard.'); return; } S.view=el.getAttribute('data-v'); S.pending={}; render(); return; }
+  if(a==='me'){ var n=el.getAttribute('data-n'); ls('me',n); S.who=false; S.resp=(n==='Management')?'All':n; ls('resp',S.resp); S.rep.resp=S.resp; S.tresp=IDX.tkPeople.indexOf(n)>=0?n:'All'; render(); return; }
+  if(a==='tank'){ S.tank=el.getAttribute('data-id'); S.pending={}; S.view='tank'; render(); return; }
+  if(a==='tdisc'){ S.tdisc=el.getAttribute('data-v'); ls('tdisc',S.tdisc); rerender(); return; }
+  if(a==='tab'){ if((S.view==='wp'||S.view==='tank')&&pendingCount()){ toast('Press Update first, or go back to discard.'); return; } S.view=el.getAttribute('data-v'); S.pending={}; render(); return; }
   if(a==='fold'){ var k=el.getAttribute('data-k'); S.open[k]=!S.open[k]; rerender(); return; }
   if(a==='span'){ setPeriod(+el.getAttribute('data-n')); rerender(); return; }
+  if(a==='src'){ S.src=el.getAttribute('data-v'); ls('src',S.src); rerender(); return; }
   if(a==='edit'){ S.wp=el.getAttribute('data-wp'); S.pending={}; S.confirmAll=false; S.view='wp'; render(); return; }
   if(a==='back'){ if(pendingCount()&&!S.discardAsk){ S.discardAsk=true; toast('Unsaved changes. Tap back again to discard them.'); setTimeout(function(){S.discardAsk=false;},4000); return; } S.discardAsk=false; leaveWp(); return; }
   if(a==='set'){
@@ -793,11 +1225,11 @@ app.addEventListener('click',function(ev){
   if(a==='allyes'){ (IDX.byWp[S.wp]||[]).forEach(function(t){ if(eff(t.id)!=='C') S.pending[t.id]='C'; }); S.confirmAll=false; rerender(); return; }
   if(a==='save'){
     if(S.saving) return;
-    var ch=Object.keys(S.pending).map(function(id){ return {id:id,s:S.pending[id],old:eff(id)}; }), wp=S.wp;
+    var ch=Object.keys(S.pending).map(function(id){ return {id:id,s:S.pending[id],old:eff(id)}; }), wp=S.view==='tank'?'TK|'+S.tank:S.wp;
     S.saving=true; rerender();
     sendUpdate(wp,ch).then(function(){
       S.saving=false; index(); var n=ch.length;
-      toast(wp+(n?' saved: '+n+(n===1?' change':' changes'):' marked reviewed'));
+      toast(wp.replace(/^TK\|/,'')+(n?' saved: '+n+(n===1?' change':' changes'):' marked reviewed'));
       leaveWp();
     }).catch(function(e){ S.saving=false; rerender(); toast(e.code===401?'PIN not accepted. Reopen the app.':'Not saved. Check your signal and press Update again.'); });
     return;
@@ -808,6 +1240,22 @@ app.addEventListener('click',function(ev){
   if(a==='reset'){ S.resetAsk=true; rerender(); return; }
   if(a==='resetno'){ S.resetAsk=false; rerender(); return; }
   if(a==='resetyes'){ ls('demo_status',{}); ls('demo_reviews',{}); ls('demo_log',[]); S.status={}; S.reviews={}; S.resetAsk=false; S.adminMsg='Demo updates cleared.'; rerender(); return; }
+  if(a==='sitepublish'){
+    readAdminPin(); var sp=S.siteParsed; if(!sp) return;
+    S.adminMsg='Publishing site items…'; S.adminErr=''; rerender();
+    api('/api/site',{method:'POST',admin:true,headers:{'Content-Type':'application/json'},body:JSON.stringify({v:sp.v,kind:'site',source:sp.source,imported:sp.imported,workpacks:sp.workpacks,tasks:sp.tasks})})
+      .then(function(){ return load(); }).then(function(){ index(); S.siteParsed=null; S.adminMsg='Site items published.'; rerender(); })
+      .catch(function(e){ S.adminMsg=''; S.adminErr=e.code===401?'Admin PIN not accepted.':e.message; rerender(); });
+    return;
+  }
+  if(a==='tankpublish'){
+    readAdminPin(); var tp=S.tankParsed; if(!tp) return;
+    S.adminMsg='Publishing tank list…'; S.adminErr=''; rerender();
+    api('/api/tanks',{method:'POST',admin:true,headers:{'Content-Type':'application/json'},body:JSON.stringify({v:tp.v,kind:'tanks',source:tp.source,imported:tp.imported,disciplines:tp.disciplines,tanks:tp.tanks,items:tp.items})})
+      .then(function(){ return load(); }).then(function(){ index(); S.tankParsed=null; S.adminMsg='Tank list published.'; rerender(); })
+      .catch(function(e){ S.adminMsg=''; S.adminErr=e.code===401?'Admin PIN not accepted.':e.message; rerender(); });
+    return;
+  }
   if(a==='publish'){
     readAdminPin(); var p=S.adminParsed; if(!p) return;
     S.adminMsg='Publishing…'; S.adminErr=''; rerender();
@@ -819,14 +1267,38 @@ app.addEventListener('click',function(ev){
   }
 });
 function readAdminPin(){ var el=document.getElementById('apin'); if(el) S.adminPin=el.value.trim(); }
+app.addEventListener('input',function(ev){
+  var el=ev.target; if(el.getAttribute('data-act')==='tq'){ S.tq=el.value; S.focusTq=true; rerender(); }
+});
 app.addEventListener('change',function(ev){
   var el=ev.target, a=el.getAttribute('data-act');
   if(a==='resp'){ S.resp=el.value; ls('resp',S.resp); rerender(); }
   if(a==='sresp'){ S.statsResp=el.value; rerender(); }
-  if(a==='rtype'){ S.rep.type=el.value; rerender(); }
+  if(a==='rtype'){ S.rep.type=el.value; if(el.value==='tanks') S.rep.resp='All'; rerender(); }
   if(a==='rresp'){ S.rep.resp=el.value; rerender(); }
   if(a==='rscope'){ S.rep.scope=el.value; rerender(); }
   if(a==='ronly'){ S.rep.only=el.value; rerender(); }
+  if(a==='rsrc'){ S.rep.src=el.value; rerender(); }
+  if(a==='tresp'){ S.tresp=el.value; ls('tresp',S.tresp); rerender(); }
+  if(a==='tankfile'&&el.files&&el.files[0]){
+    readAdminPin(); var tf=el.files[0]; S.adminMsg='Reading '+tf.name+'…'; S.adminErr=''; S.tankParsed=null; rerender();
+    Promise.all([needXLSX(),tf.arrayBuffer()]).then(function(r){
+      var tp=WPParse.parseTankWorkbook(r[0],r[1],tf.name); if(!tp.tanks.length) throw new Error('No tanks found in that file.');
+      S.tankParsed=tp; S.adminMsg=''; rerender();
+    }).catch(function(e){ S.adminMsg=''; S.adminErr='Could not read the tank file: '+(/encrypt|password|CFB|ole/i.test(e.message)?'it looks protected. Remove the sensitivity label or password and save it again.':e.message); rerender(); });
+  }
+  if(a==='rdone'){ S.rep.done=!!el.checked; ls('repdone',S.rep.done); rerender(); }
+  if(a==='sitefile'&&el.files&&el.files[0]){
+    readAdminPin(); var sf=el.files[0]; S.adminMsg='Reading '+sf.name+'…'; S.adminErr=''; S.siteParsed=null; rerender();
+    Promise.all([needXLSX(),sf.arrayBuffer()]).then(function(r){
+      var sp=WPParse.parseSiteWorkbook(r[0],r[1],sf.name);
+      var clash=sp.tasks.filter(function(t){ var x=IDX.tasks[t.id]; return x&&!x.site; }).map(function(t){return t.id;});
+      if(clash.length) throw new Error('These Item IDs are already used by the schedule: '+clash.slice(0,5).join(', ')+'. Give them a different prefix.');
+      var gclash=sp.workpacks.filter(function(w){ var x=IDX.wps[w.id]; return x&&!x.site; }).map(function(w){return w.id;});
+      if(gclash.length) throw new Error('These Group Nos are already schedule workpack numbers: '+gclash.join(', ')+'.');
+      S.siteParsed=sp; S.adminMsg=''; rerender();
+    }).catch(function(e){ S.adminMsg=''; S.adminErr='Could not read the site items file: '+e.message; rerender(); });
+  }
   if(a==='from'&&el.value){ S.from=el.value; S.span=0; if(S.to<S.from) S.to=S.from; rerender(); }
   if(a==='to'&&el.value){ S.to=el.value; S.span=0; rerender(); }
   if(a==='file'&&el.files&&el.files[0]){
@@ -847,14 +1319,16 @@ function start(){
     var me=ls('me'); S.resp=ls('resp')||(me&&me!=='Management'?me:'All');
     if(S.resp!=='All'&&IDX.people.indexOf(S.resp)<0) S.resp='All';
     setPeriod(ls('span')||14);
-    S.rep={type:'wp',resp:S.resp,scope:'period',only:'out'};
+    S.src=ls('src')||'all'; if(['all','sched','site'].indexOf(S.src)<0) S.src='all';
+    S.rep={type:'wp',resp:S.resp,scope:'period',only:'out',src:'all',done:!!ls('repdone')};
+    var tr=ls('tresp'); S.tresp=(tr&&(tr==='All'||IDX.tkPeople.indexOf(tr)>=0))?tr:(IDX.tkPeople.indexOf(me)>=0?me:'All'); S.tdisc=ls('tdisc')||'All'; S.tq='';
     S.who=!me; render();
   }).catch(function(e){
     if(e.code===401){ try{localStorage.removeItem('wp_pin');}catch(x){} viewPin('That PIN was not accepted. Try again.'); return; }
     app.innerHTML='<div class="overlay"><div class="wrap"><div class="brand">Workpack Status</div><p class="err">Could not reach the server.</p><p class="note">'+esc(e.message)+'</p><button class="btn wide" onclick="location.reload()">Try again</button></div></div>';
   });
 }
-document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible'&&LIVE&&S.sched&&S.view!=='wp'){ load().then(function(){ index(); rerender(); }).catch(function(){}); } });
+document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible'&&LIVE&&S.sched&&S.view!=='wp'&&S.view!=='tank'){ load().then(function(){ index(); rerender(); }).catch(function(){}); } });
 start();
 })();
 </script>
