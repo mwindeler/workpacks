@@ -253,8 +253,13 @@ input.text{height:56px;font-size:21px;padding:0 12px;border:2px solid var(--ink)
 .tmx td.tpct{text-align:right;font-weight:700} .tmx td.tpct.lt{color:var(--late)}
 .tmx tfoot td{border-top:2px solid var(--ink);font-weight:700;font-size:11px;color:var(--muted)}
 .tmx tr.tsep td{border-bottom:1.5px solid var(--ink);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding-top:8px;color:var(--muted)}
+.tmx.smx{min-width:640px} .smx td.ttid{white-space:normal} .smx td.ttid b{display:block;min-width:0} .smx td.ttid span{font-size:12px} .smx th.grp{border-bottom-width:3px}
+.smx td.sst,.smx th.sst{text-align:left;padding-left:10px} .smx td.sst small{display:block;font-size:11px;color:var(--muted)}
+.spill{display:inline-block;padding:2px 9px;border-radius:10px;font-weight:700;font-size:12px;border:1.5px solid #8A949C;color:#46505A;background:#fff}
+.spill.s1{background:#FBEBDD;border-color:#D9965B;color:#14191D} .spill.s2{background:#E3EAF5;border-color:#6F8FC2;color:#14191D} .spill.sF{background:var(--done);border-color:var(--done);color:#fff}
 @media print{
   .wrap.rep.wide .trep{gap:6px}
+  .smx th.ttid{width:2.9in} .smx th.grp{width:1.15in} .smx td.ttid b{min-width:0} .smx td.ttid span{font-size:7pt} .spill{font-size:8pt;padding:1px 6px} .smx td.sst small{font-size:7pt}
   .ttop h1{font-size:22pt} .tkp b{font-size:16pt} .tkp,.tlg,.dn{font-size:8pt} .tbar .dh{font-size:9pt} .stk{height:8px}
   .tmx{min-width:0;width:100%;font-size:8.5pt;table-layout:auto} .tmx th.ttid{width:3in} .tmx th.it{width:1.12in} .tmx th.tpct{width:.45in} .tmx td.ttid b{min-width:1.5in} .tmx thead{display:table-header-group}
   .tmx th{font-size:7.5pt;padding:3px} .tmx th.grp{font-size:9pt} .tmx th.grp span{font-size:7pt}
@@ -918,7 +923,8 @@ function repSite(resp){
 function viewReports(){
   var R=S.rep, ppl=[['All','All']].concat((R.type==='tanks'?IDX.tkPeople:IDX.people).map(function(p){return [p,p];}));
   if(R.resp!=='All'&&ppl.every(function(x){return x[0]!==R.resp;})) R.resp='All';
-  var types=[['wp','Workpacks – task list'],['stats','Statistics summary']].concat(IDX.tk.has?[['tanks','Tanks and seachests (11×17 landscape)']]:[]);
+  var types=[['wp','Workpacks – task list'],['stats','Statistics summary']].concat(IDX.hasSite?stageFamilies().map(function(f){ return ['st:'+f.id,f.name+' – stage status']; }):[]).concat(IDX.tk.has?[['tanks','Tanks and seachests (11×17 landscape)']]:[]);
+  if(R.type.indexOf('st:')===0&&types.every(function(t){ return t[0]!==R.type; })) R.type='wp';
   var ctl='<section class="filters noprint"><div class="wrap">'+
     '<div class="field"><label class="lbl" for="rtype">Report</label>'+sel('rtype','rtype',types,R.type)+'</div>'+
     '<div class="field"><label class="lbl" for="rresp">Responsible</label>'+sel('rresp','rresp',ppl,R.resp)+'</div>'+
@@ -929,7 +935,7 @@ function viewReports(){
     '<button class="btn wide" data-act="print">Print or save as PDF</button>'+
     (LIVE?'':'<p class="note">Printing is blocked in this preview page. It works in the live app. The report below is what will print.</p>')+
     '</div></section>';
-  return header('Reports')+ctl+'<main><div class="wrap rep'+(R.type==='tanks'?' wide':'')+'">'+(R.type==='stats'?repStats():R.type==='tanks'?repTanks():repWorkpacks())+'</div></main>'+tabs();
+  return header('Reports')+ctl+'<main><div class="wrap rep'+(R.type==='tanks'?' wide':'')+'">'+(R.type==='stats'?repStats():R.type==='tanks'?repTanks():R.type.indexOf('st:')===0?repStages(R.type.slice(3)):repWorkpacks())+'</div></main>'+tabs();
 }
 
 /* ---------- tanks and seachests ---------- */
@@ -1093,6 +1099,68 @@ function repTanks(){
       '<th rowspan="2" class="tpct">Done</th></tr><tr>'+
       discs.map(function(d,j){ return d.items.map(function(it,k){ return '<th class="it g'+(j%4)+(k===0?' gs':'')+'">'+esc(it)+'</th>'; }).join(''); }).join('')+
     '</tr></thead><tbody>'+body+'</tbody><tfoot><tr><td>Complete / required</td>'+foot+'<td></td></tr></tfoot></table></div></section>';
+}
+
+/* ---------- site items by stage (e.g. access openings: Open / Closed / Coating) ---------- */
+// Site items whose IDs share a base (AO-01-OPEN, AO-01-CLOSE, AO-01-NDTC -> AO-01) form one row; the suffixes are the stages.
+var FAM_NAMES={AO:'Hull access openings'};
+function stageFamilies(){
+  var bases={}, order=[];
+  IDX.allT.forEach(function(t){ if(!t.site||IDX.tasks[t.id]!==t) return; var m=/^(.+)-([^-]+)$/.exec(t.id); if(!m) return;
+    if(!bases[m[1]]){ bases[m[1]]={id:m[1],items:[]}; order.push(m[1]); } bases[m[1]].items.push(t); });
+  var fams={}, forder=[];
+  order.forEach(function(b){ var x=bases[b]; if(x.items.length<2) return; var p=b.split('-')[0];
+    if(!fams[p]){ fams[p]={id:p,rows:[],stages:[],sk:{}}; forder.push(p); } var f=fams[p]; f.rows.push(x);
+    x.items.forEach(function(t){ var k=t.id.slice(b.length+1); if(!f.sk[k]){ f.sk[k]={key:k,name:t.name,resp:[]}; f.stages.push(f.sk[k]); }
+      var r=(IDX.wps[t.wp]||{}).resp; if(r&&f.sk[k].resp.indexOf(r)<0) f.sk[k].resp.push(r); }); });
+  return forder.map(function(p){ var f=fams[p]; f.rows.sort(function(a,b){ return cmp(a.id,b.id); }); f.name=FAM_NAMES[p]||('Site items '+p); return f; });
+}
+function stageWord(name){ var n=name.toLowerCase(); return /coat/.test(n)?'Coated':/clos/.test(n)?'Closed':/open/.test(n)?'Open':name+' done'; }
+function stageNone(f){ return f.stages.length&&stageWord(f.stages[0].name)==='Open'?'Not opened':'Not started'; }
+function stageRow(f,row){
+  var today=todayISO(), by={}; row.items.forEach(function(t){ by[t.id.slice(row.id.length+1)]=t; });
+  var cells=f.stages.map(function(s){ var t=by[s.key]; if(!t) return null; var st=eff(t.id); return {t:t,st:st,l:late(t,st,today),rec:S.status[t.id]}; });
+  var last=-1, prog=-1; cells.forEach(function(c,i){ if(c&&c.st==='C') last=i; });
+  cells.forEach(function(c,i){ if(c&&c.st==='P'&&i>last&&prog<0) prog=i; });
+  var w=IDX.wps[row.id]||IDX.wps[row.items[0].wp]||{desc:''};
+  var loc=String(w.desc||'').replace(/^ACCESS POINT\s*\d+\s*[–-]\s*/i,'').replace(/\s*[–-]\s*COATING$/i,'');
+  return {cells:cells,last:last,prog:prog,state:last<0?stageNone(f):stageWord(f.stages[last].name),
+    done:cells.every(function(c){ return !c||c.st==='C'; }),late:cells.some(function(c){ return c&&c.l; }),loc:loc};
+}
+function repStages(fid){
+  var R=S.rep, fams=stageFamilies(), f=fams.filter(function(x){ return x.id===fid; })[0]||fams[0];
+  if(!f) return '<p class="note">No site items with stages.</p>';
+  var rows=f.rows.filter(function(r){ return R.resp==='All'||r.items.some(function(t){ return (IDX.wps[t.wp]||{}).resp===R.resp; }); })
+    .map(function(r){ return [r,stageRow(f,r)]; });
+  var states=[stageNone(f)].concat(f.stages.map(function(s){ return stageWord(s.name); })), cnt={};
+  rows.forEach(function(x){ cnt[x[1].state]=(cnt[x[1].state]||0)+1; });
+  var nLate=rows.filter(function(x){ return x[1].late; }).length, n=f.stages.length;
+  var lvl=function(i){ return i<0?'s0':i===n-1?'sF':'s'+(1+(i%2)); };
+  var cell=function(c,k){
+    var g=k===0?' gs':'';
+    if(!c) return '<td class="c'+g+'"><span class="nrd">·</span></td>';
+    var mark={C:'✓',P:'IP',N:''}[c.st], dt;
+    if(c.st==='C') dt=c.rec&&c.rec.at?fmt(c.rec.at.slice(0,10)):'';
+    else { var d=c.t.finish||c.t.start; dt=(c.l?'!':'')+(d?fmt(d):'–'); }
+    return '<td class="c'+g+'"><span class="tm '+c.st+(c.l?' L':'')+'">'+mark+'</span><span class="tdt'+(c.l?' lt':'')+'">'+dt+'</span></td>';
+  };
+  var body=rows.map(function(x){ var r=x[0], i=x[1];
+    return '<tr><td class="ttid"><b>'+esc(r.id)+'</b><span>'+esc(i.loc)+'</span></td>'+i.cells.map(cell).join('')+
+      '<td class="sst"><span class="spill '+lvl(i.last)+'">'+esc(i.state)+'</span>'+(i.prog>=0?'<small>'+esc(f.stages[i.prog].name)+' in progress</small>':'')+'</td></tr>'; }).join('');
+  var foot=f.stages.map(function(s,k){ var tot=0,c=0; rows.forEach(function(x){ var z=x[1].cells[k]; if(z){ tot++; if(z.st==='C') c++; } });
+    return '<td class="c'+(k===0?' gs':'')+'">'+c+'/'+tot+'</td>'; }).join('');
+  var title=f.name+(R.resp==='All'?'':' – '+R.resp);
+  return '<section class="trep">'+
+    '<div class="ttop"><div><div class="reye">'+esc((S.site&&S.site.source)||'Site items')+'</div><h1>'+esc(title)+'</h1>'+
+      '<div class="rmeta">Current stage of each item, as reported by the site team · '+esc(stamp())+'</div>'+
+      '<div class="tkp">'+states.map(function(st,j){ return '<div><b>'+(cnt[st]||0)+'</b>'+esc(st)+'</div>'; }).join('')+
+        '<div class="lt"><b>'+nLate+'</b>with a late stage</div></div></div>'+
+      '<div class="tlg"><div><span class="tm C">✓</span>Complete + date reported</div><div><span class="tm P">IP</span>In progress + planned date</div>'+
+      '<div><span class="tm N"></span>Not started + planned date</div><div><span class="tm N L"></span><span class="tdt lt">!24 Oct</span>Late</div>'+
+      '<div><span class="tdt">–</span>No planned date</div></div></div>'+
+    '<div class="scroll"><table class="tmx smx"><thead><tr><th class="ttid">'+esc(f.id==='AO'?'Access point':'Item')+'</th>'+
+      f.stages.map(function(s,k){ return '<th class="grp g'+(k%4)+(k===0?' gs':'')+'">'+esc(s.name)+'<span>'+esc(s.resp.join(', '))+'</span></th>'; }).join('')+
+      '<th class="sst">Current stage</th></tr></thead><tbody>'+body+'</tbody><tfoot><tr><td>Complete</td>'+foot+'<td></td></tr></tfoot></table></div></section>';
 }
 
 /* ---------- review reminders ---------- */
