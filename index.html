@@ -221,6 +221,17 @@ input.text{height:56px;font-size:21px;padding:0 12px;border:2px solid var(--ink)
 .dc.B{background:transparent;border:2px dashed var(--line);color:var(--muted);font-weight:600}
 .dc.L{box-shadow:0 0 0 3px var(--late)}
 .tiles.stt{grid-template-columns:repeat(auto-fit,minmax(62px,1fr));gap:6px} .tiles.stt .tile{padding:8px 4px} .tiles.stt .tile b{font-size:28px} .tiles.stt .tile span{font-size:14px;line-height:1.15}
+.ckpi{display:flex;gap:22px;flex-wrap:wrap;margin:10px 0 4px} .ckpi div{font-size:14px;color:var(--muted)} .ckpi b{display:block;font-family:var(--display);font-size:30px;color:var(--ink);line-height:1.05;font-variant-numeric:tabular-nums}
+.ckpi .r b{color:var(--late)} .ckpi .g b{color:var(--done)}
+.clg{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;margin:4px 0} .clg i{display:inline-block;width:20px;height:10px;margin-right:6px;vertical-align:middle;border-radius:2px}
+.kpl{border-top:2.5px dashed var(--off-line);height:0!important;border-radius:0!important} .kps{border-top:2px dotted var(--off-line);height:0!important;border-radius:0!important} .kac{background:var(--accent);height:3px!important}
+.kC,.cC{background:var(--done);fill:var(--done)} .kP,.cP{background:var(--prog);fill:var(--prog)} .kN,.cN{background:var(--track);fill:var(--track)} .kbp,.cbp{background:var(--off-line);fill:var(--off-line)} .kba,.cba{background:var(--accent);fill:var(--accent)}
+svg.chart{width:100%;height:auto;display:block;background:var(--surface);border:1px solid var(--line);border-radius:10px}
+.cg{stroke:var(--line);stroke-width:1} .ca{stroke:var(--off-line);stroke-width:1} .cy{font-size:13px;fill:var(--muted);text-anchor:end} .cx{font-size:13px;fill:var(--muted)}
+.cpl{fill:none;stroke:var(--off-line);stroke-width:2.5;stroke-dasharray:7 5} .cps{fill:none;stroke:var(--off-line);stroke-width:2;stroke-dasharray:2 4}
+.cac{fill:none;stroke:var(--accent);stroke-width:3} .cd{fill:var(--accent);stroke:var(--surface);stroke-width:2.5}
+.ct{stroke:var(--ink);stroke-width:1.3;stroke-dasharray:3 3} .cdl{stroke:var(--late);stroke-width:2} .cl{font-size:13.5px;font-weight:700;fill:var(--ink)} .cl.m{fill:var(--muted);font-weight:600}
+@media print{ .ckpi b{font-size:20pt} .ckpi div,.clg{font-size:9pt} svg.chart{border:0} body{-webkit-print-color-adjust:exact;print-color-adjust:exact} }
 select.pick{font-weight:700;border-width:2px}
 nav.tabs .in.t5 button{font-size:14px;line-height:1.1;padding:0;white-space:normal;letter-spacing:-.2px} nav.tabs .in.t5{max-width:none}
 .dhead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;border-top:3px solid var(--ink);padding-top:8px;margin-top:8px}
@@ -946,12 +957,14 @@ function repSite(resp){
       c.late.slice(0,25).map(function(i){ var w=IDX.wps[i.id]; return '<tr class="lt"><td class="nw">'+esc(i.id)+'</td><td>'+esc(w.desc)+'</td><td class="nw">'+esc(w.resp)+'</td><td class="num">'+i.lates.length+'</td><td class="nw">'+esc(lateText(i.worst))+'</td></tr>'; }).join('')+'</tbody></table></div>':'');
 }
 function viewReports(){
-  var R=S.rep, ppl=[['All','All']].concat((R.type==='tanks'?IDX.tkPeople:IDX.people).map(function(p){return [p,p];}));
+  var R=S.rep, isCh=R.type.indexOf('ch:')===0, ppl=[['All','All']].concat((R.type==='tanks'?IDX.tkPeople:isCh?schedPeople():IDX.people).map(function(p){return [p,p];}));
   if(R.resp!=='All'&&ppl.every(function(x){return x[0]!==R.resp;})) R.resp='All';
   var types=[['wp','Workpacks – task list'],['stats','Statistics summary']].concat(IDX.hasSite?stageFamilies().map(function(f){ return ['st:'+f.id,f.name+' – stage status']; }):[]).concat(IDX.tk.has?[['tanks','Tanks and seachests (11×17 landscape)']]:[]);
   if(R.type.indexOf('st:')===0&&types.every(function(t){ return t[0]!==R.type; })) R.type='wp';
   var ctl='<section class="filters noprint"><div class="wrap">'+
-    '<div class="field"><label class="lbl" for="rtype">Report</label>'+sel('rtype','rtype',types,R.type)+'</div>'+
+    '<div class="field"><label class="lbl" for="rtype">Report</label><select id="rtype" class="big" data-act="rtype"><optgroup label="Lists">'+types.map(function(o){ return '<option value="'+esc(o[0])+'"'+(o[0]===R.type?' selected':'')+'>'+esc(o[1])+'</option>'; }).join('')+'</optgroup>'+
+      '<optgroup label="Progress charts – workpacks">'+Object.keys(CHARTS).map(function(c){ return '<option value="ch:'+c+'"'+(R.type==='ch:'+c?' selected':'')+'>'+esc(CHARTS[c][0])+'</option>'; }).join('')+'</optgroup></select>'+
+      (isCh?'<span class="note">'+esc(CHARTS[R.type.slice(3)][1])+'.</span>':'')+'</div>'+
     '<div class="field"><label class="lbl" for="rresp">Responsible</label>'+sel('rresp','rresp',ppl,R.resp)+'</div>'+
     (R.type==='wp'?(IDX.hasSite?'<div class="field"><label class="lbl" for="rsrc">Include</label>'+sel('rsrc','rsrc',[['all','Schedule and site items'],['sched','Schedule only'],['site','Site items only']],R.src)+'</div>':'')+
       '<div class="field"><label class="lbl" for="rscope">Tasks</label>'+sel('rscope','rscope',[['period','Due to start by '+fmt(S.to)+' (current period)'],['all','All tasks, any date']],R.scope)+'</div>'+
@@ -960,7 +973,7 @@ function viewReports(){
     '<button class="btn wide" data-act="print">Print or save as PDF</button>'+
     (LIVE?'':'<p class="note">Printing is blocked in this preview page. It works in the live app. The report below is what will print.</p>')+
     '</div></section>';
-  return header('Reports')+ctl+'<main><div class="wrap rep'+(R.type==='tanks'?' wide':'')+'">'+(R.type==='stats'?repStats():R.type==='tanks'?repTanks():R.type.indexOf('st:')===0?repStages(R.type.slice(3)):repWorkpacks())+'</div></main>'+tabs();
+  return header('Reports')+ctl+'<main><div class="wrap rep'+(R.type==='tanks'||isCh?' wide':'')+'">'+(R.type==='stats'?repStats():R.type==='tanks'?repTanks():R.type.indexOf('st:')===0?repStages(R.type.slice(3)):isCh?repChart(R.type.slice(3)):repWorkpacks())+'</div></main>'+tabs();
 }
 
 /* ---------- tanks and seachests ---------- */
@@ -1275,6 +1288,111 @@ function viewSiteItem(){
   '<p class="note">To re-open a stage, set it back to In Progress or Not Started and press Update. Pressing Update with no changes still records this item as reviewed today.</p></section></div></main>'+tabs();
 }
 
+/* ---------- progress charts (construction workpacks only) ---------- */
+var DELIVERY='2027-04-01';
+var CHARTS={A:['Chart A – Burn-down','Tasks remaining vs plan, from yard start to delivery'],
+  B:['Chart B – Status over time','Complete / in progress / not started each day vs plan'],
+  C:['Chart C – Weekly pace','Tasks planned to finish each week vs actually completed'],
+  D:['Chart D – Workpacks closed','Whole workpacks closed vs plan']};
+function isoLocal(ts){ var d=new Date(ts); return isNaN(d)?String(ts).slice(0,10):d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+// History = every change recorded in the app (date, task, new status). Reloaded at most every 5 minutes, and after each save.
+function loadHist(){
+  if(S.histBusy||(S.hist&&Date.now()-(S.histAt||0)<300000)) return;
+  S.histBusy=true;
+  var p=LIVE?api('/api/history').then(function(d){ return d.rows||[]; }):Promise.resolve((ls('demo_log')||[]).map(function(x){ return [x.at,x.task,x.new]; }));
+  p.then(function(rows){ S.hist=rows; S.histErr=null; }).catch(function(e){ S.hist=S.hist||[]; S.histErr=e.code===401?'PIN not accepted.':(e.message||'error'); })
+   .then(function(){ S.histAt=Date.now(); S.histBusy=false; if(S.view==='reports'&&S.rep.type.indexOf('ch:')===0) rerender(); });
+}
+function schedPeople(){ var p={}; S.sched.workpacks.forEach(function(w){ if(w.resp) p[w.resp]=1; }); return Object.keys(p).sort(cmp); }
+function computeProgress(resp){
+  var ts=[]; wpsFor(resp,'sched').forEach(function(w){ (IDX.byWp[w]||[]).forEach(function(t){ if(!t.site&&!t.tank) ts.push(t); }); });
+  var today=todayISO(), N=ts.length, byId={}, wpOf={}, wpN={}, wpFin={};
+  ts.forEach(function(t){ byId[t.id]=t; wpN[t.wp]=(wpN[t.wp]||0)+1; if(t.finish&&(!wpFin[t.wp]||t.finish>wpFin[t.wp])) wpFin[t.wp]=t.finish; });
+  var nW=Object.keys(wpN).length;
+  var starts=ts.map(function(t){ return t.start; }).filter(Boolean).sort(), fins=ts.map(function(t){ return t.finish; }).filter(Boolean).sort();
+  var a0=(starts[Math.floor(starts.length*0.05)]||today).slice(0,8)+'01'; if(a0>today) a0=today.slice(0,8)+'01';
+  var z=DELIVERY; if(fins.length&&fins[fins.length-1]>z) z=fins[fins.length-1]; if(today>z) z=today;
+  var days=[]; for(var d=a0; d<=z; d=addDays(d,1)) days.push(d);
+  var cnt=function(sorted,d){ var lo=0,hi=sorted.length; while(lo<hi){ var m=(lo+hi)>>1; if(sorted[m]<=d) lo=m+1; else hi=m; } return lo; };
+  var wf=Object.keys(wpFin).map(function(k){ return wpFin[k]; }).sort();
+  var pc=days.map(function(d){ return cnt(fins,d); }), ps=days.map(function(d){ return cnt(starts,d); }), pw=days.map(function(d){ return cnt(wf,d); });
+  // Actual: start from each task's imported status, then replay the change log day by day
+  var ev=(S.hist||[]).filter(function(r){ return byId[r[1]]; }).map(function(r){ return [isoLocal(r[0]),r[1],r[2]]; });
+  ev.sort(function(a,b){ return a[0]<b[0]?-1:a[0]>b[0]?1:0; });
+  var first=ev.length?ev[0][0]:today; if(first<a0) first=a0;
+  var cur={}, c=0, p=0, wpC={}, wc=0, k=0, ac=[], ap=[], aw=[];
+  var setS=function(id,s){ var o=cur[id], w=byId[id].wp;
+    if(o==='C'){ c--; if(wpC[w]===wpN[w]) wc--; wpC[w]--; } else if(o==='P') p--;
+    cur[id]=s; if(s==='C'){ c++; wpC[w]=(wpC[w]||0)+1; if(wpC[w]===wpN[w]) wc++; } else if(s==='P') p++; };
+  ts.forEach(function(t){ setS(t.id,t.p6||'N'); });
+  days.forEach(function(d,i){
+    while(k<ev.length&&ev[k][0]<=d){ setS(ev[k][1],ev[k][2]); k++; }
+    if(d<first||d>today){ ac.push(null); ap.push(null); aw.push(null); } else { ac.push(c); ap.push(p); aw.push(wc); }
+  });
+  var ti=days.indexOf(today); if(ti<0) ti=today<a0?0:days.length-1;
+  // Today's figures come straight from current statuses so they always match the rest of the app
+  var tc=0,tp=0; ts.forEach(function(t){ var s=eff(t.id); if(s==='C') tc++; else if(s==='P') tp++; });
+  var twc=Object.keys(wpN).filter(function(w){ return (IDX.byWp[w]||[]).every(function(t){ return t.site||t.tank||eff(t.id)==='C'; }); }).length;
+  if(ac[ti]!==null&&ac[ti]!==undefined){ ac[ti]=tc; ap[ti]=tp; aw[ti]=twc; }
+  var weeks=[]; for(var j=0;j<days.length;j+=7){ var e=Math.min(j+7,days.length)-1, pl=pc[e]-(j?pc[j-1]:0), act=null;
+    if(days[j]<=today&&ac[e<=ti?e:ti]!==null){ var s0=j?ac[j-1]:null; if(s0===null&&j) s0=ac[j]; act=s0===null?null:Math.max(0,ac[e<=ti?e:ti]-s0); }
+    weeks.push({d:days[j],plan:pl,act:act}); }
+  return {N:N,nW:nW,days:days,pc:pc,ps:ps,pw:pw,ac:ac,ap:ap,aw:aw,ti:ti,today:today,first:first,tc:tc,tp:tp,twc:twc,weeks:weeks,events:ev.length};
+}
+function chartSvg(P,kind){
+  var W=900,H=360,L=56,R=30,T=26,B=34, n=P.days.length;
+  var X=function(i){ return L+(W-L-R)*i/Math.max(1,n-1); };
+  var top=kind==='D'?P.nW:kind==='C'?Math.max.apply(null,P.weeks.map(function(w){ return Math.max(w.plan,w.act||0); }).concat([1])):P.N;
+  var nice=function(v){ var m=Math.pow(10,Math.floor(Math.log10(Math.max(v,1)))), f=v/m; return (f<=1?1:f<=2?2:f<=2.5?2.5:f<=5?5:10)*m; };
+  var step=nice(top/5); top=Math.ceil(top/step)*step||1;
+  var Y=function(v){ return T+(H-T-B)*(1-v/top); };
+  var g='';
+  for(var v=0; v<=top+1e-9; v+=step) g+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(v).toFixed(1)+'" y2="'+Y(v).toFixed(1)+'" class="cg"/><text x="'+(L-8)+'" y="'+(Y(v)+4).toFixed(1)+'" class="cy">'+Math.round(v)+'</text>';
+  P.days.forEach(function(d,i){ if(d.slice(8)==='01') g+='<line x1="'+X(i).toFixed(1)+'" x2="'+X(i).toFixed(1)+'" y1="'+(H-B)+'" y2="'+(H-B+5)+'" class="ca"/><text x="'+(X(i)+3).toFixed(1)+'" y="'+(H-B+18)+'" class="cx">'+MON[+d.slice(5,7)-1]+'</text>'; });
+  var line=function(arr,cls){ var s='',on=false; arr.forEach(function(v,i){ if(v===null||v===undefined){ on=false; return; } s+=(on?'L':'M')+X(i).toFixed(1)+','+Y(v).toFixed(1); on=true; }); return s?'<path d="'+s+'" class="'+cls+'"/>':''; };
+  var area=function(lo,hi,cls){ var idx=[]; hi.forEach(function(v,i){ if(v!==null&&v!==undefined) idx.push(i); }); if(!idx.length) return '';
+    return '<path d="M'+idx.map(function(i){ return X(i).toFixed(1)+','+Y(hi[i]).toFixed(1); }).join('L')+'L'+idx.slice().reverse().map(function(i){ return X(i).toFixed(1)+','+Y(lo[i]).toFixed(1); }).join('L')+'Z" class="'+cls+'"/>'; };
+  var lab=function(i,v,txt,cls,dy){ return '<text x="'+(X(i)+8).toFixed(1)+'" y="'+(Y(v)+(dy||-8)).toFixed(1)+'" class="'+(cls||'cl')+'">'+esc(txt)+'</text>'; };
+  var dot=function(i,v){ return '<circle cx="'+X(i).toFixed(1)+'" cy="'+Y(v).toFixed(1)+'" r="5" class="cd"/>'; };
+  var ti=P.ti, has=P.ac[ti]!==null&&P.ac[ti]!==undefined, body='';
+  if(kind==='A'){ var rp=P.pc.map(function(v){ return P.N-v; }), ra=P.ac.map(function(v){ return v===null?null:P.N-v; });
+    body=line(rp,'cpl')+line(ra,'cac')+(has?dot(ti,ra[ti])+lab(ti,ra[ti],ra[ti]+' left')+lab(ti,rp[ti],'plan: '+rp[ti]+' left','cl m',18):''); }
+  if(kind==='B'){ var zero=P.ac.map(function(v){ return v===null?null:0; }), cp=P.ac.map(function(v,i){ return v===null?null:v+P.ap[i]; }), all=P.ac.map(function(v){ return v===null?null:P.N; });
+    body=area(cp,all,'cN')+area(P.ac,cp,'cP')+area(zero,P.ac,'cC')+line(P.pc,'cpl')+line(P.ps,'cps');
+    var li=Math.min(n-1,Math.round(n*0.62)); body+=lab(li,P.pc[li],'planned complete','cl m',18)+'<text x="'+(X(Math.round(n*0.5))-6).toFixed(1)+'" y="'+(Y(P.ps[Math.round(n*0.5)])-10).toFixed(1)+'" class="cl m" text-anchor="end">planned started</text>'; }
+  if(kind==='C'){ var bw=(W-L-R)/P.weeks.length;
+    P.weeks.forEach(function(w,j){ var x=L+j*bw;
+      body+='<rect x="'+(x+1).toFixed(1)+'" y="'+Y(w.plan).toFixed(1)+'" width="'+Math.max(1,bw/2-2).toFixed(1)+'" height="'+(Y(0)-Y(w.plan)).toFixed(1)+'" rx="2" class="cbp"><title>Week of '+fmt(w.d)+': '+w.plan+' planned to finish</title></rect>';
+      if(w.act!==null) body+='<rect x="'+(x+bw/2).toFixed(1)+'" y="'+Y(w.act).toFixed(1)+'" width="'+Math.max(1,bw/2-2).toFixed(1)+'" height="'+(Y(0)-Y(w.act)).toFixed(1)+'" rx="2" class="cba"><title>Week of '+fmt(w.d)+': '+w.act+' completed</title></rect>'; }); }
+  if(kind==='D') body=line(P.pw,'cpl')+line(P.aw,'cac')+(has?dot(ti,P.aw[ti])+lab(ti,P.aw[ti],P.aw[ti]+' closed','cl',-24)+lab(ti,P.pw[ti],'plan: '+P.pw[ti],'cl m',-8):'');
+  var mk='';
+  var tx=X(ti); mk+='<line x1="'+tx.toFixed(1)+'" x2="'+tx.toFixed(1)+'" y1="'+(T-8)+'" y2="'+(H-B)+'" class="ct"/><text x="'+(tx+5).toFixed(1)+'" y="'+(T-12)+'" class="cl">Today '+fmt(P.today)+'</text>';
+  var di=P.days.indexOf(DELIVERY); if(di>=0) mk+='<line x1="'+X(di).toFixed(1)+'" x2="'+X(di).toFixed(1)+'" y1="'+(T-8)+'" y2="'+(H-B)+'" class="cdl"/><text x="'+(X(di)-5).toFixed(1)+'" y="'+(T-12)+'" class="cl" text-anchor="end">Delivery '+fmt(DELIVERY)+'</text>';
+  return '<svg class="chart" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+esc(CHARTS[kind][0])+'">'+g+body+'<line x1="'+L+'" x2="'+(W-R)+'" y1="'+(H-B)+'" y2="'+(H-B)+'" class="ca"/>'+mk+'</svg>';
+}
+function repChart(kind){
+  loadHist();
+  var R=S.rep;
+  if(!S.hist&&S.histBusy) return '<p class="note">Loading the change history…</p>';
+  var P=computeProgress(R.resp), ti=P.ti, k=function(v,t,c){ return '<div'+(c?' class="'+c+'"':'')+'><b>'+(typeof v==='number'?v.toLocaleString('en-GB'):v)+'</b>'+t+'</div>'; }, kp='', lg='';
+  var key=function(c,t){ return '<span><i class="'+c+'"></i>'+t+'</span>'; };
+  if(!P.N) return '<p class="note">No construction tasks for this selection.</p>';
+  if(kind==='A'){ var left=P.N-P.tc, pl=P.N-P.pc[ti], gap=left-pl;
+    kp=k(left,'left today')+k(pl,'plan today')+k(Math.abs(gap),gap>0?'behind plan':'ahead of plan',gap>0?'r':'g'); lg=key('kpl','Plan (Rev F finish dates)')+key('kac','Actual (as reported in the app)'); }
+  if(kind==='B'){ kp=k(P.tc,'complete')+k(P.tp,'in progress')+k(P.N-P.tc-P.tp,'not started')+k(P.pc[ti],'plan complete today');
+    lg=key('kC','Complete')+key('kP','In progress')+key('kN','Not started')+key('kpl','Planned complete')+key('kps','Planned started'); }
+  if(kind==='C'){ var last=P.weeks.filter(function(w){ return w.act!==null; }).slice(-1)[0], wl=Math.max(1,Math.ceil(diff(P.today,DELIVERY)/7)), need=Math.ceil((P.N-P.tc)/wl);
+    var nxt=P.weeks.filter(function(w){ return w.d>P.today; })[0];
+    kp=k(last?last.act:'–','completed this week')+k(nxt?nxt.plan:'–','planned next week')+k(need,'per week needed to finish by '+fmt(DELIVERY),'r');
+    lg=key('kbp','Planned to finish')+key('kba','Actually completed'); }
+  if(kind==='D'){ kp=k(P.twc+' / '+P.nW,'workpacks closed')+k(P.pw[ti],'plan today'); lg=key('kpl','Plan (last task finish date)')+key('kac','Actual'); }
+  var who=R.resp==='All'?'All workpacks':R.resp;
+  return repHead(CHARTS[kind][0].replace(/^Chart . – /,'')+' – '+who,['Construction tasks only: '+P.N+' tasks in '+P.nW+' workpacks','As reported by the site team',stamp()])+
+    '<div class="ckpi">'+kp+'</div><div class="clg">'+lg+'</div>'+chartSvg(P,kind)+
+    '<p class="note">'+(P.events?'Actual line starts '+fmt(P.first)+', the first update recorded in the app; before that only the imported schedule status is known.':'No updates recorded yet, so only today is shown.')+
+    ' Every task counts the same.'+(S.histErr?' History could not be loaded ('+esc(S.histErr)+') – if the server has not been updated yet, see SETUP.':'')+'</p>';
+}
+
 /* ---------- review reminders ---------- */
 // Everything a person should look at: their active workpacks / site groups and tanks not reviewed in STALE_DAYS
 function toReview(person){
@@ -1409,7 +1527,7 @@ function render(){
   var y=window.scrollY, v=S.view;
   if(S.who){ app.innerHTML=viewWho(); return; }
   app.innerHTML = v==='wp'?viewWp():v==='stats'?viewStats():v==='admin'?viewAdmin():v==='reports'?viewReports():v==='tanks'?viewTanks():v==='tank'?viewTank():v==='other'?viewOther():v==='site'?viewSite():v==='sitem'?viewSiteItem():v==='review'?viewReview():viewList();
-  var pg=document.getElementById('pgsz'); if(pg) pg.textContent=(v==='reports'&&S.rep.type==='tanks')?'@page{size:17in 11in;margin:.35in .4in .45in}':'@page{size:A4;margin:12mm}';
+  var pg=document.getElementById('pgsz'); if(pg) pg.textContent=(v==='reports'&&S.rep.type==='tanks')?'@page{size:17in 11in;margin:.35in .4in .45in}':(v==='reports'&&S.rep.type.indexOf('ch:')===0)?'@page{size:A4 landscape;margin:12mm}':'@page{size:A4;margin:12mm}';
   if(S.focusTq){ var q=document.getElementById(S.view==='site'?'sq':'tq'); if(q){ q.focus(); var n=q.value.length; try{ q.setSelectionRange(n,n); }catch(e){} } S.focusTq=false; }
   window.scrollTo(0,S.keepScroll?y:0); S.keepScroll=false;
 }
@@ -1465,7 +1583,7 @@ app.addEventListener('click',function(ev){
       job=rowGroups(row).reduce(function(p,g){ return p.then(function(){ return sendUpdate(g,ch.filter(function(c){ return (IDX.tasks[c.id]||{}).wp===g; })); }); },Promise.resolve()); }
     else job=sendUpdate(wp,ch);
     job.then(function(){
-      S.saving=false; index(); var n=ch.length;
+      S.saving=false; S.histAt=0; index(); var n=ch.length;
       toast(wp.replace(/^TK\|/,'')+(n?' saved: '+n+(n===1?' change':' changes'):' marked reviewed'));
       leaveWp();
     }).catch(function(e){ S.saving=false; rerender(); toast(e.code===401?'PIN not accepted. Reopen the app.':'Not saved. Check your signal and press Update again.'); });
