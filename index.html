@@ -220,6 +220,9 @@ input.text{height:56px;font-size:21px;padding:0 12px;border:2px solid var(--ink)
 .dc.N{background:var(--surface);border-color:var(--off-line);color:var(--ink)} .dc.X{background:var(--chip);color:var(--muted);font-weight:600}
 .dc.B{background:transparent;border:2px dashed var(--line);color:var(--muted);font-weight:600}
 .dc.L{box-shadow:0 0 0 3px var(--late)}
+.tiles.stt{grid-template-columns:repeat(auto-fit,minmax(62px,1fr));gap:6px} .tiles.stt .tile{padding:8px 4px} .tiles.stt .tile b{font-size:28px} .tiles.stt .tile span{font-size:14px;line-height:1.15}
+select.pick{font-weight:700;border-width:2px}
+nav.tabs .in.t5 button{font-size:14px;line-height:1.1;padding:0;white-space:normal;letter-spacing:-.2px} nav.tabs .in.t5{max-width:none}
 .dhead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;border-top:3px solid var(--ink);padding-top:8px;margin-top:8px}
 .dhead h3{font-family:var(--display);font-size:22px;margin:0;text-transform:uppercase;letter-spacing:.4px}
 .mine{font-size:13px;font-weight:700;background:var(--accent);color:var(--accent-ink);padding:2px 8px;border-radius:6px}
@@ -631,7 +634,7 @@ function index(){
   tk.items.forEach(function(it){ if(!byTank[it.tank]) return; var x=Object.assign({},it,{tank:true,tankId:it.tank}); byTank[it.tank].push(x);
     if(it.req==='Y'){ tasks[it.id]=x; if(it.resp) tkPeople[it.resp]=1; } });
   var all=Object.assign({},people,tkPeople);
-  IDX={byWp:byWp,tasks:tasks,wps:wps,allW:allW,allT:allT.filter(function(t){return tasks[t.id]===t;}),people:Object.keys(people).sort(cmp),
+  IDX={stg:null,byWp:byWp,tasks:tasks,wps:wps,allW:allW,allT:allT.filter(function(t){return tasks[t.id]===t;}),people:Object.keys(people).sort(cmp),
     allPeople:Object.keys(all).sort(cmp),tkPeople:Object.keys(tkPeople).sort(cmp),
     hasSite:site.tasks.length>0, tk:{discs:tk.disciplines||[],tanks:tk.tanks,byTank:byTank,byId:tkById,has:tk.tanks.length>0,source:tk.source,imported:tk.imported,count:tk.items.length}};
 }
@@ -676,11 +679,33 @@ function header(sub){
     (S.offline?'<div class="banner"><div class="wrap">No connection. Showing data from '+esc(fmtY(S.synced.slice(0,10)))+'. Updates need a signal.</div></div>':'');
 }
 function syncText(){ var d=new Date(S.synced); return 'Synced '+fmtY(todayISO())+', '+pad(d.getHours())+':'+pad(d.getMinutes()); }
-function tabs(){ var tk=IDX.tk.has; return '<nav class="tabs" aria-label="Screens"><div class="in" style="grid-template-columns:repeat('+(tk?4:3)+',minmax(0,1fr))">'+
-  '<button data-act="tab" data-v="list" class="'+(S.view==='list'?'on':'')+'">Workpacks</button>'+
-  (tk?'<button data-act="tab" data-v="tanks" class="'+(S.view==='tanks'||S.view==='tank'?'on':'')+'">Tanks</button>':'')+
+function tabs(){ var oth=IDX.tk.has||IDX.hasSite, n=oth?4:3, ov={other:1,site:1,sitem:1,tanks:1,tank:1}, wsite=S.view==='wp'&&(IDX.wps[S.wp]||{}).site;
+  return '<nav class="tabs" aria-label="Screens"><div class="in" style="grid-template-columns:repeat('+n+',minmax(0,1fr))">'+
+  '<button data-act="tab" data-v="list" class="'+((S.view==='list'||S.view==='wp')&&!wsite?'on':'')+'">Workpacks</button>'+
+  (oth?'<button data-act="tab" data-v="other" class="'+(ov[S.view]||wsite?'on':'')+'">Other</button>':'')+
   '<button data-act="tab" data-v="stats" class="'+(S.view==='stats'||S.view==='admin'?'on':'')+'">Statistics</button>'+
   '<button data-act="tab" data-v="reports" class="'+(S.view==='reports'?'on':'')+'">Reports</button></div></nav>'; }
+/* ---------- Other: one tab, a picker for each list tracked outside the schedule ---------- */
+function otherLists(){
+  var L=[];
+  if(IDX.tk.has) L.push({key:'tanks',name:'Tanks and seachests',n:IDX.tk.tanks.length});
+  if(IDX.hasSite){ var G=stg(); G.fams.forEach(function(f){ L.push({key:'st:'+f.id,name:f.name,n:f.rows.length}); });
+    if(G.other.length) L.push({key:'site:other',name:'Other site items',n:G.other.length}); }
+  return L;
+}
+function otherView(key){ return key==='tanks'?'tanks':key?'site':'other'; }
+function otherCur(){ var k=S.olist||ls('olist'), L=otherLists(); return L.some(function(x){ return x.key===k; })?k:null; }
+function otherPick(){
+  var L=otherLists(), k=otherCur();
+  var opts=(k?[]:[['','Choose a list']]).concat(L.map(function(x){ return [x.key,x.name+' ('+x.n+')']; }));
+  return '<div class="field"><label class="lbl" for="olist">What are you tracking?</label>'+sel('olist','olist',opts,k||'').replace('class="big"','class="big pick"')+'</div>';
+}
+function viewOther(){
+  return header('Other items · tracked outside the project schedule')+'<section class="filters"><div class="wrap">'+otherPick()+'</div></section>'+
+    '<main><div class="wrap"><section class="sec"><div class="list">'+otherLists().map(function(x){
+      return '<button class="li" data-act="olistgo" data-k="'+esc(x.key)+'"><span class="grow"><span class="wpid" style="font-size:20px;display:block">'+esc(x.name)+'</span><span style="font-size:16px">'+x.n+' items</span></span>'+CHEV.replace('M6 9l6 6 6-6','M9 6l6 6-6 6')+'</button>'; }).join('')+
+    '</div><p class="note">The list you pick is remembered, so next time Other opens straight on it.</p></section></div></main>'+tabs();
+}
 function fold(key,label,body){
   var o=!!S.open[key];
   return '<button class="fold" data-act="fold" data-k="'+esc(key)+'" aria-expanded="'+o+'"><span>'+label+'</span>'+CHEV+'</button>'+(o?body:'');
@@ -696,7 +721,7 @@ function wpCard(i){
     '<div class="meta"><span>'+i.done+' of '+i.total+(w.site?' items':' tasks')+' complete</span><span class="'+(i.stale&&!i.closed?'stale':'')+'">'+rv+'</span></div></article>';
 }
 function viewList(){
-  var people=IDX.people, ids=wpsFor(S.resp,S.src), open=[], closed=[], lateN=0, staleN=0;
+  var people=IDX.people, ids=wpsFor(S.resp,'sched'), open=[], closed=[], lateN=0, staleN=0;
   ids.forEach(function(id){ var i=wpInfo(id);
     if(i.closed){ closed.push(i); return; }
     if(i.minOpenStart!==null && i.minOpenStart<=S.to){ open.push(i); if(i.worst) lateN++; if(i.stale) staleN++; }
@@ -710,14 +735,13 @@ function viewList(){
       '<div class="field"><label for="from">From</label><input id="from" class="date" type="date" data-act="from" value="'+S.from+'"></div>'+
       '<div class="field"><label for="to">To</label><input id="to" class="date" type="date" data-act="to" value="'+S.to+'"></div></div>'+
       '<div class="pills"><button class="pill'+(S.span===14?' on':'')+'" data-act="span" data-n="14">Next 2 weeks</button><button class="pill'+(S.span===28?' on':'')+'" data-act="span" data-n="28">Next 4 weeks</button></div></div>'+
-    (IDX.hasSite?'<div class="field"><span class="lbl">Show</span><div class="pills">'+srcPill('all','All')+srcPill('sched','Schedule')+srcPill('site','Site items')+'</div></div>':'')+
   '</div></section>'+
   '<main><div class="wrap">'+(function(){ var me=ls('me'); if(!me||me==='Management') return ''; var n=toReview(me).length;
       return n?'<button class="rvbar" data-act="review"><span><b>'+n+(n===1?' item':' items')+' to review</b><br>Not reviewed in the last '+STALE_DAYS+' days</span>'+CHEV.replace('M6 9l6 6 6-6','M9 6l6 6-6 6')+'</button>':''; })()+
     '<div class="tiles"><div class="tile"><b>'+open.length+'</b><span>Open</span></div>'+
     '<div class="tile late"><b>'+lateN+'</b><span>Late</span></div>'+
     '<div class="tile warn"><b>'+staleN+'</b><span>Not reviewed '+STALE_DAYS+'+ days</span></div></div>'+
-    '<section class="sec"><h2>'+(S.src==='site'?'Open site item groups':'Open workpacks')+' ('+open.length+')</h2>'+
+    '<section class="sec"><h2>Open workpacks ('+open.length+')</h2>'+
     (open.length?'<div class="grid">'+open.map(wpCard).join('')+'</div>':'<div class="empty">No open workpacks in this period. Widen the period or pick another name.</div>')+
     (closed.length?fold('closed','Closed workpacks ('+closed.length+')','<div class="grid">'+closed.map(wpCard).join('')+'</div>'):'')+
     '</section></div></main>'+tabs();
@@ -729,6 +753,7 @@ function pendingCount(){ return Object.keys(S.pending).length; }
 function updText(){ var n=pendingCount(); return n===0?'No changes – confirms reviewed':(n+(n===1?' unsaved change':' unsaved changes')); }
 function taskCard(t){
   if(t.tank) return tankItemCard(t);
+  if(t.site&&S.view==='sitem') return stageItemCard(t);
   var saved=eff(t.id), cur=S.pending[t.id]||saved, l=late(t,saved,todayISO());
   var b=function(code,label){ return '<button class="s-'+code+'" data-act="set" data-t="'+esc(t.id)+'" data-s="'+code+'" aria-pressed="'+(cur===code)+'">'+TICK+'<span>'+label+'</span></button>'; };
   return '<article class="card task" id="t-'+esc(t.id)+'">'+
@@ -983,8 +1008,8 @@ function viewTanks(){
     return '<button class="pill'+((D||'All')===d[0]?' on':'')+'" data-act="tdisc" data-v="'+esc(d[0])+'">'+esc(d[1])+'</button>'; }).join('');
   var list=function(arr){ return arr.length?'<div class="grid">'+arr.map(function(x){ return tankCard(x[0],x[1]); }).join('')+'</div>':''; };
   var tanks=work.filter(function(x){ return !x[0].seachest; }), chests=work.filter(function(x){ return x[0].seachest; });
-  return header('Tanks and seachests')+
-  '<section class="filters"><div class="wrap">'+
+  return header('Other items · Tanks and seachests')+
+  '<section class="filters"><div class="wrap">'+otherPick()+
     '<div class="field"><label class="lbl" for="tresp">Responsible</label>'+sel('tresp','tresp',opts,R)+'</div>'+
     '<div class="field"><span class="lbl">Discipline</span><div class="pills">'+pills+'</div></div>'+
     '<div class="field"><label class="lbl" for="tq">Find a tank</label><input id="tq" class="text" type="search" data-act="tq" value="'+esc(S.tq||'')+'" placeholder="e.g. 7S or MGO" autocomplete="off"></div>'+
@@ -1163,6 +1188,93 @@ function repStages(fid){
       '<th class="sst">Current stage</th></tr></thead><tbody>'+body+'</tbody><tfoot><tr><td>Complete</td>'+foot+'<td></td></tr></tfoot></table></div></section>';
 }
 
+/* ---------- Site items tab: one card per item with stages (e.g. access point: Opening / Closing / Coating) ---------- */
+function stg(){
+  if(IDX.stg) return IDX.stg;
+  var fams=stageFamilies(), byGroup={}, rows=[];
+  fams.forEach(function(f){ f.rows.forEach(function(r){ r.fam=f; rows.push(r); r.items.forEach(function(t){ byGroup[t.wp]=r.id; }); }); });
+  var other=IDX.allW.filter(function(w){ return w.site&&!byGroup[w.id]; }).map(function(w){ return w.id; }).sort(cmp);
+  var ppl={}; IDX.allW.forEach(function(w){ if(w.site&&w.resp) ppl[w.resp]=1; });
+  var byBase={}; rows.forEach(function(r){ byBase[r.id]=r; });
+  return IDX.stg={fams:fams,byGroup:byGroup,byBase:byBase,other:other,people:Object.keys(ppl).sort(cmp)};
+}
+function stageLabel(name){ return String(name).replace(/^Open\b/i,'Opening').replace(/^Closed\b/i,'Closing'); }
+function stageShort(name){ return String(name).replace(/\s*\(.*\)\s*$/,''); }
+function rowGroups(r){ var g=[]; r.items.forEach(function(t){ if(g.indexOf(t.wp)<0) g.push(t.wp); }); return g; }
+function rowReview(r,oldest){ var best=null, missing=false;
+  rowGroups(r).forEach(function(g){ var v=S.reviews[g]; if(!v){ missing=true; return; } if(!best||(oldest?v.at<best.at:v.at>best.at)) best=v; });
+  return oldest&&missing?null:best; }
+function rowMatch(r,R,q){
+  if(R!=='All'&&!r.items.some(function(t){ return (IDX.wps[t.wp]||{}).resp===R; })) return false;
+  if(q){ var txt=(r.id+' '+r.items.map(function(t){ return (IDX.wps[t.wp]||{}).desc+' '+t.name; }).join(' ')).toLowerCase(); if(txt.indexOf(q)<0) return false; }
+  return true;
+}
+function stageCard(r){
+  var f=r.fam, i=stageRow(f,r), today=todayISO(), worst=null;
+  i.cells.forEach(function(c){ if(c&&c.l&&(!worst||c.l.days>worst.days)) worst=c.l; });
+  var boxes=f.stages.map(function(s,k){ var c=i.cells[k], nm=esc(stageShort(s.name));
+    if(!c) return '<div class="dc B">'+nm+'<small>&nbsp;</small></div>';
+    var sm=c.st==='C'?'✓ '+(c.rec&&c.rec.at?fmt(c.rec.at.slice(0,10)):''):c.st==='P'?'In progress':((c.l?'!':'')+((c.t.finish||c.t.start)?fmt(c.t.finish||c.t.start):'–'));
+    return '<div class="dc '+c.st+(c.l?' L':'')+'">'+nm+'<small>'+sm+'</small></div>'; }).join('');
+  var rv=rowReview(r,true), done=i.cells.filter(function(c){ return c&&c.st==='C'; }).length, tot=i.cells.filter(function(c){ return c; }).length;
+  return '<article class="card"><div class="row"><div class="grow"><div class="wpid">'+esc(r.id)+'</div><div class="wpdesc">'+esc(i.loc)+'</div></div>'+
+    '<button class="btn" data-act="sitem" data-id="'+esc(r.id)+'" aria-label="Edit '+esc(r.id)+'">Edit</button></div>'+
+    (worst?'<div class="badges"><span class="badge late">'+WARN+esc(lateText(worst))+'</span></div>':'')+
+    '<div class="disc" style="grid-template-columns:repeat('+f.stages.length+',minmax(0,1fr))">'+boxes+'</div>'+
+    '<div class="meta"><span>'+done+' of '+tot+' stages complete</span><span>'+(rv?'Reviewed '+ago(rv.at):'Not reviewed yet')+'</span></div></article>';
+}
+function viewSite(){
+  var G=stg(), me=ls('me'), q=(S.sq||'').trim().toLowerCase();
+  if(!S.sresp) S.sresp=G.people.indexOf(me)>=0?me:'All';
+  if(S.sresp!=='All'&&G.people.indexOf(S.sresp)<0) S.sresp='All';
+  var R=S.sresp, secs='', tiles='', K=otherCur()||'';
+  G.fams.forEach(function(f){
+    if(K!=='st:'+f.id) return;
+    var rows=f.rows.filter(function(r){ return rowMatch(r,R,q); }); if(!rows.length) return;
+    var cnt={}, nLate=0, states=[stageNone(f)].concat(f.stages.map(function(st){ return stageWord(st.name); }));
+    rows.forEach(function(r){ var i=stageRow(f,r); cnt[i.state]=(cnt[i.state]||0)+1; if(i.late) nLate++; });
+    if(!tiles) tiles='<div class="tiles stt">'+states.map(function(st){ return '<div class="tile"><b>'+(cnt[st]||0)+'</b><span>'+esc(st)+'</span></div>'; }).join('')+
+      (nLate?'<div class="tile late"><b>'+nLate+'</b><span>With a late stage</span></div>':'')+'</div>';
+    secs+='<section class="sec"><h2>'+esc(f.name)+' ('+rows.length+')</h2><div class="grid">'+rows.map(stageCard).join('')+'</div></section>';
+  });
+  var oth=G.other.filter(function(id){ var w=IDX.wps[id]; return (R==='All'||w.resp===R)&&(!q||(id+' '+w.desc).toLowerCase().indexOf(q)>=0); });
+  if(K==='site:other'&&oth.length) secs+='<section class="sec"><h2>Other site items ('+oth.length+')</h2><div class="grid">'+oth.map(function(id){ return wpCard(wpInfo(id)); }).join('')+'</div></section>';
+  var opts=[['All','All']].concat(G.people.map(function(p){ return [p,p]; }));
+  var cur=otherLists().filter(function(x){ return x.key===K; })[0];
+  return header('Other items · '+esc(cur?cur.name:'Site items'))+
+  '<section class="filters"><div class="wrap">'+otherPick()+
+    '<div class="field"><label class="lbl" for="sresp2">Responsible</label>'+sel('sresp2','sresp2',opts,R)+'</div>'+
+    '<div class="field"><label class="lbl" for="sq">Find an item</label><input id="sq" class="text" type="search" data-act="sq" value="'+esc(S.sq||'')+'" placeholder="e.g. AO-07 or steering" autocomplete="off"></div>'+
+  '</div></section>'+
+  '<main><div class="wrap">'+tiles+(secs||'<div class="empty">No site items for this selection.</div>')+'</div></main>'+tabs();
+}
+function stageItemCard(t){
+  var r=stg().byBase[S.sitem], saved=eff(t.id), cur=S.pending[t.id]||saved, l=late(t,saved,todayISO());
+  var key=r?t.id.slice(r.id.length+1):'', w=IDX.wps[t.wp]||{}, me=ls('me');
+  var b=function(code,label){ return '<button class="s-'+code+'" data-act="set" data-t="'+esc(t.id)+'" data-s="'+code+'" aria-pressed="'+(cur===code)+'">'+TICK+'<span>'+label+'</span></button>'; };
+  var plan=t.start&&t.finish?'Planned '+spanTxt(t.start,t.finish):t.start?'Planned start '+fmt(t.start):t.finish?'Planned finish '+fmt(t.finish):'No planned date';
+  var rec=S.status[t.id];
+  return '<article class="card task" id="t-'+esc(t.id)+'">'+
+    '<div class="dhead" style="margin-top:0;border-top:0;padding-top:0"><h3>'+esc(stageLabel(t.name))+'</h3>'+(S.pending[t.id]?'<span class="changed">CHANGED</span>':'')+
+      (w.resp===me?'<span class="mine">YOURS</span>':'<span class="note">'+esc(w.resp||'')+'</span>')+'</div>'+
+    '<div class="badges"><span class="note">'+plan+(rec&&rec.by?' · last set by '+esc(rec.by)+' '+ago(rec.at):'')+'</span>'+(l?'<span class="badge late">'+WARN+esc(lateText(l))+'</span>':'')+'</div>'+
+    '<div class="seg" role="group" aria-label="Status of '+esc(t.id)+'">'+b('N','Not Started')+b('P','In Progress')+b('C','Complete')+'</div></article>';
+}
+function viewSiteItem(){
+  var r=stg().byBase[S.sitem]; if(!r){ S.view='site'; return viewSite(); }
+  var f=r.fam, i=stageRow(f,r), rv=rowReview(r,false), order={};
+  f.stages.forEach(function(st,k){ order[st.key]=k; });
+  var items=r.items.slice().sort(function(a,b){ return (order[a.id.slice(r.id.length+1)]||0)-(order[b.id.slice(r.id.length+1)]||0); });
+  return '<header class="bar wphead"><div class="wrap">'+
+    '<button class="back" data-act="back"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>All '+esc((otherLists().filter(function(x){ return x.key===otherCur(); })[0]||{name:'site items'}).name.toLowerCase())+'</button>'+
+    '<div><div class="brand">'+esc(r.id)+'</div><div class="wpdesc" style="font-weight:600">'+esc(i.loc)+'</div>'+
+    '<div class="sub">'+esc(i.state)+' · '+(rv?'Reviewed '+ago(rv.at)+' by '+esc(rv.by):'Not reviewed yet')+'</div></div>'+
+    '<button class="update" data-act="save" '+(S.saving?'disabled':'')+'><span>'+(S.saving?'Saving…':'Update')+'</span><small id="updtext">'+updText()+'</small></button>'+
+  '</div></header>'+
+  '<main><div class="wrap"><section class="sec"><div class="grid">'+items.map(taskCard).join('')+'</div>'+
+  '<p class="note">To re-open a stage, set it back to In Progress or Not Started and press Update. Pressing Update with no changes still records this item as reviewed today.</p></section></div></main>'+tabs();
+}
+
 /* ---------- review reminders ---------- */
 // Everything a person should look at: their active workpacks / site groups and tanks not reviewed in STALE_DAYS
 function toReview(person){
@@ -1296,14 +1408,14 @@ function viewWho(){
 function render(){
   var y=window.scrollY, v=S.view;
   if(S.who){ app.innerHTML=viewWho(); return; }
-  app.innerHTML = v==='wp'?viewWp():v==='stats'?viewStats():v==='admin'?viewAdmin():v==='reports'?viewReports():v==='tanks'?viewTanks():v==='tank'?viewTank():v==='review'?viewReview():viewList();
+  app.innerHTML = v==='wp'?viewWp():v==='stats'?viewStats():v==='admin'?viewAdmin():v==='reports'?viewReports():v==='tanks'?viewTanks():v==='tank'?viewTank():v==='other'?viewOther():v==='site'?viewSite():v==='sitem'?viewSiteItem():v==='review'?viewReview():viewList();
   var pg=document.getElementById('pgsz'); if(pg) pg.textContent=(v==='reports'&&S.rep.type==='tanks')?'@page{size:17in 11in;margin:.35in .4in .45in}':'@page{size:A4;margin:12mm}';
-  if(S.focusTq){ var q=document.getElementById('tq'); if(q){ q.focus(); var n=q.value.length; try{ q.setSelectionRange(n,n); }catch(e){} } S.focusTq=false; }
+  if(S.focusTq){ var q=document.getElementById(S.view==='site'?'sq':'tq'); if(q){ q.focus(); var n=q.value.length; try{ q.setSelectionRange(n,n); }catch(e){} } S.focusTq=false; }
   window.scrollTo(0,S.keepScroll?y:0); S.keepScroll=false;
 }
 function rerender(){ S.keepScroll=true; render(); }
 function setPeriod(span){ S.span=span; S.from=todayISO(); S.to=addDays(S.from,span); ls('span',span); }
-function leaveWp(){ S.pending={}; S.confirmAll=false; S.view=S.ret||(S.view==='tank'?'tanks':'list'); S.ret=null; render(); }
+function leaveWp(){ S.pending={}; S.confirmAll=false; S.view=S.ret||(S.view==='tank'?'tanks':S.view==='sitem'?'site':'list'); S.ret=null; render(); }
 
 app.addEventListener('click',function(ev){
   var el=ev.target.closest('[data-act]'); if(!el) return;
@@ -1312,7 +1424,7 @@ app.addEventListener('click',function(ev){
   if(a==='who'){ S.who=true; render(); return; }
   if(a==='whoclose'){ S.who=false; render(); return; }
   if(a==='me'){ var n=el.getAttribute('data-n'); ls('me',n); S.who=false; S.resp=(n==='Management')?'All':n; ls('resp',S.resp); S.rep.resp=S.resp; S.tresp=IDX.tkPeople.indexOf(n)>=0?n:'All'; render(); return; }
-  if(a==='tank'){ S.ret=S.view==='review'?'review':null; S.tank=el.getAttribute('data-id'); S.pending={}; S.view='tank'; render(); return; }
+  if(a==='tank'){ S.olist='tanks'; S.ret=S.view==='review'?'review':null; S.tank=el.getAttribute('data-id'); S.pending={}; S.view='tank'; render(); return; }
   if(a==='review'){ S.view='review'; S.rvWho=null; render(); return; }
   if(a==='remind'){ var rp=el.getAttribute('data-p'), rn=toReview(rp).length; S.share={p:rp,text:remindText(rp,rn)};
     if(navigator.share){ navigator.share({title:'Workpack Status',text:S.share.text}).then(function(){ S.share=null; toast('Reminder shared'); rerender(); }).catch(function(){ rerender(); }); }
@@ -1325,11 +1437,14 @@ app.addEventListener('click',function(ev){
       .catch(function(e){ S.adminErr=e.code===401?'Admin PIN not accepted.':e.message; rerender(); }); return; }
   if(a==='lock'){ S.isAdmin=false; ls('isadmin',false); S.adminMsg='Reminders hidden on this device.'; rerender(); return; }
   if(a==='tdisc'){ S.tdisc=el.getAttribute('data-v'); ls('tdisc',S.tdisc); rerender(); return; }
-  if(a==='tab'){ if((S.view==='wp'||S.view==='tank')&&pendingCount()){ toast('Press Update first, or go back to discard.'); return; } S.view=el.getAttribute('data-v'); S.pending={}; render(); return; }
+  if(a==='tab'){ if((S.view==='wp'||S.view==='tank'||S.view==='sitem')&&pendingCount()){ toast('Press Update first, or go back to discard.'); return; } S.view=el.getAttribute('data-v'); if(S.view==='other') S.view=otherView(otherCur()); S.pending={}; render(); return; }
   if(a==='fold'){ var k=el.getAttribute('data-k'); S.open[k]=!S.open[k]; rerender(); return; }
   if(a==='span'){ setPeriod(+el.getAttribute('data-n')); rerender(); return; }
   if(a==='src'){ S.src=el.getAttribute('data-v'); ls('src',S.src); rerender(); return; }
-  if(a==='edit'){ S.ret=S.view==='review'?'review':null; S.wp=el.getAttribute('data-wp'); S.pending={}; S.confirmAll=false; S.view='wp'; render(); return; }
+  if(a==='olistgo'){ S.olist=el.getAttribute('data-k'); ls('olist',S.olist); S.view=otherView(S.olist); render(); return; }
+  if(a==='sitem'){ S.olist=otherCur(); S.ret=S.view==='review'?'review':null; S.sitem=el.getAttribute('data-id'); S.pending={}; S.view='sitem'; render(); return; }
+  if(a==='edit'&&stg().byGroup[el.getAttribute('data-wp')]){ S.ret=S.view==='review'?'review':S.view==='stats'?'stats':null; S.sitem=stg().byGroup[el.getAttribute('data-wp')]; S.olist='st:'+stg().byBase[S.sitem].fam.id; S.pending={}; S.view='sitem'; render(); return; }
+  if(a==='edit'){ S.ret=S.view==='review'?'review':S.view==='site'?'site':null; S.wp=el.getAttribute('data-wp'); S.pending={}; S.confirmAll=false; S.view='wp'; render(); return; }
   if(a==='back'){ if(pendingCount()&&!S.discardAsk){ S.discardAsk=true; toast('Unsaved changes. Tap back again to discard them.'); setTimeout(function(){S.discardAsk=false;},4000); return; } S.discardAsk=false; leaveWp(); return; }
   if(a==='set'){
     var id=el.getAttribute('data-t'), s=el.getAttribute('data-s');
@@ -1343,9 +1458,13 @@ app.addEventListener('click',function(ev){
   if(a==='allyes'){ (IDX.byWp[S.wp]||[]).forEach(function(t){ if(eff(t.id)!=='C') S.pending[t.id]='C'; }); S.confirmAll=false; rerender(); return; }
   if(a==='save'){
     if(S.saving) return;
-    var ch=Object.keys(S.pending).map(function(id){ return {id:id,s:S.pending[id],old:eff(id)}; }), wp=S.view==='tank'?'TK|'+S.tank:S.wp;
+    var ch=Object.keys(S.pending).map(function(id){ return {id:id,s:S.pending[id],old:eff(id)}; }), wp=S.view==='tank'?'TK|'+S.tank:S.view==='sitem'?S.sitem:S.wp;
     S.saving=true; rerender();
-    sendUpdate(wp,ch).then(function(){
+    var job;
+    if(S.view==='sitem'){ var row=stg().byBase[S.sitem];
+      job=rowGroups(row).reduce(function(p,g){ return p.then(function(){ return sendUpdate(g,ch.filter(function(c){ return (IDX.tasks[c.id]||{}).wp===g; })); }); },Promise.resolve()); }
+    else job=sendUpdate(wp,ch);
+    job.then(function(){
       S.saving=false; index(); var n=ch.length;
       toast(wp.replace(/^TK\|/,'')+(n?' saved: '+n+(n===1?' change':' changes'):' marked reviewed'));
       leaveWp();
@@ -1387,6 +1506,7 @@ app.addEventListener('click',function(ev){
 function readAdminPin(){ var el=document.getElementById('apin'); if(el) S.adminPin=el.value.trim(); }
 app.addEventListener('input',function(ev){
   var el=ev.target; if(el.getAttribute('data-act')==='tq'){ S.tq=el.value; S.focusTq=true; rerender(); }
+  if(el.getAttribute('data-act')==='sq'){ S.sq=el.value; S.focusTq=true; rerender(); }
 });
 app.addEventListener('change',function(ev){
   var el=ev.target, a=el.getAttribute('data-act');
@@ -1399,6 +1519,8 @@ app.addEventListener('change',function(ev){
   if(a==='rsrc'){ S.rep.src=el.value; rerender(); }
   if(a==='rvwho'){ S.rvWho=el.value||null; rerender(); }
   if(a==='tresp'){ S.tresp=el.value; ls('tresp',S.tresp); rerender(); }
+  if(a==='sresp2'){ S.sresp=el.value; rerender(); }
+  if(a==='olist'&&el.value){ S.olist=el.value; ls('olist',S.olist); S.sq=''; S.view=otherView(S.olist); render(); }
   if(a==='tankfile'&&el.files&&el.files[0]){
     readAdminPin(); var tf=el.files[0]; S.adminMsg='Reading '+tf.name+'…'; S.adminErr=''; S.tankParsed=null; rerender();
     Promise.all([needXLSX(),tf.arrayBuffer()]).then(function(r){
@@ -1452,7 +1574,7 @@ function start(){
 window.addEventListener('hashchange',function(){
   if(location.hash==='#review'&&IDX&&!pendingCount()){ S.view='review'; S.rvWho=null; try{ history.replaceState(null,'',location.pathname+location.search); }catch(e){} render(); }
 });
-document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible'&&LIVE&&S.sched&&S.view!=='wp'&&S.view!=='tank'){ load().then(function(){ index(); rerender(); }).catch(function(){}); } });
+document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible'&&LIVE&&S.sched&&S.view!=='wp'&&S.view!=='tank'&&S.view!=='sitem'){ load().then(function(){ index(); rerender(); }).catch(function(){}); } });
 start();
 })();
 </script>
