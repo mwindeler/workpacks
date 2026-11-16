@@ -1622,7 +1622,9 @@ function pfAdminBlock(){
   var a=pfAccel(), n=a.B.length+a.R.length+a.F.length, Y=S.yard||{links:[],subs:[]};
   var pend=(Y.subs||[]).filter(function(s){ return s.state==='new'; }), act=(Y.links||[]).filter(function(l){ return l.active&&l.expires>new Date().toISOString(); });
   var inc=S.pfinc||'open', days=S.pfdays||'7';
-  return '<section class="sec"><h2>Prefab – shipyard (admin)</h2><p class="note" style="margin:0">Only you see this.</p>'+pfShareBox()+
+  var pinBox=LIVE&&!S.adminPin?'<div class="card"><b>Enter the admin PIN once on this device</b><span class="note">Needed to send the yard link and see their updates. It is kept on this phone until you press Lock on the Admin page.</span>'+
+    '<input id="pfpin" class="text" type="password" autocomplete="off" placeholder="Admin PIN"><button class="btn wide" data-act="pfpin">Save PIN</button>'+(S.pfPinErr?'<div class="note" style="color:var(--late)"><b>'+esc(S.pfPinErr)+'</b></div>':'')+'</div>':'';
+  return '<section class="sec"><h2>Prefab – shipyard (admin)</h2><p class="note" style="margin:0">Only you see this.</p>'+pinBox+pfShareBox()+
     '<div class="card"><b>Items to accelerate: '+a.B.length+' behind, '+a.R.length+' at risk'+(a.F.length?', '+a.F.length+' forecast late':'')+'</b>'+
       (n?'<button class="btn wide" style="background:var(--done)" data-act="pfalert">Alert shipyard group</button>':'<div class="note">Nothing to accelerate right now.</div>')+'</div>'+
     '<div class="card"><b>Ask the yard to update prefab</b>'+(LIVE?'':'<div class="note">Not available in the preview: the link needs the live server.</div>')+
@@ -1638,9 +1640,9 @@ function pfAdminBlock(){
 function loadYard(force){
   if(!LIVE||!S.isAdmin||S.yardBusy) return;
   if(!force&&S.yardAt&&Date.now()-S.yardAt<60000) return;
-  if(!S.adminPin){ S.yardErr='Unlock admin again on the Admin page to see yard updates.'; return; }
+  if(!S.adminPin){ S.yardErr='Enter the admin PIN above to see yard updates.'; return; }
   S.yardBusy=true;
-  api('/api/yard',{admin:true}).then(function(d){ S.yard=d; S.yardErr=''; }).catch(function(e){ S.yardErr=e.code===401?'Admin PIN not accepted.':e.message; })
+  api('/api/yard',{admin:true}).then(function(d){ S.yard=d; S.yardErr=''; }).catch(function(e){ if(e.code===401){ S.adminPin=''; ls('apin2',''); S.pfPinErr='Admin PIN not accepted. Enter it again.'; S.yardErr=''; } else S.yardErr=e.message; })
     .then(function(){ S.yardBusy=false; S.yardAt=Date.now(); if(S.view==='stats'||S.view==='pfyard') rerender(); });
 }
 function pfLabel(id){ var p=id.split('|'), k=p[2]||''; return k==='#forecast'?'Forecast on site':k==='#flag'?'Status':k==='#note'?'Note':k; }
@@ -1915,6 +1917,10 @@ app.addEventListener('click',function(ev){
   if(a==='pfcopy'){ var px=document.getElementById('pftext'); var pv2=px?px.value:S.pfshare.text;
     (navigator.clipboard?navigator.clipboard.writeText(pv2):Promise.reject()).then(function(){ toast('Copied'); }).catch(function(){ if(px){ px.focus(); px.select(); } toast('Select the text and copy it'); }); return; }
   if(a==='pfclose'){ S.pfshare=null; rerender(); return; }
+  if(a==='pfpin'){ var pe=document.getElementById('pfpin'), pv3=pe?pe.value.trim():''; if(!pv3){ S.pfPinErr='Enter the admin PIN.'; rerender(); return; }
+    S.adminPin=pv3; S.pfPinErr='';
+    api('/api/yard',{admin:true}).then(function(d){ ls('apin2',pv3); S.yard=d; S.yardAt=Date.now(); S.yardErr=''; toast('Admin PIN saved on this device'); rerender(); })
+      .catch(function(e){ S.adminPin=''; S.pfPinErr=e.code===401?'Admin PIN not accepted.':e.message; rerender(); }); return; }
   if(a==='pfylink'){ var inc=S.pfinc||'open', ids=pfItems().filter(function(it){ var i=pfInfo(it); return inc==='all'||(inc==='risk'?(i.ef==='B'||i.ef==='R'):!i.inst); }).map(function(it){ return it.id; });
     if(!ids.length){ toast('No items to include'); return; }
     var dys=+(S.pfdays||7);
@@ -1923,7 +1929,7 @@ app.addEventListener('click',function(ev){
         var txt='Please update the Hilli FLNG structural prefab status (stages and your expected on-site dates) here. The link works until '+until+':\n'+url;
         S.pfshare={title:'Update link for the yard ('+ids.length+' items)',text:txt}; loadYard(true);
         if(navigator.share){ navigator.share({title:'Hilli prefab update',text:txt}).then(function(){ S.pfshare=null; toast('Link shared'); rerender(); }).catch(function(){ rerender(); }); } else rerender(); })
-      .catch(function(e){ toast(e.code===401?'Admin PIN not accepted – unlock again on the Admin page.':e.message); }); return; }
+      .catch(function(e){ if(e.code===401){ S.adminPin=''; ls('apin2',''); S.pfPinErr='Admin PIN not accepted. Enter it again.'; rerender(); } else toast(e.message); }); return; }
   if(a==='pfyoff'){ api('/api/yard/off',{method:'POST',admin:true,headers:{'Content-Type':'application/json'},body:JSON.stringify({token:el.getAttribute('data-t')})}).then(function(){ toast('Link turned off'); loadYard(true); }).catch(function(e){ toast(e.message); }); return; }
   if(a==='pfyard'){ S.ysel={}; S.view='pfyard'; render(); loadYard(true); return; }
   if(a==='yback'){ S.view='stats'; render(); return; }
@@ -2008,6 +2014,7 @@ app.addEventListener('click',function(ev){
   }
 });
 function readAdminPin(){ var el=document.getElementById('apin'); if(el) S.adminPin=el.value.trim(); }
+app.addEventListener('change',function(ev){ if(ev.target.id==='apin'&&S.isAdmin&&ev.target.value.trim()){ S.adminPin=ev.target.value.trim(); ls('apin2',S.adminPin); S.yardAt=0; } });
 app.addEventListener('input',function(ev){
   var el=ev.target; if(el.getAttribute('data-act')==='tq'){ S.tq=el.value; S.focusTq=true; rerender(); }
   if(el.getAttribute('data-act')==='sq'){ S.sq=el.value; S.focusTq=true; rerender(); }
