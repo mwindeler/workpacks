@@ -124,6 +124,7 @@ main{padding-bottom:100px}
 .changed{background:var(--accent);color:var(--accent-ink);border-radius:6px;font-size:13px;font-weight:700;padding:3px 8px;letter-spacing:.5px}
 .seg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
 .seg button{height:56px;border-radius:10px;border:2px solid var(--off-line);background:var(--surface);color:var(--ink);font-size:17px;font-weight:700;line-height:1.1;padding:0 4px;display:flex;align-items:center;justify-content:center;gap:4px}
+.seg.seg4{grid-template-columns:repeat(4,minmax(0,1fr))} .seg.seg4 button{font-size:15px} .seg button[aria-pressed="true"].s-X{background:var(--chip);border-color:var(--off-line);border-style:dashed;color:var(--ink)}
 .seg button[aria-pressed="true"].s-N{background:var(--not);border-color:var(--not);color:var(--not-ink)}
 .seg button[aria-pressed="true"].s-P{background:var(--prog);border-color:var(--prog-line);color:var(--prog-ink)}
 .seg button[aria-pressed="true"].s-C{background:var(--done);border-color:var(--done);color:var(--done-ink)}
@@ -252,7 +253,32 @@ svg.chart{width:100%;height:auto;display:block;background:var(--surface);border:
 .pfjudge{border:2px solid var(--ink)}
 .cnt{display:inline-block;background:var(--accent);color:var(--accent-ink);border-radius:10px;padding:0 8px;font-size:14px;vertical-align:2px}
 .pfx td{white-space:nowrap} .pfx td.pfd{white-space:normal;min-width:180px} .pfx td.c,.pfx th.c{text-align:center} .pfx .lt{color:var(--late);font-weight:700} .pfx .pfn{font-size:12px;color:var(--muted)}
-.pfx th.grp{border-bottom-width:3px}
+.pfx th.grp{white-space:nowrap;border-bottom-width:3px}
+/* prefab report additions */
+.pfh{font-family:var(--display);font-size:22px;text-transform:uppercase;letter-spacing:.4px;margin:18px 0 6px}
+.pfnote{margin:4px 0 6px;font-size:13px}
+.psts5{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:10px}
+.pst{border:1.5px solid var(--line);border-top:5px solid var(--ink);border-radius:8px;padding:8px 10px;background:var(--surface)}
+.pstn{font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:.4px}
+.pstb{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}.pstb b{font-family:var(--display);font-size:40px;line-height:1}.pstb span{font-size:13px;color:var(--muted)}
+.psts{font-size:12.5px;color:var(--muted);margin-bottom:4px}.pstl{font-size:14px}.pstl b{font-size:17px;margin-right:4px}.pstl.r,.pstl.r b{color:var(--late)}.pstl.a b{color:var(--risk)}
+.pstr{font-size:11.5px;color:var(--muted);margin-top:5px;border-top:1px solid var(--line);padding-top:4px}
+.pcr{margin-top:10px}.pcrh{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap;border-bottom:3px solid var(--ink)}
+.pcrh h3{font-family:var(--display);font-size:20px;margin:0;text-transform:uppercase;letter-spacing:.3px}.pcrh span{font-size:13px;color:var(--muted)}
+.pcrt td.pfd{white-space:normal;min-width:220px}.pfnone{color:var(--muted);font-style:italic}.pcrt td .lt,.pcrt td.lt{color:var(--late);font-weight:700}
+.pfcalc{font-style:italic;color:var(--muted)}
+.tm.X{border:1.5px dashed #8A949C;background:var(--chip);color:var(--muted);font-size:7px;width:24px}
+.prn5{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:10px}
+.prn{border:1.5px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--surface)}.prnh{display:flex;justify-content:space-between;align-items:baseline;gap:6px}
+.prnh b{font-size:15px;text-transform:uppercase}.prnh span{font-family:var(--display);font-size:24px;font-weight:700}.prnh .r{color:var(--late)}.prnh .g{color:var(--done)}.prnk{font-size:12px;color:var(--muted)}
+svg.pfsm{border:0}
+.lneed{fill:none;stroke:var(--off-line);stroke-width:2.2;stroke-dasharray:6 4}.lact{fill:none;stroke:var(--accent);stroke-width:3}.gapl{stroke:var(--late);stroke-width:4}
+.clg{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted);margin:2px 0 6px}.clg span{display:inline-flex;align-items:center;gap:6px}
+.kln{display:inline-block;width:26px;border-top:3px solid var(--accent)}.kln.d{border-top:3px dashed var(--off-line)}.kln.g{border-top:4px solid var(--late)}
+.lkk{display:inline-block;width:16px;height:12px;border-radius:3px}
+.lk0{fill:var(--done);background:var(--done)}.lk1{fill:#57A070;background:#57A070}.lk2{fill:#96C8A6;background:#96C8A6}.lk3{fill:var(--prog);background:var(--prog)}.lk4{fill:#D3E8DA;background:#D3E8DA}.lk5{fill:var(--track);background:var(--track)}
+.lkod{fill:var(--late);font-weight:700}
+@media print{ .pfbreak{break-before:page} .psts5{grid-template-columns:repeat(5,1fr)} .prn5{grid-template-columns:repeat(5,1fr)} .pstb b{font-size:26pt} .pcrt{font-size:8pt} .pfh{font-size:15pt} .scroll svg.chart{min-width:0!important} }
 @media print{ .pfx{font-size:8pt} .pfx .pfl{font-size:7.5pt;padding:1px 5px} .pfx .pfn{font-size:7pt} }
 select.pick{font-weight:700;border-width:2px}
 nav.tabs .in.t5 button{font-size:14px;line-height:1.1;padding:0;white-space:normal;letter-spacing:-.2px} nav.tabs .in.t5{max-width:none}
@@ -1483,13 +1509,27 @@ function pfGet(id){ var L=pfItems(); for(var i=0;i<L.length;i++) if(L[i].id===id
 function pfSaved(it,key){ var r=S.status['PF|'+it.id+'|'+key]; if(r) return r.s;
   if(key.charAt(0)==='#') return it[key.slice(1)]||''; return (it.st||{})[key]||'N'; }
 function pfVal(it,key){ var k='PF|'+it.id+'|'+key; return Object.prototype.hasOwnProperty.call(S.pending,k)?S.pending[k]:pfSaved(it,key); }
+function pfOn(it){ return it.onsite||(it.install?addDays(it.install,-1):''); }
+function pfOnCalc(it){ return !it.onsite&&!!it.install; }
+// A stage counts as done when a later stage is complete (N/A coatings stay N/A)
+function pfEff(it,get){ get=get||function(s){ return pfVal(it,s); }; var o={}, last=-1;
+  PF_ST.forEach(function(s,k){ o[s]=get(s); if(o[s]==='C') last=k; });
+  for(var k=0;k<last;k++) if(o[PF_ST[k]]!=='X') o[PF_ST[k]]='C';
+  return o; }
+// Need-by dates, counted back from the install date: on site = planned on-site (install - 1 if blank);
+// coatings complete 1 day before on site (7 days of coating); prefab complete before coating starts
+// (or 1 day before on site when coatings are N/A); procurement 30 days before install.
+function pfNeed(it,s,na){ if(!it.install) return null; var O=pfOn(it); if(na===undefined) na=pfVal(it,'Coatings')==='X';
+  if(s==='Procurement') return addDays(it.install,-30); if(s==='Prefab') return addDays(O,na?-1:-8);
+  if(s==='Coatings') return na?null:addDays(O,-1); if(s==='On site') return O; return it.install; }
 function pfInfo(it){
-  var today=todayISO(), v=function(s){ return pfVal(it,s); }, cur=null;
-  PF_ST.some(function(st){ if(v(st)!=='C'){ cur=st; return true; } return false; });
+  var today=todayISO(), E=pfEff(it), v=function(s){ return E[s]; }, cur=null;
+  PF_ST.some(function(st){ if(v(st)!=='C'&&v(st)!=='X'){ cur=st; return true; } return false; });
   var d=it.install?diff(today,it.install):null, inst=v('Installed')==='C', on=v('On site')==='C', B=[], R=[];
   var dd=function(){ return d===0?'install today':d<0?'install date passed '+(-d)+(d===-1?' day':' days')+' ago':'install in '+d+(d===1?' day':' days'); };
   if(d!==null&&!inst){
     if(d<=0&&!on) B.push('not on site');
+    else if(d<0&&v('Installed')==='N') B.push('install not started');
     if(d<=14&&v('Prefab')!=='C') B.push('prefab not complete');
     else if(d<=21&&v('Prefab')!=='C') R.push('prefab not complete');
     if(d<=30&&v('Procurement')!=='C') R.push('procurement not complete');
@@ -1497,7 +1537,7 @@ function pfInfo(it){
   }
   var ef=inst?'I':d===null?'U':B.length?'B':R.length?'R':'O', fc=pfVal(it,'#forecast'), w=B.length?B:R;
   var whyTxt=w.length?capFirst(w.join(', ').replace(/, ([^,]*)$/,' and $1'))+' – '+dd():'';
-  return {on:on,inst:inst,cur:cur,ef:ef,why:w,whyTxt:whyTxt,days:d,fc:fc,slip:(!on&&fc&&it.onsite)?diff(it.onsite,fc):0,
+  return {on:on,inst:inst,cur:cur,ef:ef,why:w,whyTxt:whyTxt,days:d,fc:fc,slip:(!on&&fc&&pfOn(it))?diff(pfOn(it),fc):0,
     note:pfVal(it,'#note'),rev:S.reviews['PF|'+it.id]};
 }
 function pfSort(a,b){ return ((a[1].inst?1:0)-(b[1].inst?1:0))||(pfIdx(a[0])-pfIdx(b[0])); }
@@ -1508,10 +1548,10 @@ function pfFlagHtml(i){
 }
 function pfStrip(it){
   return '<div class="disc" style="grid-template-columns:repeat('+PF_ST.length+',minmax(0,1fr))">'+PF_ST.map(function(s){ var v=pfVal(it,s);
-    return '<div class="dc '+v+'">'+esc(PF_SH[s])+'<small>'+(v==='C'?'✓':v==='P'?'In prog.':'&nbsp;')+'</small></div>'; }).join('')+'</div>';
+    return '<div class="dc '+v+'">'+esc(PF_SH[s])+'<small>'+(v==='C'?'✓':v==='P'?'In prog.':v==='X'?'N/A':'&nbsp;')+'</small></div>'; }).join('')+'</div>';
 }
 function pfDates(it,i){
-  return 'Install <b>'+fmt(it.install)+'</b>'+(i.days!==null&&!i.inst?' ('+(i.days<0?Math.abs(i.days)+' d ago':i.days+' d')+')':'')+' · on site '+fmt(it.onsite);
+  return 'Install <b>'+fmt(it.install)+'</b>'+(i.days!==null&&!i.inst?' ('+(i.days<0?Math.abs(i.days)+' d ago':i.days+' d')+')':'')+' · on site '+fmt(pfOn(it));
 }
 function pfCard(it){
   var i=pfInfo(it);
@@ -1551,19 +1591,19 @@ function viewPf(){
 }
 function pfSeg(it,key,opts){
   var cur=pfVal(it,key), id='PF|'+it.id+'|'+key;
-  return '<div class="seg" role="group" aria-label="'+esc(key)+'">'+opts.map(function(o){
+  return '<div class="seg'+(opts.length===4?' seg4':'')+'" role="group" aria-label="'+esc(key)+'">'+opts.map(function(o){
     return '<button class="s-'+o[0]+'" data-act="pfset" data-k="'+esc(id)+'" data-v="'+o[0]+'" aria-pressed="'+(cur===o[0])+'">'+TICK+'<span>'+o[1]+'</span></button>'; }).join('')+'</div>';
 }
 function viewPfItem(){
   var it=pfGet(S.pfid); if(!it){ S.view='pf'; return viewPf(); }
   var i=pfInfo(it), chg=function(k){ return Object.prototype.hasOwnProperty.call(S.pending,'PF|'+it.id+'|'+k)?'<span class="changed">CHANGED</span>':''; };
-  var stages=PF_ST.map(function(s){ return '<article class="card task"><div class="dhead" style="margin:0;border:0;padding:0"><h3>'+esc(s)+'</h3>'+chg(s)+'</div>'+pfSeg(it,s,[['N','Not Started'],['P','In Progress'],['C','Complete']])+'</article>'; }).join('');
+  var stages=PF_ST.map(function(s){ return '<article class="card task"><div class="dhead" style="margin:0;border:0;padding:0"><h3>'+esc(s)+'</h3>'+chg(s)+'</div>'+pfSeg(it,s,[['N','Not Started'],['P','In Progress'],['C','Complete']].concat(s==='Coatings'?[['X','N/A']]:[]))+(s==='Coatings'?'<div class="note">N/A = coating done after installation. The item goes straight from prefab to on site.</div>':'')+'</article>'; }).join('');
   var flag='<article class="card task pfjudge"><div class="dhead" style="margin:0;border:0;padding:0"><h3>Status</h3>'+pfFlagHtml(i)+'</div>'+
     '<div class="pfwhy '+i.ef+'">'+(i.whyTxt?esc(i.whyTxt):i.ef==='U'?'No install date in the tracker.':i.ef==='I'?'Installed.':'No rule triggered – on track for '+(i.days<0?'the install date':'install on '+fmt(it.install))+'.')+'</div>'+
     '<div class="note">Worked out from the stages against the install date. It updates as you tick stages, before you press Update.</div>'+
     '<label class="lbl" for="pffc" style="margin-top:8px">Yard forecast on-site date '+chg('#forecast')+'</label>'+
     '<input id="pffc" class="text" type="date" data-act="pffc" value="'+esc(i.fc||'')+'">'+
-    (i.slip>0?'<div class="pfslip">'+i.slip+(i.slip===1?' day':' days')+' after the planned on-site date ('+fmt(it.onsite)+')</div>':'')+
+    (i.slip>0?'<div class="pfslip">'+i.slip+(i.slip===1?' day':' days')+' after the planned on-site date ('+fmt(pfOn(it))+')</div>':'')+
     '<label class="lbl" for="pfnote" style="margin-top:8px">Note for the yard (optional) '+chg('#note')+'</label>'+
     '<input id="pfnote" class="text" type="text" maxlength="200" data-act="pfnote" value="'+esc(i.note||'')+'" placeholder="e.g. Coating slot needed this week"></article>';
   return '<header class="bar wphead"><div class="wrap">'+
@@ -1584,7 +1624,7 @@ function pfAccel(){
   return out;
 }
 function pfLine(n,it,i){
-  var t=n+'. '+it.id+' '+it.desc+(it.dwg?' (DWG '+it.dwg+')':'')+' – '+(i.cur?'at '+i.cur:'ready')+' – install '+fmt(it.install)+(it.onsite?', on site '+fmt(it.onsite):'');
+  var t=n+'. '+it.id+' '+it.desc+(it.dwg?' (DWG '+it.dwg+')':'')+' – '+(i.cur?'at '+i.cur:'ready')+' – install '+fmt(it.install)+(pfOn(it)?', on site '+fmt(pfOn(it)):'');
   if(i.whyTxt) t+='\n   '+i.whyTxt;
   if(i.fc&&i.slip>0) t+='\n   Yard forecast on site '+fmt(i.fc)+' ('+i.slip+(i.slip===1?' day':' days')+' after planned)';
   if(i.note) t+='\n   Note: '+i.note;
@@ -1646,7 +1686,7 @@ function loadYard(force){
     .then(function(){ S.yardBusy=false; S.yardAt=Date.now(); if(S.view==='stats'||S.view==='pfyard') rerender(); });
 }
 function pfLabel(id){ var p=id.split('|'), k=p[2]||''; return k==='#forecast'?'Forecast on site':k==='#flag'?'Status':k==='#note'?'Note':k; }
-function pfValTxt(id,v){ var k=(id.split('|')[2]||''); if(k==='#forecast') return v?fmt(v):'–'; if(k==='#flag') return PF_FL[v]||'–'; if(k==='#note') return v||'–'; return {N:'Not started',P:'In progress',C:'Complete'}[v]||v; }
+function pfValTxt(id,v){ var k=(id.split('|')[2]||''); if(k==='#forecast') return v?fmt(v):'–'; if(k==='#flag') return PF_FL[v]||'–'; if(k==='#note') return v||'–'; return {N:'Not started',P:'In progress',C:'Complete',X:'N/A'}[v]||v; }
 function viewPfYard(){
   var Y=S.yard||{subs:[]}, pend=(Y.subs||[]).filter(function(s){ return s.state==='new'; });
   S.ysel=S.ysel||{};
@@ -1677,22 +1717,123 @@ function pfAcceptSub(sid){
 function repPrefab(){
   var R=S.rep, base=pfItems().filter(function(it){ return R.resp==='All'||it.lead===R.resp; });
   var rows=base.map(function(it){ return [it,pfInfo(it)]; }).filter(function(x){ return !R.pfhide||!x[1].inst; }).sort(pfSort), c=pfCounts(base);
-  var mark=function(v){ return '<span class="tm '+v+'">'+(v==='C'?'✓':v==='P'?'IP':'')+'</span>'; }, sep=false;
+  var mark=pfMark, sep=false;
   var body=rows.map(function(x){ var it=x[0], i=x[1], pre='';
     if(i.inst&&!sep){ sep=true; pre='<tr class="tsep"><td colspan="15">Installed</td></tr>'; }
     return pre+'<tr'+(i.inst?' class="pfdone"':'')+'><td><b>'+esc(it.id)+'</b></td><td>'+esc(it.dwg||'')+'</td><td class="pfd">'+esc(it.desc)+'</td><td>'+esc(it.wp||'')+'</td><td>'+esc(it.lead||'')+'</td>'+
-      '<td class="c">'+fmt(it.onsite)+'</td><td class="c"><b>'+fmt(it.install)+'</b></td><td class="c'+(i.slip>0?' lt':'')+'">'+(i.fc?fmt(i.fc):'')+'</td>'+
+      '<td class="c">'+(pfOnCalc(it)?'<i class="pfcalc">'+fmt(pfOn(it))+'</i>':fmt(it.onsite))+'</td><td class="c"><b>'+fmt(it.install)+'</b></td><td class="c'+(i.slip>0?' lt':'')+'">'+(i.fc?fmt(i.fc):'')+'</td>'+
       PF_ST.map(function(st,k){ return '<td class="c'+(k===0?' gs':'')+'">'+mark(pfVal(it,st))+'</td>'; }).join('')+
       '<td>'+pfFlagHtml(i)+(i.whyTxt?'<span class="pfn"> '+esc(i.whyTxt)+'</span>':'')+(i.note?'<div class="pfn">Note: '+esc(i.note)+'</div>':'')+'</td></tr>'; }).join('');
   return '<section class="trep">'+
     '<div class="ttop"><div><div class="reye">'+esc((S.prefab&&S.prefab.source)||'Structural prefab')+'</div><h1>Structural prefabrication – status vs install date'+(R.resp==='All'?'':' – '+esc(R.resp))+'</h1>'+
       '<div class="rmeta">In tracker order, installed items last · '+esc(stamp())+'</div>'+
       '<div class="tkp"><div><b>'+c.n+'</b>items</div><div class="lt"><b>'+c.B+'</b>behind</div><div><b>'+c.R+'</b>at risk</div><div><b>'+c.O+'</b>on track</div><div><b>'+c.I+'</b>installed</div><div><b>'+c.soon+'</b>install in 14 days</div></div></div>'+
-      '<div class="tlg"><div><span class="tm C">✓</span>Complete</div><div><span class="tm P">IP</span>In progress</div><div><span class="tm N"></span>Not started</div><div><span class="tdt lt">21 Nov</span>Yard forecast later than planned on site</div>'+
-      '<div style="grid-column:1/-1;display:block">Status rules (days to install): Behind – not on site by the install date, or prefab not complete at 14 days or less. At risk – prefab not complete at 21 days or less, procurement not complete at 30 days or less, coatings not started at 7 days or less.</div></div></div>'+
+      '<div class="tlg"><div><span class="tm C">✓</span>Complete</div><div><span class="tm P">IP</span>In progress</div><div><span class="tm N"></span>Not started</div><div><span class="tm X">N/A</span>Coating not needed before install</div><div><span class="tdt lt">21 Nov</span>Yard forecast later than planned on site</div><div><i class="pfcalc">17 Nov</i>On site = install − 1 day (no date in tracker)</div>'+
+      '<div style="grid-column:1/-1;display:block">Status rules (days to install): Behind – not on site by the install date, install not started by the install date, or prefab not complete at 14 days or less. At risk – prefab not complete at 21 days or less, procurement not complete at 30 days or less, coatings not started at 7 days or less (not for N/A).</div></div></div>'+pfTiles(base)+
     '<label class="noprint" style="display:flex;gap:8px;align-items:center;font-size:16px;margin:6px 0"><input type="checkbox" data-act="pfhide"'+(R.pfhide?' checked':'')+' style="width:22px;height:22px">Hide installed items</label>'+
     '<div class="scroll"><table class="tmx pfx"><thead><tr><th>Item</th><th>Drawing</th><th>Description</th><th>WP</th><th>Lead</th><th class="c">On site</th><th class="c">Install</th><th class="c">Yard forecast</th>'+
-      PF_ST.map(function(st,k){ return '<th class="c grp g0'+(k===0?' gs':'')+'">'+esc(st)+'</th>'; }).join('')+'<th>Status / reason</th></tr></thead><tbody>'+(body||'<tr><td colspan="14">No items.</td></tr>')+'</tbody></table></div></section>';
+      PF_ST.map(function(st,k){ return '<th class="c grp g0'+(k===0?' gs':'')+'">'+esc(st)+'</th>'; }).join('')+'<th>Status / reason</th></tr></thead><tbody>'+(body||'<tr><td colspan="14">No items.</td></tr>')+'</tbody></table></div>'+
+    pfCritBlock(base)+pfRunBlock(base)+pfLookBlock(base)+'</section>';
+}
+/* ---------- prefab report: stage tiles, critical items, run-down per stage, install look-ahead ---------- */
+var PF_RULE={'Procurement':'install − 30 days','Prefab':'before coating starts (install − 9 days); N/A coating: install − 2 days','Coatings':'1 day before on site (install − 2 days)','On site':'planned on site (install − 1 day if blank)','Installed':'install date'};
+function pfMark(v){ return '<span class="tm '+v+'">'+(v==='C'?'✓':v==='P'?'IP':v==='X'?'N/A':'')+'</span>'; }
+function pfTiles(base){
+  var today=todayISO(), soon=addDays(today,14), noI=base.filter(function(it){ return !it.install; }).length;
+  var tiles=PF_ST.map(function(s){ var c=0,p=0,na=0,late=0,due=0;
+    base.forEach(function(it){ var v=pfEff(it)[s], nb=pfNeed(it,s); if(v==='X'){ na++; return; } if(v==='C'){ c++; return; } if(v==='P') p++;
+      if(nb&&nb<today) late++; else if(nb&&nb<soon) due++; });
+    var tot=base.length-na, w=function(x){ return tot?(x/tot*100).toFixed(1):0; };
+    return '<div class="pst"><div class="pstn">'+esc(s)+'</div><div class="pstb"><b>'+(tot-c)+'</b><span>of '+tot+' outstanding'+(s==='Coatings'?' · '+na+' N/A':'')+'</span></div>'+
+      '<div class="stk"><i class="C" style="width:'+w(c)+'%"></i><i class="P" style="width:'+w(p)+'%"></i></div>'+
+      '<div class="psts">'+c+' complete · '+p+' in progress · '+(tot-c-p)+' not started</div>'+
+      '<div class="pstl'+(late?' r':'')+'"><b>'+late+'</b> past need-by</div><div class="pstl a"><b>'+due+'</b> need-by in next 14 days</div>'+
+      '<div class="pstr">Need-by: '+esc(PF_RULE[s])+'</div></div>'; }).join('');
+  return '<h2 class="pfh">Where the items are – by stage</h2><div class="psts5">'+tiles+'</div>'+
+    '<p class="note pfnote">Need-by dates count back from the install date: on site 1 day before install (or the tracker’s planned on-site date); coatings complete 1 day before on site, allowing 7 days of coating; prefab complete before coating starts (or 1 day before on site where coating is N/A); procurement 30 days before install. A stage counts as done when a later stage is complete.'+(noI?' '+noI+(noI===1?' item has':' items have')+' no install date and '+(noI===1?'is':'are')+' left out of the need-by figures.':'')+'</p>';
+}
+function pfCritBlock(base){
+  var today=todayISO(), soon=addDays(today,14);
+  var html=PF_ST.map(function(s){
+    var L=base.map(function(it){ return [it,pfInfo(it)]; }).filter(function(x){ var nb=pfNeed(x[0],s); return x[1].cur===s&&nb&&nb<soon; })
+      .sort(function(a,b){ return cmp(pfNeed(a[0],s),pfNeed(b[0],s))||cmp(a[0].install,b[0].install)||(pfIdx(a[0])-pfIdx(b[0])); });
+    var nl=L.filter(function(x){ return pfNeed(x[0],s)<today; }).length;
+    var rows=L.map(function(x){ var it=x[0], i=x[1], nb=pfNeed(it,s), dd=diff(today,nb);
+      var lt=dd<0?'<span class="lt">'+(-dd)+' d late</span>':dd===0?'<span class="lt">today</span>':'in '+dd+' d';
+      return '<tr><td><b>'+esc(it.id)+'</b></td><td class="pfd">'+esc(it.desc)+'<div class="pfn">'+[it.dwg,it.wp?'WP '+it.wp:''].filter(Boolean).map(esc).join(' · ')+'</div></td><td>'+esc(it.lead||'')+'</td>'+
+        '<td class="c">'+pfMark(pfVal(it,s))+'</td><td class="c">'+fmt(nb)+'</td><td class="c">'+lt+'</td><td class="c"><b>'+fmt(it.install)+'</b></td><td class="c'+(i.slip>0?' lt':'')+'">'+(i.fc?fmt(i.fc):'')+'</td>'+
+        '<td>'+pfFlagHtml(i)+(i.note?'<div class="pfn">Note: '+esc(i.note)+'</div>':'')+'</td></tr>'; }).join('');
+    return '<div class="pcr"><div class="pcrh"><h3>'+esc(s)+'</h3><span>'+nl+' overdue · '+(L.length-nl)+' due in 14 days</span></div>'+
+      '<div class="scroll"><table class="tmx pfx pcrt"><thead><tr><th>Item</th><th>Description</th><th>Lead</th><th class="c">Stage</th><th class="c">Need-by</th><th class="c">Late / left</th><th class="c">Install</th><th class="c">Yard forecast</th><th>Status</th></tr></thead><tbody>'+
+      (rows||'<tr><td colspan="9" class="pfnone">Nothing critical at this step.</td></tr>')+'</tbody></table></div></div>'; }).join('');
+  return '<div class="pfbreak"></div><h2 class="pfh">Critical items – push these to the next stage</h2><p class="note pfnote">Each item is listed once, under the next stage it needs to finish. Shown: every item past its need-by date or due within 14 days, most overdue first.</p>'+html;
+}
+// Prefab change history (from the change log) to rebuild past stage statuses
+function loadPfHist(){
+  if(S.pfHistBusy||(S.pfHist&&Date.now()-(S.pfHistAt||0)<300000)) return;
+  S.pfHistBusy=true;
+  var p=LIVE?api('/api/history?kind=pf').then(function(d){ return d.rows||[]; }):Promise.resolve((ls('demo_log')||[]).filter(function(x){ return String(x.task).indexOf('PF|')===0; }).map(function(x){ return [x.at,x.task,x.new,x.old]; }));
+  p.then(function(r){ S.pfHist=r; }).catch(function(){ S.pfHist=S.pfHist||[]; })
+   .then(function(){ S.pfHistBusy=false; S.pfHistAt=Date.now(); if(S.view==='reports'&&S.rep.type==='prefab') rerender(); });
+}
+function pfRunData(base){
+  var today=todayISO(), its=base.filter(function(it){ return it.install; });
+  var ev=(S.pfHist||[]).map(function(r){ var p=String(r[1]).split('|'); return {d:isoLocal(r[0]),id:p[1],k:p[2],old:r[3]}; })
+    .filter(function(e){ return PF_ST.indexOf(e.k)>=0; }).sort(function(a,b){ return a.d<b.d?1:a.d>b.d?-1:0; });
+  var t0=ev.length?ev[ev.length-1].d:today; if(t0>today) t0=today; if(diff(t0,today)<7) t0=addDays(today,-7);
+  var end=today; its.forEach(function(it){ if(it.install>end) end=it.install; }); end=addDays(end,2);
+  var days=[]; for(var d=t0; d<=end; d=addDays(d,1)) days.push(d);
+  var ti=days.indexOf(today), cur={}; its.forEach(function(it){ var o={}; PF_ST.forEach(function(s){ o[s]=pfSaved(it,s); }); cur[it.id]=o; });
+  var act={}; PF_ST.forEach(function(s){ act[s]=[]; });
+  var k=0, have={}; its.forEach(function(it){ have[it.id]=1; });
+  for(var i=ti;i>=0;i--){
+    while(k<ev.length&&ev[k].d>days[i]){ var e=ev[k++]; if(have[e.id]) cur[e.id][e.k]=e.old||'N'; }
+    PF_ST.forEach(function(s){ act[s][i]=its.filter(function(it){ var E=pfEff(it,function(x){ return cur[it.id][x]; }); return E[s]!=='C'&&E[s]!=='X'; }).length; });
+  }
+  return {days:days,ti:ti,its:its,act:act,hasHist:ev.length>0};
+}
+function pfRunSvg(D,s){
+  var W=300,H=200,L=34,R=10,T=14,B=24,n=D.days.length, pool=D.its.filter(function(it){ return pfVal(it,'Coatings')!=='X'||s!=='Coatings'; }), M=pool.length||1;
+  var X=function(i){ return L+(W-L-R)*i/Math.max(1,n-1); }, Y=function(v){ return T+(H-T-B)*(1-v/M); };
+  var need=D.days.map(function(d){ return pool.filter(function(it){ var nb=pfNeed(it,s); return nb&&nb>d; }).length; });
+  var act=D.act[s].slice(0,D.ti+1), ti=D.ti, a=act[ti], nd=need[ti], gap=a-nd;
+  var g=[0,Math.round(M/2),M].map(function(v){ return '<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(v).toFixed(1)+'" y2="'+Y(v).toFixed(1)+'" class="cg"/><text x="'+(L-5)+'" y="'+(Y(v)+4).toFixed(1)+'" class="cy" style="font-size:11px">'+v+'</text>'; }).join('');
+  D.days.forEach(function(d,i){ if(d.slice(8)==='01') g+='<line x1="'+X(i).toFixed(1)+'" x2="'+X(i).toFixed(1)+'" y1="'+(H-B)+'" y2="'+(H-B+4)+'" class="ca"/><text x="'+(X(i)+2).toFixed(1)+'" y="'+(H-B+15)+'" class="cx" style="font-size:11px">'+MON[+d.slice(5,7)-1]+'</text>'; });
+  var path=function(arr){ return 'M'+arr.map(function(v,i){ return X(i).toFixed(1)+','+Y(v).toFixed(1); }).join('L'); };
+  var svg='<svg class="chart pfsm" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+esc(s)+' outstanding">'+g+'<line x1="'+L+'" x2="'+(W-R)+'" y1="'+(H-B)+'" y2="'+(H-B)+'" class="ca"/>'+
+    '<line x1="'+X(ti).toFixed(1)+'" x2="'+X(ti).toFixed(1)+'" y1="'+(T-6)+'" y2="'+(H-B)+'" class="ct"/><path d="'+path(need)+'" class="lneed"/>'+(act.length>1?'<path d="'+path(act)+'" class="lact"/>':'')+
+    (gap>0?'<line x1="'+X(ti).toFixed(1)+'" x2="'+X(ti).toFixed(1)+'" y1="'+Y(nd).toFixed(1)+'" y2="'+Y(a).toFixed(1)+'" class="gapl"/>':'')+'<circle cx="'+X(ti).toFixed(1)+'" cy="'+Y(a).toFixed(1)+'" r="4.5" class="cd"/></svg>';
+  var lab=gap===0?'on plan':Math.abs(gap)+(gap>0?' behind':' ahead');
+  return '<div class="prn"><div class="prnh"><b>'+esc(s)+'</b><span class="'+(gap>0?'r':'g')+'">'+lab+'</span></div><div class="prnk">'+a+' of '+pool.length+' outstanding · need-by allows '+nd+'</div>'+svg+'</div>';
+}
+function pfRunBlock(base){
+  loadPfHist();
+  var D=pfRunData(base); if(!D.its.length) return '';
+  return '<div class="pfbreak"></div><h2 class="pfh">Outstanding items per stage – actual vs need-by</h2>'+
+    '<div class="clg"><span><i class="kln"></i>Actual outstanding (as reported in the app)</span><span><i class="kln d"></i>Outstanding allowed by need-by dates</span><span><i class="kln g"></i>Gap today</span></div>'+
+    '<div class="prn5">'+PF_ST.map(function(s){ return pfRunSvg(D,s); }).join('')+'</div>'+
+    '<p class="note pfnote">The actual line is rebuilt from the change log and fills in week by week. Items without an install date are not included.</p>';
+}
+function pfLookBlock(base){
+  var today=todayISO(), its=base.filter(function(it){ return it.install&&!pfInfo(it).inst; }); if(!its.length) return '';
+  var p=today.split('-'), wd=(new Date(Date.UTC(+p[0],+p[1]-1,+p[2])).getUTCDay()+6)%7, w0=addDays(today,-wd), last=today;
+  its.forEach(function(it){ if(it.install>last) last=it.install; });
+  var B=[{lab:'Overdue',its:its.filter(function(it){ return it.install<today; }),od:1}];
+  for(var w=w0; w<=last; w=addDays(w,7)) (function(w){ var we=addDays(w,7); B.push({lab:'wk '+fmt(w),its:its.filter(function(it){ return it.install>=today&&it.install>=w&&it.install<we; })}); })(w);
+  var cat=function(it){ var E=pfEff(it); return E['On site']==='C'?0:E['Coatings']==='C'?1:E['Prefab']==='C'?2:E['Prefab']==='P'?3:E['Procurement']==='C'?4:5; };
+  var C=[['lk0','On site'],['lk1','Coated'],['lk2','Prefab complete'],['lk3','Prefab in progress'],['lk4','Procured only'],['lk5','Not procured']];
+  var W=Math.max(700,B.length*90),H=320,L=40,Bm=46,T=22,bw=(W-L-10)/B.length, mx=1; B.forEach(function(b){ if(b.its.length>mx) mx=b.its.length; });
+  var top=Math.ceil(mx/5)*5, Y=function(v){ return T+(H-T-Bm)*(1-v/top); }, g='';
+  for(var v=0;v<=top;v+=5) g+='<line x1="'+L+'" x2="'+(W-10)+'" y1="'+Y(v).toFixed(1)+'" y2="'+Y(v).toFixed(1)+'" class="cg"/><text x="'+(L-6)+'" y="'+(Y(v)+4).toFixed(1)+'" class="cy">'+v+'</text>';
+  B.forEach(function(b,k){ var x=L+k*bw+Math.min(10,bw*0.12), bwi=bw-2*Math.min(10,bw*0.12), y0=0, cnt=[0,0,0,0,0,0];
+    b.its.forEach(function(it){ cnt[cat(it)]++; });
+    cnt.forEach(function(m,ci){ if(!m) return; g+='<rect x="'+x.toFixed(1)+'" y="'+Y(y0+m).toFixed(1)+'" width="'+bwi.toFixed(1)+'" height="'+Math.max(1,Y(y0)-Y(y0+m)-2).toFixed(1)+'" rx="2" class="'+C[ci][0]+'"><title>'+b.lab+': '+m+' '+C[ci][1].toLowerCase()+'</title></rect>'; y0+=m; });
+    var cx=(x+bwi/2).toFixed(1);
+    g+='<text x="'+cx+'" y="'+(Y(y0)-6).toFixed(1)+'" class="cl" text-anchor="middle">'+b.its.length+'</text><text x="'+cx+'" y="'+(H-Bm+17)+'" class="cx'+(b.od?' lkod':'')+'" text-anchor="middle">'+esc(b.lab)+'</text><text x="'+cx+'" y="'+(H-Bm+33)+'" class="cx" style="font-size:11px" text-anchor="middle">'+cnt[0]+' on site</text>'; });
+  g+='<line x1="'+(L+bw).toFixed(1)+'" x2="'+(L+bw).toFixed(1)+'" y1="'+T+'" y2="'+(H-Bm+38)+'" class="ct"/>';
+  return '<h2 class="pfh">Installs by week – how ready are they?</h2><div class="clg">'+C.map(function(c){ return '<span><i class="lkk '+c[0]+'"></i>'+c[1]+'</span>'; }).join('')+'</div>'+
+    '<div class="scroll"><svg class="chart" style="min-width:'+Math.min(W,1100)+'px" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Installs by week">'+g+'<line x1="'+L+'" x2="'+(W-10)+'" y1="'+(H-Bm)+'" y2="'+(H-Bm)+'" class="ca"/></svg></div>'+
+    '<p class="note pfnote">Each bar = items not yet installed with an install date that week, coloured by how far they have got. “Overdue” = install date already passed. This week’s bar counts from today.</p>';
 }
 function parsePrefabWorkbook(XLSX,data,name){
   var wb=XLSX.read(data,{type:'array',cellDates:false}), sh=null, rows=null;
@@ -1709,7 +1850,7 @@ function parsePrefabWorkbook(XLSX,data,name){
     m=s.match(/^(\d{1,2})[\s\-\/]([A-Za-z]{3})[A-Za-z]*[\s\-\/](\d{2,4})$/); if(m){ var mo=MON.map(function(x){ return x.toLowerCase(); }).indexOf(m[2].toLowerCase()); if(mo>=0){ var y=+m[3]; if(y<100) y+=2000; return y+'-'+pad(mo+1)+'-'+pad(+m[1]); } }
     m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/); if(m){ var yy=+m[3]; if(yy<100) yy+=2000; return yy+'-'+pad(+m[2])+'-'+pad(+m[1]); }
     return null; };
-  var stv=function(v){ var s=String(v||'').trim().toLowerCase(); return /^(c|complete|completed|done|yes|y)$/.test(s)?'C':/^(p|ip|in progress|started|ongoing)$/.test(s)?'P':'N'; };
+  var stv=function(v){ var s=String(v||'').trim().toLowerCase(); return /^(c|complete|completed|done|yes|y)$/.test(s)?'C':/^(p|ip|in progress|started|ongoing)$/.test(s)?'P':/^(n\/a|na|not applicable)$/.test(s)?'X':'N'; };
   var flv=function(v){ var s=String(v||'').trim().toLowerCase(); return s==='on track'?'O':s==='at risk'?'R':s==='behind'?'B':''; };
   var items=[], seen={}, warn=[];
   for(var r=h+1;r<rows.length;r++){ var row=rows[r]||[], id=String(g(row,'item no.')||'').trim(); if(!id) continue;
@@ -1718,8 +1859,7 @@ function parsePrefabWorkbook(XLSX,data,name){
     if(seen[id]){ warn.push('Item No. '+id+' appears more than once; only the first row is used.'); continue; } seen[id]=1;
     var it={id:id,dwg:String(g(row,'drawing ref')||'').trim(),desc:desc,wp:String(g(row,'wp')||'').trim(),lead:String(g(row,'lead')||'').trim(),st:{}};
     ['planned on-site','install date','yard forecast on-site'].forEach(function(k,j){ var v=dt(g(row,k)); if(v===null){ warn.push(id+': "'+k+'" is not a date.'); v=''; } it[['onsite','install','forecast'][j]]=v; });
-    if(!it.onsite) warn.push(id+': no planned on-site date.');
-    PF_ST.forEach(function(s){ var v=stv(g(row,s.toLowerCase())); if(v!=='N') it.st[s]=v; });
+    PF_ST.forEach(function(s){ var v=stv(g(row,s.toLowerCase())); if(v==='X'&&s!=='Coatings') v='N'; if(v!=='N') it.st[s]=v; });
     it.note=String(g(row,'note')||'').trim().slice(0,200);
     items.push(it); }
   return {v:1,kind:'prefab',source:name,imported:new Date().toISOString(),items:items,warnings:warn};
@@ -1845,8 +1985,8 @@ function doExport(){
           trows.push(row); }); });
       X.utils.book_append_sheet(wb,X.utils.json_to_sheet(trows),k==='tanks'?'Tanks':'Pressure vessels'); });
     useTrk(keepT);
-    if(pfItems().length){ var prow=pfItems().map(function(it){ var i=pfInfo(it), r={'Item No.':it.id,'Drawing ref':it.dwg,'Description':it.desc,'WP':it.wp,'Lead':it.lead,'Planned on-site':it.onsite,'Install date':it.install,'Yard forecast on-site':i.fc};
-        PF_ST.forEach(function(s2){ r[s2]={N:'Not Started',P:'In Progress',C:'Complete'}[pfVal(it,s2)]; });
+    if(pfItems().length){ var prow=pfItems().map(function(it){ var i=pfInfo(it), r={'Item No.':it.id,'Drawing ref':it.dwg,'Description':it.desc,'WP':it.wp,'Lead':it.lead,'Planned on-site':it.onsite||'','Planned on-site used':pfOn(it),'Install date':it.install,'Yard forecast on-site':i.fc};
+        PF_ST.forEach(function(s2){ r[s2]={N:'Not Started',P:'In Progress',C:'Complete',X:'N/A'}[pfVal(it,s2)]; });
         r['Status']=PF_FL[i.ef]; r['Reason']=i.whyTxt; r['Note']=i.note; r['Last reviewed (UTC)']=i.rev?i.rev.at:''; r['Reviewed by']=i.rev?i.rev.by:''; return r; });
       X.utils.book_append_sheet(wb,X.utils.json_to_sheet(prow),'Structural prefab'); }
     X.writeFile(wb,'Workpack status '+today+'.xlsx');
